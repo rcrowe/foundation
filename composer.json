@@ -1,6 +1,6 @@
 {
-    "name": "illuminate/core",
-    "description": "A framework for the bright.",
+    "name": "illuminate/foundation",
+    "description": "The foundation of the Illuminate framework.",
     "keywords": ["silex", "framework"],
     "license": "MIT",
     "authors": [
