@@ -1,8 +1,6 @@
 <?php namespace Illuminate\Foundation;
 
-use __, Closure, Silex\Controller, Silex\Provider\UrlGeneratorServiceProvider;
-
-require_once __DIR__.'/silex.phar';
+use Closure, Silex\Controller, Silex\Provider\UrlGeneratorServiceProvider;
 
 class Application extends \Silex\Application {
 
@@ -170,7 +168,7 @@ class Application extends \Silex\Application {
 			$to = array_merge(end($this->grouped), $to);
 		}
 
-		$callable = __::find($to, function($value)
+		$callable = __($to)->find(function($value)
 		{
 			return $value instanceof Closure;
 		});

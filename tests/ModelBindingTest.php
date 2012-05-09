@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__.'/../src/Illuminate/Foundation/silex.phar';
-
-class ModelBindingTest extends Silex\WebTestCase {
+class ModelBindingTest extends Illuminate\Foundation\TestCase {
 
 	public function testClosureModelBinder()
 	{
@@ -34,8 +32,7 @@ class ModelBindingTest extends Silex\WebTestCase {
 
 	public function createApplication()
 	{
-		$app = new Illuminate\Foundation\Application;
-		$app['debug'] = true;
+		$app = parent::createApplication();
 		$app['ioc'] = new ModelBindingTestIoCStub;
 		return $app;
 	}

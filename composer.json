@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
+        "silex/silex": "1.0.*",
         "underscore/Underscore.php": ">=1.0.0"
     },
     "autoload": {

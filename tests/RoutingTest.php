@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Application;
 
-class RoutingTest extends PHPUnit_Framework_TestCase {
+class RoutingTest extends Illuminate\Foundation\TestCase {
 
 	public function testRootRouting()
 	{
