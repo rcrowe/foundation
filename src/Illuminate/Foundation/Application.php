@@ -1,6 +1,8 @@
-<?php namespace Illuminate;
+<?php namespace Illuminate\Foundation;
 
 use __, Closure, Silex\Controller, Silex\Provider\UrlGeneratorServiceProvider;
+
+require_once __DIR__.'/silex.phar';
 
 class Application extends \Silex\Application {
 

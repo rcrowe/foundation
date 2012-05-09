@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Foundation\Application;
+
 class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRootRouting()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->root(function() {});
 		$this->assertEquals('/', $controller->getRoute()->getPattern());
 	}
@@ -12,7 +14,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testAutoSlashes()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->get('something', function() {});
 		$this->assertEquals('/something', $controller->getRoute()->getPattern());
 	}
@@ -20,7 +22,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testMethodIsSetCorrectly()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->get('something', function() {});
 		$this->assertEquals('GET', $controller->getRoute()->getRequirement('_method'));
 		$controller = $app->post('something', function() {});
@@ -35,7 +37,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteControllerIsSet()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->get('something', function() { return 'foo'; });
 		$callable = $controller->getRoute()->getDefault('_controller');
 		$this->assertEquals('foo', $callable());
@@ -44,7 +46,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testMatchShortcut()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->match('something', array('on' => 'get|post', function () {}));
 		$this->assertEquals('GET|POST', $controller->getRoute()->getRequirement('_method'));
 	}
@@ -52,7 +54,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testHttpsShortcut()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->get('something', array('https' => true, function() {}));
 		$this->assertEquals('https', $controller->getRoute()->getRequirement('_scheme'));
 		$controller = $app->get('something', array('https' => false, function() {}));
@@ -62,7 +64,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testMiddlewareShortcut()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$app->middleware('auth', function() { return 'auth!'; });
 		$controller = $app->get('something', array('before' => 'auth', function() {}));
 		$middlewares = $controller->getRoute()->getDefault('_middlewares');
@@ -72,7 +74,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testMultiMiddlewareShortcut()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$app->middleware('foo', function() { return 'foo!'; });
 		$app->middleware('bar', function() { return 'bar!'; });
 		$controller = $app->get('something', array('before' => 'foo|bar', function() {}));
@@ -84,7 +86,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testNameShortcut()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$controller = $app->get('something', array('as' => 'foo', function() {}));
 		$this->assertEquals('foo', $controller->getRouteName());
 	}
@@ -92,7 +94,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteGrouping()
 	{
-		$app = new Illuminate\Application;
+		$app = new Application;
 		$app->middleware('auth', function() { return 'foo!'; });
 		$app->group(array('before' => 'auth'), function($app)
 		{

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../src/Illuminate/IModelBinder.php';
+require_once __DIR__.'/../src/Illuminate/Foundation/silex.phar';
 
 class ModelBindingTest extends Silex\WebTestCase {
 
@@ -34,7 +34,7 @@ class ModelBindingTest extends Silex\WebTestCase {
 
 	public function createApplication()
 	{
-		$app = new Illuminate\Application;
+		$app = new Illuminate\Foundation\Application;
 		$app['debug'] = true;
 		$app['ioc'] = new ModelBindingTestIoCStub;
 		return $app;
@@ -56,7 +56,7 @@ class ModelBindingTestIoCStub {
 
 }
 
-class ModelBindingTestBinderStub implements Illuminate\IModelBinder {
+class ModelBindingTestBinderStub implements Illuminate\Foundation\IModelBinder {
 
 	public function resolveBinding($id, Symfony\Component\HttpFoundation\Request $request)
 	{

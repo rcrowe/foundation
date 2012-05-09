@@ -1,4 +1,4 @@
-<?php namespace Illuminate;
+<?php namespace Illuminate\Foundation;
 
 use Symfony\Component\HttpFoundation\Request;
 
