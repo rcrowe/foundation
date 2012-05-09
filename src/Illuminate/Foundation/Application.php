@@ -141,6 +141,18 @@ class Application extends \Silex\Application {
 	}
 
 	/**
+	 * Mount another application at a given prefix.
+	 *
+	 * @param  string  $prefix
+	 * @param  mixed   $app
+	 * @return void
+	 */
+	public function mount($prefix, $app)
+	{
+		if ( ! is_string($app)) return parent::mount($prefix, $app);
+	}
+
+	/**
 	 * Register a route with the application.
 	 *
 	 * @param  string            $method
@@ -176,7 +188,7 @@ class Application extends \Silex\Application {
 		$controller = parent::$method($pattern, $callable);
 
 		// The "https" flag specifies that the route should only respond to
-		// secure HTTPS requests. HTTP requests are sent to the secure
+		// secure HTTPS requests. HTTP requests are sent to the "secure"
 		// version of the route when attempting to access the route.
 		if (isset($to['https']))
 		{
