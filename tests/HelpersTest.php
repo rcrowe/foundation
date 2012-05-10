@@ -14,4 +14,12 @@ class HelpersTest extends Illuminate\Foundation\TestCase {
 		unset($GLOBALS['__illuminate.app']);
 	}
 
+
+	public function testArrayDot()
+	{
+		Illuminate\Foundation\LightSwitch::flip();
+		$array = array_dot(array('name' => 'taylor', 'languages' => array('php' => true)));
+		$this->assertEquals($array, array('name' => 'taylor', 'languages.php' => true));
+	}
+
 }
