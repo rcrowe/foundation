@@ -11,36 +11,16 @@ function app()
 }
 
 /**
- * Create a new URL for the given URI.
- *
- * @param  string  $uri
- * @return string
- */
-function path($uri)
-{
-	return app()->getRootUrl().'/'.$uri;
-}
-
-/**
- * Create a new asset URL for the given URI.
- *
- * @param  string  $uri
- * @return string
- */
-function asset($uri)
-{
-	return path('assets/'.$uri);
-}
-
-/**
  * Generate a URL to a named route.
  *
  * @param  string  $route
+ * @param  string  $parameters
+ * @param  bool    $absolute
  * @return string
  */
-function route($route)
+function route($route, $parameters = array(), $absolute = false)
 {
-	return app()->url_generator->generate($route);
+	return app()->url_generator->generate($route, $parameters, $absolute);
 }
 
 /**
