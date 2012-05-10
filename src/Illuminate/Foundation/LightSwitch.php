@@ -3,21 +3,12 @@
 class LightSwitch {
 
 	/**
-	 * Indicates if the light switch is on.
-	 *
-	 * @var bool
-	 */
-	protected static $on = false;
-
-	/**
 	 * Bootstrap the Illuminate framework.
 	 *
 	 * @return void
 	 */
 	public static function flip()
 	{
-		if (static::$on) return;
-
 		// Since we'll be using Underscore.php in a procedural style to
 		// avoid E_STRICT errors, we'll force the file to be loaded
 		// here since Composer won't be resolving it lazily.
@@ -26,7 +17,14 @@ class LightSwitch {
 			spl_autoload_call('__');
 		}
 
-		static::$on = true;
+		// We will go ahead and create the Illuminate application since
+		// no constructor arguments are needed and we want to put it
+		// in the $GLOBALS array to allow for some nice functions.
+		$application = new Application;
+
+		$GLOBALS['__illuminate.app'] = $application;
+
+		return $application;
 	}
 
 }
