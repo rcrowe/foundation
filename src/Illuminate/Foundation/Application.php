@@ -65,12 +65,13 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * Create a redirect response to a named route.
 	 *
 	 * @param  string  $route
+	 * @param  array   $parameters
 	 * @param  int     $status
 	 * @return Symfony\Component\HttpFoundation\RedirectResponse
 	 */
-	public function redirect_to_route($route, $status = 302)
+	public function redirect_to_route($route, $parameters = array(), $status = 302)
 	{
-		$url = $this['url_generator']->generate($route);
+		$url = $this['url_generator']->generate($route, $parameters);
 
 		return parent::redirect($url, $status);
 	}
@@ -216,7 +217,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		if (starts_with($method, 'redirect_to_'))
 		{
-			return $this->redirect_to_route(substr($method, 12));
+			array_unshift($parameters, substr($method, 12));
+
+			return call_user_func_array(array($this, 'redirect_to_route'), $parameters);
 		}
 
 		throw new \BadMethodCallExcpeption("Call to undefined method {$method}.");
