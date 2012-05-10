@@ -4,6 +4,7 @@ use Closure;
 use ArrayAccess;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class Application extends \Silex\Application implements ArrayAccess {
 
@@ -124,10 +125,10 @@ class Application extends \Silex\Application implements ArrayAccess {
 	/**
 	 * Hnadles the given request and delivers the response.
 	 *
-	 * @param  Illuminate\Foundation\Request  $request
+	 * @param  Symfony\Component\HttpFoundation\Request  $request
 	 * @return void
 	 */
-	public function run(Request $request = null)
+	public function run(SymfonyRequest $request = null)
 	{
 		// If not request is given, we'll simply create one from PHP's global
 		// variables and send it into the handle method, which will create
