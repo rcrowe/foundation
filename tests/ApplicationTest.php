@@ -36,11 +36,21 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 	public function testEnvironmenetDetection()
 	{
 		$app = new Application;
-		$app['request_context']->setBaseUrl('localhost.dev');
-		$env = $app->detectEnvironment(array('local' => array('localhost.dev', 'localhost')));
-		$this->assertEquals('local', $env);
-		$app['request_context']->setBaseUrl('foo.bar');
-		$this->assertEquals('default', $app->detectEnvironment(array()));
+		$app['request_context']->setHost('foo');
+		$app->registerEnvironment(array(
+			'default' => array('config' => __DIR__.'/config/default.yml'),
+			'local'   => array('hosts' => array('localhost'), 'config' => __DIR__.'/config/local.yml'),
+		));
+		$this->assertEquals('file', $app['session.foo']);
+
+		$app = new Application;
+		$app['request_context']->setHost('localhost');
+		$app->registerEnvironment(array(
+			'default' => array('config' => __DIR__.'/config/default.yml'),
+			'local'   => array('hosts' => array('localhost'), 'config' => __DIR__.'/config/local.yml'),
+		));
+		$this->assertEquals('apc', $app['session.foo']);
+		$this->assertEquals('taylor', $app['dev.name']);
 	}
 
 }
