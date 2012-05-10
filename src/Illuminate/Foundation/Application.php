@@ -1,10 +1,18 @@
 <?php namespace Illuminate\Foundation;
 
 use Closure;
+use ArrayAccess;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
 
-class Application extends \Silex\Application {
+class Application extends \Silex\Application implements ArrayAccess {
+
+	/**
+	 * The Illuminate container instance.
+	 *
+	 * @var Illuminate\Container
+	 */
+	public $container;
 
 	/**
 	 * Create a new Illuminate application.
@@ -13,20 +21,17 @@ class Application extends \Silex\Application {
 	 */
 	public function __construct()
 	{
+		$this->container = new Container;
+
 		parent::__construct();
 
 		$app = $this;
 
 		$this->register(new UrlGeneratorServiceProvider);
 
-		$this['ioc'] = $this->share(function()
-		{
-			return new Container;
-		});
-
 		$this['controllers'] = $this->share(function() use ($app)
 		{
-			return new ControllerCollection($app['ioc']);
+			return new ControllerCollection($app->container);
 		});
 	}
 
@@ -105,6 +110,51 @@ class Application extends \Silex\Application {
 	public function middleware($name, Closure $middleware)
 	{
 		return $this['controllers']->middleware($name, $middleware);
+	}
+
+	/**
+	 * Determine if a value exists by offset.
+	 *
+	 * @param  string  $key
+	 * @return bool
+	 */
+	public function offsetExists($key)
+	{
+		return isset($this->container[$key]);
+	}
+
+	/**
+	 * Get a value by offset.
+	 *
+	 * @param  string  $key
+	 * @return mixed
+	 */
+	public function offsetGet($key)
+	{
+		return $this->container[$key];
+	}
+
+	/**
+	 * Set a value by offset.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
+	public function offsetSet($key, $value)
+	{
+		$this->container[$key] = $value;
+	}
+
+	/**
+	 * Unset a value by offset.
+	 *
+	 * @param  string  $key
+	 * @return void
+	 */
+	public function offsetUnset($key)
+	{
+		unset($this->container[$key]);
 	}
 
 	/**

@@ -198,11 +198,11 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 */
 	protected function customBinder($controller, $wildcard, $binder)
 	{
-		$ioc = $this->container;
+		$container = $this->container;
 
-		$controller->convert($wildcard, function($id, $request) use ($ioc, $binder)
+		$controller->convert($wildcard, function($id, $request) use ($container, $binder)
 		{
-			$resolver = $ioc->resolve($binder);
+			$resolver = $container->make($binder);
 
 			// The IModelBinder interface defines a simple contract that specifies
 			// the class can retrieve a model instance by the given ID. All of
