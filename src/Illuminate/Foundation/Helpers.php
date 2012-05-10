@@ -6,7 +6,7 @@
  * @param  string  $route
  * @return string
  */
-function path($route)
+function route($route)
 {
 	return $GLOBALS['__illuminate.app']['url_generator']->generate($route);
 }
