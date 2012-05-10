@@ -107,6 +107,23 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Get the root URL for the application.
+	 *
+	 * @return string
+	 */
+	public function getRootUrl()
+	{
+		if ( ! isset($this['request']))
+		{
+			throw new \RuntimeException("Accessing request outside of context.");
+		}
+
+		$r = $this['request'];
+
+		return $r->getScheme().'://'.$r->getHttpHost().$r->getBasePath();
+	}
+
+	/**
 	 * Determine if a value exists by offset.
 	 *
 	 * @param  string  $key
