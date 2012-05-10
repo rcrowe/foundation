@@ -62,6 +62,20 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Create a redirect response to a named route.
+	 *
+	 * @param  string  $route
+	 * @param  int     $status
+	 * @return Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	public function redirect_to_route($route, $status = 302)
+	{
+		$url = $this['url_generator']->generate($route);
+
+		return parent::redirect($url, $status);
+	}
+
+	/**
 	 * Register a model binder with the application.
 	 *
 	 * @param  string                  $wildcard
