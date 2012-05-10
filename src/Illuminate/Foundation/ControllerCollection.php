@@ -290,4 +290,14 @@ class ControllerCollection extends \Silex\ControllerCollection {
 		$this->middlewares[$name] = $middleware;
 	}
 
+	/**
+	 * Get the Illuminate application instance.
+	 *
+	 * @return Illuminate\Application
+	 */
+	public function getApplication()
+	{
+		return $this->application;
+	}
+
 }

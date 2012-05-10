@@ -94,6 +94,16 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Create a new mountable controller collection.
+	 *
+	 * @return Illuminate\Foundation\ControllerCollection
+	 */
+	public function newMountable()
+	{
+		return new ControllerCollection($this);
+	}
+
+	/**
 	 * Determine if a value exists by offset.
 	 *
 	 * @param  string  $key
