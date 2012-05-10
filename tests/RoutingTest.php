@@ -116,6 +116,7 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 	{
 		$app = new Application;
 		$controller = $app->get('foo/{#:bar}', function() {});
+		$this->assertEquals('/foo/{bar}', $controller->getRoute()->getPattern());
 		$this->assertEquals('\\d+', $controller->getRoute()->getRequirement('bar'));
 	}
 
