@@ -38,19 +38,16 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$app = new Application;
 		$app['request_context']->setHost('foo');
 		$app->registerEnvironment(array(
-			'default' => array('config' => __DIR__.'/config/default.yml'),
-			'local'   => array('hosts' => array('localhost'), 'config' => __DIR__.'/config/local.yml'),
+			'local'   => array('localhost')
 		));
-		$this->assertEquals('file', $app['session.foo']);
+		$this->assertEquals('default', $app['env']);
 
 		$app = new Application;
 		$app['request_context']->setHost('localhost');
 		$app->registerEnvironment(array(
-			'default' => array('config' => __DIR__.'/config/default.yml'),
-			'local'   => array('hosts' => array('localhost'), 'config' => __DIR__.'/config/local.yml'),
+			'local'   => array('localhost')
 		));
-		$this->assertEquals('apc', $app['session.foo']);
-		$this->assertEquals('taylor', $app['dev.name']);
+		$this->assertEquals('local', $app['env']);
 	}
 
 }

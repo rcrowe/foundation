@@ -37,18 +37,10 @@ class Application extends \Silex\Application implements ArrayAccess {
 		{
 			return new ControllerCollection($app);
 		});
-
-		// The Symfony YAML parser is used to conveniently parse the application
-		// configuration files for the default and local environemnts so we
-		// can go ahead and register a shared instance here for our use.
-		$this['yaml.parser'] = $this->share(function()
-		{
-			return new \Symfony\Component\Yaml\Parser;
-		});
 	}
 
 	/**
-	 * Detect the application's current.
+	 * Detect the application's current environment.
 	 *
 	 * @param  array   $environments
 	 * @return string
@@ -57,59 +49,21 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		$base = $this['request_context']->getHost();
 
-		foreach ($environments as $environment => $config)
+		foreach ($environments as $environment => $hosts)
 		{
-			if ( ! isset($config['hosts'])) continue;
-
 			// To determine the current environment, we'll simply spin through
 			// the possible environments and look for a host that matches a
 			// host in the request context, then return that environment.
-			foreach ($config['hosts'] as $host)
+			foreach ($hosts as $host)
 			{
 				if ($host === $base)
 				{
-					return $this->loadEnvironment($environments, $environment);
+					return $this['env'] = $environment;
 				}
 			}
 		}
 
-		return $this->loadEnvironment($environments);
-	}
-
-	/**
-	 * Load the given environment configuration.
-	 *
-	 * @param  array   $environment
-	 * @param  string  $environment
-	 * @return void
-	 */
-	protected function loadEnvironment(array $environments, $environment = null)
-	{
-		$merge = array();
-
-		$yaml = $this['yaml.parser'];
-
-		// First, if an environment is being loaded besides the default, we will load
-		// the configuration for that environment. This allows the easy cascading
-		// of configuration options from environments to the default options.
-		if ( ! is_null($environment))
-		{
-			$file = $environments[$environment]['config'];
-
-			$merge = $yaml->parse(file_get_contents($file));
-		}
-
-		// Once we have the environment configuration, we will load the default file
-		// and merge it with the environments. Then we'll set each option on the
-		// application instance so they can be easily accessed via the code.
-		$file = $environments['default']['config'];
-
-		$base = $yaml->parse(file_get_contents($file));
-
-		foreach (array_dot(array_merge($base, $merge)) as $key => $value)
-		{
-			$this[$key] = $value;
-		}
+		return $this['env'] = 'default';
 	}
 
 	/**
