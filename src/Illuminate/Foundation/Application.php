@@ -122,20 +122,26 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Get the root URL for the application.
+	 * Hnadles the given request and delivers the response.
 	 *
-	 * @return string
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return void
 	 */
-	public function getRootUrl()
+	public function run(Request $request = null)
 	{
-		if ( ! isset($this['request']))
+		// If not request is given, we'll simply create one from PHP's global
+		// variables and send it into the handle method, which will create
+		// a Response that we can now send back to the client's browser.
+		if (is_null($request))
 		{
-			throw new \RuntimeException("Accessing request outside of context.");
+			$request = Request::createFromGlobals();
 		}
 
-		$r = $this['request'];
+		$response = $this->handle($request);
 
-		return $r->getScheme().'://'.$r->getHttpHost().$r->getBasePath();
+		$response->send();
+
+		$this->terminate($request, $response);
 	}
 
 	/**
