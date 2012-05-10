@@ -11,6 +11,9 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$response = $app->redirect_to_route('bar');
 		$this->assertEquals('/foo', $response->getTargetUrl());
 		$this->assertEquals(302, $response->getStatusCode());
+		$response = $app->redirect_to_bar();
+		$this->assertEquals('/foo', $response->getTargetUrl());
+		$this->assertEquals(302, $response->getStatusCode());
 	}
 
 

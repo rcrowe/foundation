@@ -42,3 +42,15 @@ function route($route)
 {
 	return app()->url_generator->generate($route);
 }
+
+/**
+ * Determine if a string starts with a given needle.
+ *
+ * @param  string  $haystack
+ * @param  string  $needle
+ * @return bool
+ */
+function starts_with($haystack, $needle)
+{
+	return strpos($haystack, $needle) === 0;
+}

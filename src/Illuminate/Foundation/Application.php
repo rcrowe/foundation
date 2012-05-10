@@ -205,4 +205,21 @@ class Application extends \Silex\Application implements ArrayAccess {
 		$this[$key] = $value;
 	}
 
+	/**
+	 * Dynamically handle application method calls.
+	 *
+	 * @param  string  $method
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
+	public function __call($method, $parameters)
+	{
+		if (starts_with($method, 'redirect_to_'))
+		{
+			return $this->redirect_to_route(substr($method, 12));
+		}
+
+		throw new \BadMethodCallExcpeption("Call to undefined method {$method}.");
+	}
+
 }
