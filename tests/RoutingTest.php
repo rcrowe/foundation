@@ -111,4 +111,12 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 		$this->assertEquals(0, count($thirdMiddlewares));
 	}
 
+
+	public function testPoundSignShortcut()
+	{
+		$app = new Application;
+		$controller = $app->get('foo/{#:bar}', function() {});
+		$this->assertEquals('\\d+', $controller->getRoute()->getRequirement('bar'));
+	}
+
 }

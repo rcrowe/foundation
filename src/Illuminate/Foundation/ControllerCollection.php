@@ -31,7 +31,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 * @var array
 	 */
 	public $patterns = array(
-		'#' => '\d+',
+		'#:' => '\d+',
 	);
 
 	/**
@@ -159,7 +159,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 
 		$pattern = str_replace('{id}', '{#id}', $pattern);
 
-		preg_match_all('/\{(#)(.+)\}/', $pattern, $matches);
+		preg_match_all('/\{(#:)(.+)\}/', $pattern, $matches);
 
 		// Once we have an array of all of the matches, we can simple trim off
 		// the short-cut operator and add an assert with the proper regular
