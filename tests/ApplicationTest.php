@@ -32,4 +32,15 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertTrue($application === $mount->getApplication());
 	}
 
+
+	public function testEnvironmenetDetection()
+	{
+		$app = new Application;
+		$app['request_context']->setBaseUrl('localhost.dev');
+		$env = $app->detectEnvironment(array('local' => array('localhost.dev', 'localhost')));
+		$this->assertEquals('local', $env);
+		$app['request_context']->setBaseUrl('foo.bar');
+		$this->assertEquals('default', $app->detectEnvironment(array()));
+	}
+
 }

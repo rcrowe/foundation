@@ -40,6 +40,33 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Detect the application's current.
+	 *
+	 * @param  array   $environments
+	 * @return string
+	 */
+	public function detectEnvironment(array $environments)
+	{
+		$base = $this['request_context']->getHost();
+
+		foreach ($environments as $environment => $hosts)
+		{
+			// To determine the current environment, we'll simply spin through
+			// the possible environments and look for a host that matches a
+			// host in the request context, then return that environment.
+			foreach ($hosts as $host)
+			{
+				if ($host === $base)
+				{
+					return $environment;
+				}
+			}
+		}
+		
+		return 'default';
+	} 
+
+	/**
 	 * Register the root route for the application.
 	 *
 	 * @param  mixed             $to
