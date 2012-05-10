@@ -47,25 +47,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Maps a request URI to a Closure.
-	 *
-	 * @param  string            $pattern
-	 * @param  mixed             $to
-	 * @return Silex\Controller
-	 */
-	public function match($pattern, $to)
-	{
-		$controller = parent::match($pattern, $to);
-
-		if (is_array($to) and isset($to['on']))
-		{
-			$controller->method(strtoupper($to['on']));
-		}
-
-		return $controller;
-	}
-
-	/**
 	 * Register a route group with shared attributes.
 	 *
 	 * @param  array    $attributes

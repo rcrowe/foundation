@@ -126,6 +126,14 @@ class ControllerCollection extends \Silex\ControllerCollection {
 			}
 		}
 
+		// The "on" key in the array is a short cut for setting the methods
+		// the route should be available for. Multiple HTTP methods may
+		// be specified by using the bar character as a delimiter.
+		if (isset($to['on']))
+		{
+			$controller->method(strtoupper($to['on']));
+		}
+
 		// Once the controller short-cuts have been registered we'll finish
 		// up by registering the asserts about the parameters as well as
 		// registering any model converters/binders for the controller.
