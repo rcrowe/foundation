@@ -25,8 +25,8 @@ class ModelBindingTest extends Illuminate\Foundation\TestCase {
 	public function testMultiBinderRegistration()
 	{
 		$this->app->modelBinders(array('user' => 'foo', 'order' => 'bar'));
-		$this->assertEquals('foo', $this->app->binders['user']);
-		$this->assertEquals('bar', $this->app->binders['order']);
+		$this->assertEquals('foo', $this->app['controllers']->binders['user']);
+		$this->assertEquals('bar', $this->app['controllers']->binders['order']);
 	}
 
 
