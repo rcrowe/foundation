@@ -72,9 +72,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 				}
 			}
 		}
-		
+
 		return $this->loadEnvironment($environments);
-	} 
+	}
 
 	/**
 	 * Load the given environment configuration.
