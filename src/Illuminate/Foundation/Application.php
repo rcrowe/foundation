@@ -83,7 +83,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  string  $environment
 	 * @return void
 	 */
-	public function loadEnvironment(array $environments, $environment = null)
+	protected function loadEnvironment(array $environments, $environment = null)
 	{
 		$merge = array();
 
@@ -106,7 +106,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$base = $yaml->parse(file_get_contents($file));
 
-		foreach (array_merge($base, $merge) as $key => $value)
+		foreach (array_dot(array_merge($base, $merge)) as $key => $value)
 		{
 			$this[$key] = $value;
 		}

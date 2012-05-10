@@ -24,6 +24,32 @@ function route($route, $parameters = array(), $absolute = false)
 }
 
 /**
+ * Flatten a multi-dimensional associative array with dots.
+ *
+ * @param  array   $array
+ * @param  string  $prepend
+ * @return array
+ */
+function array_dot($array, $prepend = '')
+{
+	$results = array();
+
+	foreach ($array as $key => $value)
+	{
+		if (is_array($value))
+		{
+			$results = array_merge($results, array_dot($value, $prepend.$key.'.'));
+		}
+		else
+		{
+			$results[$prepend.$key] = $value;
+		}
+	}
+
+	return $results;
+}
+
+/**
  * Determine if a string starts with a given needle.
  *
  * @param  string  $haystack

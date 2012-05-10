@@ -1,2 +1,4 @@
-session.foo: apc
-dev.name: taylor
+session:
+  foo: apc
+dev:
+  name: taylor

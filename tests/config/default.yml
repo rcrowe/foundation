@@ -1,2 +1,3 @@
-session.foo: file
-session.bar: cookie
+session:
+  foo: file
+  bar: cookie
