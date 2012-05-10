@@ -35,21 +35,32 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	);
 
 	/**
-	 * The Illuminate container instance.
+	 * The Illuminate application instance.
 	 *
-	 * @var Illuminate\Container\Container
+	 * @var Illuminate\Foudnation\Application
 	 */
-	protected $container;
+	protected $application;
 
 	/**
 	 * Create a new Illuminate controller collection.
 	 *
-	 * @param  Illuminate\Container\Container  $container
+	 * @param  Illuminate\Foundation\Application  $application
 	 * return  void
 	 */
-	public function __construct($container)
+	public function __construct($application)
 	{
-		$this->container = $container;
+		$this->application = $application;
+	}
+
+	/**
+	 * Register the root route for the application.
+	 *
+	 * @param  mixed             $to
+	 * @return Silex\Controller
+	 */
+	public function root($to)
+	{
+		return $this->get('/', $to);
 	}
 
 	/**
@@ -198,7 +209,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 */
 	protected function customBinder($controller, $wildcard, $binder)
 	{
-		$container = $this->container;
+		$container = $this->application->container;
 
 		$controller->convert($wildcard, function($id, $request) use ($container, $binder)
 		{
@@ -224,11 +235,11 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 * @param  Closure                 $callback
 	 * @return void
 	 */
-	public function group(Application $application, array $attributes, Closure $callback)
+	public function group(array $attributes, Closure $callback)
 	{
 		$this->grouped[] = $attributes;
 
-		$callback($application);
+		$callback($this->application);
 
 		array_pop($this->grouped);
 	}

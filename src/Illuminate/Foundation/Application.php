@@ -31,7 +31,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$this['controllers'] = $this->share(function() use ($app)
 		{
-			return new ControllerCollection($app->container);
+			return new ControllerCollection($app);
 		});
 	}
 
@@ -43,7 +43,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function root($to)
 	{
-		return $this->get('/', $to);
+		return $this['controllers']->root($to);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function group(array $attributes, Closure $callback)
 	{
-		return $this['controllers']->group($this, $attributes, $callback);
+		return $this['controllers']->group($attributes, $callback);
 	}
 
 	/**
