@@ -11,11 +11,13 @@ class LightSwitch {
 	{
 		// Since we'll be using Underscore.php in a procedural style to
 		// avoid E_STRICT errors, we'll force the file to be loaded
-		// here since Composer won't be resolving it lazily.
+		// here since Composer will not be resolving it lazily.
 		if ( ! class_exists('__'))
 		{
 			spl_autoload_call('__');
 		}
+
+		require_once __DIR__.'/Helpers.php';
 
 		// We will go ahead and create the Illuminate application since
 		// no constructor arguments are needed and we want to put it
