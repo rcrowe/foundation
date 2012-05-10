@@ -45,7 +45,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  array   $environments
 	 * @return string
 	 */
-	public function registerEnvironment(array $environments)
+	public function detectEnvironment(array $environments)
 	{
 		$base = $this['request_context']->getHost();
 

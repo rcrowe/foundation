@@ -37,14 +37,14 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 	{
 		$app = new Application;
 		$app['request_context']->setHost('foo');
-		$app->registerEnvironment(array(
+		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('default', $app['env']);
 
 		$app = new Application;
 		$app['request_context']->setHost('localhost');
-		$app->registerEnvironment(array(
+		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('local', $app['env']);
