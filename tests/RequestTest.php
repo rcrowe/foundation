@@ -20,6 +20,20 @@ class RequestTest extends Illuminate\Foundation\TestCase {
 	}
 
 
+	public function testOnlyMethod()
+	{
+		$request = Request::create('/', 'GET', array('name' => 'Taylor', 'age' => 25));
+		$this->assertEquals(array('age' => 25), $request->only('age'));
+	}
+
+
+	public function testExceptMethod()
+	{
+		$request = Request::create('/', 'GET', array('name' => 'Taylor', 'age' => 25));
+		$this->assertEquals(array('name' => 'Taylor'), $request->except('age'));
+	}
+
+
 	public function testQueryMethod()
 	{
 		$request = Request::create('/', 'GET', array('name' => 'Taylor'));

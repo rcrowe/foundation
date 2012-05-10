@@ -10,7 +10,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function has($key)
 	{
-		return trim((string) $this->get($key)) !== '';
+		return trim((string) $this->input($key)) !== '';
 	}
 
 	/**
@@ -22,7 +22,49 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function input($key = null, $default = null)
 	{
-		return $this->get($key, $default);
+		$input = $this->request->all();
+
+		// If the key is null, we'll merge the request input with the query string
+		// and return the entire array. This makes it convenient to get all of
+		// the input for the entire Request from both of the input sources.
+		if (is_null($key))
+		{
+			return array_merge($input, $this->query());
+		}
+
+		$value = isset($input[$key]) ? $input[$key] : null;
+
+		// If the value is null, we'll try to pull it from the query values then
+		// return the default value if it doesn't exist. This allows query to
+		// fallback in place of the input for the current request instance.
+		if (is_null($value))
+		{
+			return $this->query($key, $default);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get a subset of the items from the input data.
+	 *
+	 * @param  array  $keys
+	 * @return array
+	 */
+	public function only($keys)
+	{
+		return array_intersect_key($this->input(), array_flip((array) $keys));
+	}
+
+	/**
+	 * Get all of the input except for a specified array of items.
+	 *
+	 * @param  array  $keys
+	 * @return array
+	 */
+	public function except($keys)
+	{
+		return array_diff_key($this->input(), array_flip((array) $keys));
 	}
 
 	/**
