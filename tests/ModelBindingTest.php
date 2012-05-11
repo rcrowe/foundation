@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Foundation\Application;
+
 class ModelBindingTest extends Illuminate\Foundation\TestCase {
 
 	public function testClosureModelBinder()
@@ -32,7 +34,7 @@ class ModelBindingTest extends Illuminate\Foundation\TestCase {
 
 	public function createApplication()
 	{
-		$app = parent::createApplication();
+		$app = new Application;
 		$app['ioc'] = new ModelBindingTestIoCStub;
 		return $app;
 	}

@@ -3,7 +3,7 @@
 class TestCase extends \Silex\WebTestCase {
 
 	/**
-	 * Setup the testing environment.
+	 * Setup the test environment.
 	 *
 	 * @return void
 	 */
@@ -21,11 +21,7 @@ class TestCase extends \Silex\WebTestCase {
 	 */
 	public function createApplication()
 	{
-		$application = new Application;
-
-		$application['debug'] = true;
-
-		return $application;
+		//
 	}
 
 }

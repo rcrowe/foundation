@@ -25,7 +25,7 @@ class LightSwitch {
 
 		// We will go ahead and create the Illuminate application since there
 		// are no constructor arguments that are needed adn we want to put
-		// it in the $GLOBALS array to allow for some nice functions.
+		// it into the $GLOBALS array to allow for some nicer functions.
 		$application = new Application;
 
 		set_app($application);
