@@ -162,6 +162,55 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Register a binding with the container.
+	 *
+	 * @param  string               $abstract
+	 * @param  Closure|string|null  $concrete
+	 * @param  bool                 $shared
+	 * @return void
+	 */
+	public function bind($abstract, $concrete = null, $shared = false)
+	{
+		return $this->container->bind($abstract, $concrete, $shared);
+	}
+
+	/**
+	 * Register a shared binding in the container.
+	 *
+	 * @param  string               $abstract
+	 * @param  Closure|string|null  $concrete
+	 * @return void
+	 */
+	public function sharedBinding($abstract, $concrete = null)
+	{
+		return $this->container->sharedBinding($abstract, $concrete);
+	}
+
+	/**
+	 * Register an existing instance as shared in the container.
+	 *
+	 * @param  string  $abstract
+	 * @param  mixed   $instance
+	 * @return void
+	 */
+	public function instance($abstract, $instance)
+	{
+		return $this->container->instance($abstract, $instance);
+	}
+
+	/**
+	 * Alias a type to a shorter name.
+	 *
+	 * @param  string  $abstract
+	 * @param  string  $alias
+	 * @return void
+	 */
+	public function alias($abstract, $alias)
+	{
+		return $this->container->alias($abstract, $value);
+	}
+
+	/**
 	 * Determine if a value exists by offset.
 	 *
 	 * @param  string  $key
