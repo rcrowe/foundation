@@ -2,6 +2,7 @@
 
 use Closure;
 use ArrayAccess;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -36,6 +37,14 @@ class Application extends \Silex\Application implements ArrayAccess {
 		$this['controllers'] = $this->share(function() use ($app)
 		{
 			return new ControllerCollection($app);
+		});
+
+		// The Illuminate event dispatcher provides a simpler, yet powerful way
+		// to build de-coupled systems using events, including queueing and
+		// flushing events. We'll go ahead and register a shared object.
+		$this['events'] = $this->share(function() use ($app)
+		{
+			return new Dispatcher;
 		});
 	}
 
