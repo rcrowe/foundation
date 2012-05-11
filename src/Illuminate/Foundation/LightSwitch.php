@@ -21,7 +21,7 @@ class LightSwitch {
 
 		Helpers::register();
 
-		require_once __DIR__.'/Support/functions.php';
+		require_once __DIR__.'/functions.php';
 
 		// We will go ahead and create the Illuminate application since there
 		// are no constructor arguments that are needed adn we want to put

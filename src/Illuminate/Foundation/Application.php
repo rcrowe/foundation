@@ -79,6 +79,22 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Generate a RedirectResponse to another URL.
+	 *
+	 * @param  string   $url
+	 * @param  int      $status
+	 * @return Illuminate\RedirectResponse
+	 */
+	public function redirect($url, $status = 302)
+	{
+		$redirect = new RedirectResponse($url, $status);
+
+		// @todo: set session instance on redirect to allow for "with" methods...
+
+		return $redirect;
+	}
+
+	/**
 	 * Create a redirect response to a named route.
 	 *
 	 * @param  string  $route
