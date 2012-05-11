@@ -53,7 +53,7 @@ class ModelBindingTestIoCStub {
 
 }
 
-class ModelBindingTestBinderStub implements Illuminate\Foundation\IModelBinder {
+class ModelBindingTestBinderStub implements Illuminate\Foundation\ModelBinderInterface {
 
 	public function resolveBinding($id, Symfony\Component\HttpFoundation\Request $request)
 	{

@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-interface IModelBinder {
+interface ModelBinderInterface {
 
 	/**
 	 * Resolve a route model binding by ID.

@@ -8,18 +8,18 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 	{
 		$app = new Application;
 		$app->get('foo', function() {})->bind('bar');
-		$response = $app->redirect_to_route('bar');
+		$response = $app->redirectToRoute('bar');
 		$this->assertEquals('/foo', $response->getTargetUrl());
 		$this->assertEquals(302, $response->getStatusCode());
-		$response = $app->redirect_to_bar();
+		$response = $app->redirectToBar();
 		$this->assertEquals('/foo', $response->getTargetUrl());
 		$this->assertEquals(302, $response->getStatusCode());
 
 		$app->get('baz/{name}', function() {})->bind('boom');
 		$app->flush();
-		$response = $app->redirect_to_route('boom', array('name' => 'taylor'));
+		$response = $app->redirectToRoute('boom', array('name' => 'taylor'));
 		$this->assertEquals('/baz/taylor', $response->getTargetUrl());
-		$response = $app->redirect_to_boom(array('name' => 'taylor'));
+		$response = $app->redirectToBoom(array('name' => 'taylor'));
 		$this->assertEquals('/baz/taylor', $response->getTargetUrl());
 	}
 

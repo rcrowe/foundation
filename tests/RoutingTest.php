@@ -4,14 +4,6 @@ use Illuminate\Foundation\Application;
 
 class RoutingTest extends Illuminate\Foundation\TestCase {
 
-	public function testRootRouting()
-	{
-		$app = new Application;
-		$controller = $app->root(function() {});
-		$this->assertEquals('/', $controller->getRoute()->getPattern());
-	}
-
-
 	public function testAutoSlashes()
 	{
 		$app = new Application;

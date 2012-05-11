@@ -53,17 +53,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	}
 
 	/**
-	 * Register the root route for the application.
-	 *
-	 * @param  mixed             $to
-	 * @return Silex\Controller
-	 */
-	public function root($to)
-	{
-		return $this->get('/', $to);
-	}
-
-	/**
 	 * Register a route with the application.
 	 *
 	 * @param  string            $pattern
@@ -198,7 +187,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 
 				// If the binder isn't a Closure, we'll assume it is a custom model
 				// binder and register a special binder that will resolve the
-				// IModelBinder for the type to convert the given value.
+				// ModelBinder for the type to convert the given value.
 				else
 				{
 					$this->customBinder($controller, $wildcard, $binder);
@@ -223,12 +212,12 @@ class ControllerCollection extends \Silex\ControllerCollection {
 		{
 			$resolver = $container->make($binder);
 
-			// The IModelBinder interface defines a simple contract that specifies
+			// The ModelBinder interface defines a simple contract that specifies
 			// the class can retrieve a model instance by the given ID. All of
 			// the binders must implement this interface or we'll bail out.
-			if ( ! $resolver instanceof IModelBinder)
+			if ( ! $resolver instanceof ModelBinderInterface)
 			{
-				throw new \RuntimeException("Model binders must implement IModelBinder.");
+				throw new \RuntimeException("Model binders must implement ModelBinder.");
 			}
 
 			return $resolver->resolveBinding($id, $request);

@@ -1,6 +1,6 @@
 <?php
 
-class HelpersTest extends Illuminate\Foundation\TestCase {
+class FunctionsTest extends Illuminate\Foundation\TestCase {
 
 	public function testRouteHelper()
 	{
@@ -12,14 +12,6 @@ class HelpersTest extends Illuminate\Foundation\TestCase {
 		$app->flush();
 		$this->assertEquals('/bar/taylor', route('zoom', array('baz' => 'taylor')));
 		unset($GLOBALS['__illuminate.app']);
-	}
-
-
-	public function testArrayDot()
-	{
-		Illuminate\Foundation\LightSwitch::flip();
-		$array = array_dot(array('name' => 'taylor', 'languages' => array('php' => true)));
-		$this->assertEquals($array, array('name' => 'taylor', 'languages.php' => true));
 	}
 
 }

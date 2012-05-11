@@ -67,17 +67,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Register the root route for the application.
-	 *
-	 * @param  mixed             $to
-	 * @return Silex\Controller
-	 */
-	public function root($to)
-	{
-		return $this['controllers']->root($to);
-	}
-
-	/**
 	 * Register a route group with shared attributes.
 	 *
 	 * @param  array    $attributes
@@ -97,7 +86,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  int     $status
 	 * @return Symfony\Component\HttpFoundation\RedirectResponse
 	 */
-	public function redirect_to_route($route, $parameters = array(), $status = 302)
+	public function redirectToRoute($route, $parameters = array(), $status = 302)
 	{
 		$url = $this['url_generator']->generate($route, $parameters);
 
@@ -249,14 +238,14 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function __call($method, $parameters)
 	{
-		if (starts_with($method, 'redirect_to_'))
+		if (starts_with($method, 'redirectTo'))
 		{
-			array_unshift($parameters, substr($method, 12));
+			array_unshift($parameters, strtolower(substr($method, 10)));
 
-			return call_user_func_array(array($this, 'redirect_to_route'), $parameters);
+			return call_user_func_array(array($this, 'redirectToRoute'), $parameters);
 		}
 
-		throw new \BadMethodCallExcpeption("Call to undefined method {$method}.");
+		throw new \BadMethodCallException("Call to undefined method {$method}.");
 	}
 
 }
