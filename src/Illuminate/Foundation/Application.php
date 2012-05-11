@@ -56,7 +56,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 			// host in the request context, then return that environment.
 			foreach ($hosts as $host)
 			{
-				if ($host === $base)
+				if (str_is($base, $host))
 				{
 					return $this['env'] = $environment;
 				}
