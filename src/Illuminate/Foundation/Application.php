@@ -42,7 +42,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 		// The Illuminate event dispatcher provides a simpler, yet powerful way
 		// to build de-coupled systems using events, including queueing and
 		// flushing events. We'll go ahead and register a shared object.
-		$this['events'] = $this->share(function() use ($app)
+		$this['events'] = $this->share(function()
 		{
 			return new Dispatcher;
 		});
