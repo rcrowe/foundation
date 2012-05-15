@@ -2,6 +2,7 @@
 
 use Closure;
 use ArrayAccess;
+use Illuminate\Filesystem;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -45,6 +46,14 @@ class Application extends \Silex\Application implements ArrayAccess {
 		$this['events'] = $this->share(function()
 		{
 			return new Dispatcher;
+		});
+
+		// The Illuminate file system provides a nice abstraction over the file
+		// system, which makes testing code that gets or puts files on disk
+		// much easier, since the file systems can easily be mocked out.
+		$this['files'] = $this->share(function()
+		{
+			return new Filesystem;
 		});
 	}
 
