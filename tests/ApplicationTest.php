@@ -50,20 +50,4 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertEquals('local', $app['env']);
 	}
 
-
-	public function testEventManagerIsRegistered()
-	{
-		$app = new Application;
-		$this->assertTrue(isset($app['events']));
-		$this->assertInstanceOf('Illuminate\Events\Dispatcher', $app['events']);
-	}
-
-
-	public function testFilesystemIsRegistered()
-	{
-		$app = new Application;
-		$this->assertTrue(isset($app['files']));
-		$this->assertInstanceof('Illuminate\Filesystem', $app['files']);
-	}
-
 }

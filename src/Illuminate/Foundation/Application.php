@@ -39,22 +39,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 		{
 			return new ControllerCollection($app);
 		});
-
-		// The Illuminate event dispatcher provides a simpler, yet powerful way
-		// to build de-coupled systems using events, including queueing and
-		// flushing events. We'll go ahead and register a shared object.
-		$this['events'] = $this->share(function()
-		{
-			return new Dispatcher;
-		});
-
-		// The Illuminate file system provides a nice abstraction over the file
-		// system, which makes testing code that gets or puts files on disk
-		// much easier, since the file systems can easily be mocked out.
-		$this['files'] = $this->share(function()
-		{
-			return new Filesystem;
-		});
 	}
 
 	/**
