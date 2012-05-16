@@ -1,6 +1,5 @@
 <?php namespace Illuminate\Foundation;
 
-use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 class BaseServiceProvider implements ServiceProviderInterface {
@@ -11,14 +10,14 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 * @param  Silex\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register(\Silex\Application $app)
 	{
 		// The Illuminate file system provides a nice abstraction over the file
 		// system, which makes testing code that gets or puts files on disk
 		// much easier, since the file systems can easily be mocked out.
 		$app['files'] = $app->share(function()
 		{
-			return new Illuminate\Filesystem;
+			return new \Illuminate\Filesystem;
 		});
 
 		// The Illuminate event dispatcher provides a simpler, yet powerful way
@@ -26,7 +25,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		// flushing events. We'll go ahead and register a shared object.
 		$app['events'] = $app->share(function()
 		{
-			return new Illuminate\Events\Dispatcher;
+			return new \Illuminate\Events\Dispatcher;
 		});
 
 		// The Illuminate encrypter service provides a nice, convenient wrapper
@@ -39,7 +38,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		{
 			$key = $app['encrypter.key'];
 
-			return new Illuminate\Encrypter(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC, $key);
+			return new \Illuminate\Encrypter(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC, $key);
 		});
 
 		// The Illuminate session library provides a variety of simple, clean
@@ -47,7 +46,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		// use the light Cookie driver for convenience and simplicity.
 		$app['session'] = $app->share(function() use ($app)
 		{
-			return new Illuminate\Session\CookieStore($app['encrypter']);
+			return new \Illuminate\Session\CookieStore($app['encrypter']);
 		});
 	}
 
