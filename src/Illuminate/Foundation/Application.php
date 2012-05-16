@@ -2,8 +2,6 @@
 
 use Closure;
 use ArrayAccess;
-use Illuminate\Filesystem;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
