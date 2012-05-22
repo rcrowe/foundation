@@ -276,7 +276,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 * @param  Closure  $middleware
 	 * @return void
 	 */
-	public function middleware($name, Closure $middleware)
+	public function addMiddleware($name, Closure $middleware)
 	{
 		$this->middlewares[$name] = $middleware;
 	}

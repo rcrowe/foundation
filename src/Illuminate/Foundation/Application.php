@@ -144,15 +144,15 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Register a middleware with the application.
+	 * Register a named middleware with the application.
 	 *
 	 * @param  string   $name
 	 * @param  Closure  $middleware
 	 * @return void
 	 */
-	public function middleware($name, Closure $middleware)
+	public function addMiddleware($name, Closure $middleware)
 	{
-		return $this['controllers']->middleware($name, $middleware);
+		return $this['controllers']->addMiddleware($name, $middleware);
 	}
 
 	/**

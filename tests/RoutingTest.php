@@ -57,7 +57,7 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 	public function testMiddlewareShortcut()
 	{
 		$app = new Application;
-		$app->middleware('auth', function() { return 'auth!'; });
+		$app->addMiddleware('auth', function() { return 'auth!'; });
 		$controller = $app->get('something', array('before' => 'auth', function() {}));
 		$middlewares = $controller->getRoute()->getOption('_middlewares');
 		$this->assertEquals('auth!', $middlewares[0]());
@@ -67,8 +67,8 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 	public function testMultiMiddlewareShortcut()
 	{
 		$app = new Application;
-		$app->middleware('foo', function() { return 'foo!'; });
-		$app->middleware('bar', function() { return 'bar!'; });
+		$app->addMiddleware('foo', function() { return 'foo!'; });
+		$app->addMiddleware('bar', function() { return 'bar!'; });
 		$controller = $app->get('something', array('before' => 'foo|bar', function() {}));
 		$middlewares = $controller->getRoute()->getOption('_middlewares');
 		$this->assertEquals('foo!', $middlewares[0]());
@@ -87,7 +87,7 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 	public function testRouteGrouping()
 	{
 		$app = new Application;
-		$app->middleware('auth', function() { return 'foo!'; });
+		$app->addMiddleware('auth', function() { return 'foo!'; });
 		$app->group(array('before' => 'auth'), function($app)
 		{
 			$app->get('foo', function() {});
