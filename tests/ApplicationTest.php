@@ -50,4 +50,11 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertEquals('local', $app['env']);
 	}
 
+
+	public function testCookieCreatorRegistered()
+	{
+		$app = new Application;
+		$this->assertTrue(isset($app['cookie']));
+	}
+
 }
