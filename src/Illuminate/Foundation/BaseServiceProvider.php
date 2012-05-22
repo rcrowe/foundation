@@ -46,7 +46,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		// use the light Cookie driver for convenience and simplicity.
 		$app['session'] = $app->share(function() use ($app)
 		{
-			return new \Illuminate\Session\CookieStore($app['encrypter']);
+			return new \Illuminate\Session\CookieStore($app['encrypter'], $app['cookie']);
 		});
 	}
 
