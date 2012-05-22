@@ -24,7 +24,7 @@ class LightSwitch {
 		require_once __DIR__.'/functions.php';
 
 		// We will go ahead and create the Illuminate application since there
-		// are no constructor arguments that are needed adn we want to put
+		// are no constructor arguments that are needed and we want to put
 		// it into the $GLOBALS array to allow for some nicer functions.
 		$application = new Application;
 
