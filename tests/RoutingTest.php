@@ -59,7 +59,7 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 		$app = new Application;
 		$app->middleware('auth', function() { return 'auth!'; });
 		$controller = $app->get('something', array('before' => 'auth', function() {}));
-		$middlewares = $controller->getRoute()->getDefault('_middlewares');
+		$middlewares = $controller->getRoute()->getOption('_middlewares');
 		$this->assertEquals('auth!', $middlewares[0]());
 	}
 
@@ -70,7 +70,7 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 		$app->middleware('foo', function() { return 'foo!'; });
 		$app->middleware('bar', function() { return 'bar!'; });
 		$controller = $app->get('something', array('before' => 'foo|bar', function() {}));
-		$middlewares = $controller->getRoute()->getDefault('_middlewares');
+		$middlewares = $controller->getRoute()->getOption('_middlewares');
 		$this->assertEquals('foo!', $middlewares[0]());
 		$this->assertEquals('bar!', $middlewares[1]());	
 	}
@@ -95,11 +95,11 @@ class RoutingTest extends Illuminate\Foundation\TestCase {
 			$app->get('baz', array('before' => null, function() {}));
 		});
 		$routes = array_values($app['controllers']->flush()->all());
-		$firstMiddlewares = $routes[0]->getDefault('_middlewares');
+		$firstMiddlewares = $routes[0]->getOption('_middlewares');
 		$this->assertEquals('foo!', $firstMiddlewares[0]());
-		$secondMiddlewares = $routes[1]->getDefault('_middlewares');
+		$secondMiddlewares = $routes[1]->getOption('_middlewares');
 		$this->assertEquals('foo!', $secondMiddlewares[0]());
-		$thirdMiddlewares = $routes[2]->getDefault('_middlewares');
+		$thirdMiddlewares = $routes[2]->getOption('_middlewares');
 		$this->assertEquals(0, count($thirdMiddlewares));
 	}
 
