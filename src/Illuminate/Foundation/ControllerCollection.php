@@ -49,6 +49,8 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 */
 	public function __construct($application)
 	{
+		parent::__construct();
+
 		$this->application = $application;
 	}
 
