@@ -16,8 +16,8 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		$services = array('Events', 'Encrypter', 'Files', 'Session');
 
 		// To register the services we'll simply spin through the array of them and
-		// call the registrar function for each service, which will just return
-		// a Closure that we can register with the application IoC container.
+		// call the registrar function for each service, which will simply return
+		// a Closure that we can register with the application's IoC container.
 		foreach ($services as $service)
 		{
 			$resolver = $this->{"register{$service}"}($app);
@@ -82,6 +82,30 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		};
+
+		$this->registerSessionEvents($app);
+	}
+
+	/**
+	 * Register the needed before and after events for sessions.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return void
+	 */
+	protected function registerSessionEvents($app)
+	{
+		// The session needs to be started and closed, so we will register a
+		// before and after event to do just that for us. This will manage
+		// loading the session payload, as well as writing the sessions.
+		$app->before(function($request) use ($app)
+		{
+			$app['session']->start($request);
+		});
+
+		$app->after(function($request, $response) use ($app)
+		{
+			$app['session']->finish($response, $app['cookie']);
+		});
 	}
 
 }
