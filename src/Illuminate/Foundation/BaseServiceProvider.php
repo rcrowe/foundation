@@ -41,6 +41,8 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		// application will have the same settings so this just DRYs it up.
 		return function() use ($app)
 		{
+			$options = $app['cookie.options'];
+
 			extract($app['cookie.options']);
 
 			return new Cookie($path, $domain, $secure, $httpOnly);
