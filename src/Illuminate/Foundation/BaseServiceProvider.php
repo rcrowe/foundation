@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation;
 
+use Illuminate\CookieCreator;
 use Silex\ServiceProviderInterface;
 use Illuminate\Session\CookieStore;
 
@@ -45,7 +46,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 
 			extract($app['cookie.options']);
 
-			return new Cookie($path, $domain, $secure, $httpOnly);
+			return new CookieCreator($path, $domain, $secure, $httpOnly);
 		};
 	}
 
