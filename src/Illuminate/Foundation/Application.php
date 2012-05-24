@@ -2,7 +2,6 @@
 
 use Closure;
 use ArrayAccess;
-use Illuminate\Cookie;
 use Illuminate\Container\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -37,16 +36,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 		$this['controllers'] = $this->share(function() use ($app)
 		{
 			return new ControllerCollection($app);
-		});
-
-		// The Illuminate cookie creator is just a convenient way to make cookies
-		// that share a given set of options. Typically cookies created by the
-		// application will have the same settings so this just DRYs it up.
-		$this['cookie'] = $this->share(function() use ($app)
-		{
-			extract($app['cookie.options']);
-
-			return new Cookie($path, $domain, $secure, $httpOnly);
 		});
 	}
 

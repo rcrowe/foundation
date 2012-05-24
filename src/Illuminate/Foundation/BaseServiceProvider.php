@@ -13,7 +13,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
-		$services = array('Events', 'Encrypter', 'Files', 'Session');
+		$services = array('Cookie', 'Events', 'Encrypter', 'Files', 'Session');
 
 		// To register the services we'll simply spin through the array of them and
 		// call the registrar function for each service, which will simply return
@@ -24,6 +24,37 @@ class BaseServiceProvider implements ServiceProviderInterface {
 
 			$app[strtolower($service)] = $app->share($resolver);
 		}
+	}
+
+	/**
+	 * Register the Illuminate cookie service.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return Closure
+	 */
+	protected function registerCookie($app)
+	{
+		$app['cookie.options'] = $this->cookieDefaults();
+
+		// The Illuminate cookie creator is just a convenient way to make cookies
+		// that share a given set of options. Typically cookies created by the
+		// application will have the same settings so this just DRYs it up.
+		return function() use ($app)
+		{
+			extract($app['cookie.options']);
+
+			return new Cookie($path, $domain, $secure, $httpOnly);
+		};
+	}
+
+	/**
+	 * Get the default cookie options.
+	 *
+	 * @return array
+	 */
+	protected function cookieDefaults()
+	{
+		return array('path' => '/', 'domain' => null, 'secure' => false, 'httpOnly' => true);
 	}
 
 	/**
