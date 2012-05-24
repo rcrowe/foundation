@@ -112,12 +112,12 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 */
 	protected function registerSession($app)
 	{
+		$this->registerSessionEvents($app);
+
 		return function() use ($app)
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		};
-
-		$this->registerSessionEvents($app);
 	}
 
 	/**
