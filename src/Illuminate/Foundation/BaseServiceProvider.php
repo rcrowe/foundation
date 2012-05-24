@@ -44,7 +44,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		{
 			$options = $app['cookie.options'];
 
-			extract($app['cookie.options']);
+			extract($options);
 
 			return new CookieCreator($path, $domain, $secure, $httpOnly);
 		};
