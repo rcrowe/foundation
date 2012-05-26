@@ -14,7 +14,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
-		$services = array('Cookie', 'Events', 'Encrypter', 'Files', 'Session');
+		$services = array('Auth', 'Cookie', 'Events', 'Encrypter', 'Files', 'Session');
 
 		// To register the services we'll simply spin through the array of them and
 		// call the registrar function for each service, which will simply return
@@ -25,6 +25,58 @@ class BaseServiceProvider implements ServiceProviderInterface {
 
 			$app[strtolower($service)] = $app->share($resolver);
 		}
+	}
+
+	/**
+	 * Register the Illuminate authentication service.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return Closure
+	 */
+	protected function registerAuth($app)
+	{
+		$this->registerAuthEvents($app);
+
+		return function() use ($app)
+		{
+			$app['auth.loaded'] = true;
+
+			if ( ! isset($app['auth.provider']))
+			{
+				throw new \RuntimeException("Auth service requires [auth.provider].");
+			}
+
+			$provider = $app['auth.provider'];
+
+			$guard = new Guard($provider, $app['session'], $app['cookie'], $app['request']);
+
+			$guard->setEncrypter($app['encrypter']);
+
+			return $guard;
+		};
+	}
+
+	/**
+	 * Register the events needed for authentication.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return void
+	 */
+	protected function registerAuthEvents($app)
+	{
+		$app->after(function($request, $response) use ($app)
+		{
+			// If the authentication service has been used, we'll check for any cookies
+			// that may be queued by the service. These cookies are all queued until
+			// they are attached to a Response object at the end of the requests.
+			if ($app['auth.loaded'])
+			{
+				foreach ($app['auth']->getQueuedCookies() as $cookie)
+				{
+					$response->headers->setCookie($cookie);
+				}
+			}
+		});
 	}
 
 	/**
