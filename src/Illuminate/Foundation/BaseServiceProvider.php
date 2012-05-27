@@ -92,7 +92,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 			// If the authentication service has been used, we'll check for any cookies
 			// that may be queued by the service. These cookies are all queued until
 			// they are attached to a Response object at the end of the requests.
-			if ($app['auth.loaded'])
+			if (isset($app['auth.loaded']))
 			{
 				foreach ($app['auth']->getQueuedCookies() as $cookie)
 				{
