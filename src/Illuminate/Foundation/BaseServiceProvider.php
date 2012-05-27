@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation;
 
+use Illuminate\Auth\Guard;
 use Illuminate\CookieCreator;
 use Silex\ServiceProviderInterface;
 use Illuminate\Session\CookieStore;
@@ -39,17 +40,28 @@ class BaseServiceProvider implements ServiceProviderInterface {
 
 		return function() use ($app)
 		{
+			// Once the authentication service has actually been requested by the developer
+			// we will set a variable in the application indicating such. This helps us
+			// know that we need to set any queued cookies in the after event later.
 			$app['auth.loaded'] = true;
 
 			if ( ! isset($app['auth.provider']))
 			{
-				throw new \RuntimeException("Auth service requires [auth.provider].");
+				throw new \RuntimeException("Auth service requires provider.");
 			}
 
+			// The user provider is responsible for actually fetching the user information
+			// out of whatever storage mechanism the developer is using and giving the
+			// user back to the guard. This interface abstracts the user retrieval.
 			$provider = $app['auth.provider'];
 
-			$guard = new Guard($provider, $app['session'], $app['cookie'], $app['request']);
+			$guard = new Guard($provider, $app['session'], $app['request']);
 
+			$guard->setCookieCreator($app['cookie']);
+
+			// When using the remember me functionality of the authentication services we
+			// will need to be set the encryption isntance of the guard, which allows
+			// secure, encrypted cookie values to be generated for those cookies.
 			$guard->setEncrypter($app['encrypter']);
 
 			return $guard;
