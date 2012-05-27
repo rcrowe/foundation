@@ -8,6 +8,17 @@ use Illuminate\Session\CookieStore;
 class BaseServiceProvider implements ServiceProviderInterface {
 
 	/**
+	 * Bootstraps the application.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return void
+	 */
+	public function boot(\Silex\Application $app)
+	{
+		//
+	}
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @param  Silex\Application  $app
