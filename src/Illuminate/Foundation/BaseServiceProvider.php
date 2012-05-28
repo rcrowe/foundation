@@ -33,7 +33,7 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
-		$this->registerSilexServices();
+		$this->registerSilexServices($app);
 
 		// To register the services we'll simply spin through the array of them and
 		// call the registrar function for each service, which will simply return
