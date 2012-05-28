@@ -5,7 +5,7 @@ use Illuminate\CookieCreator;
 use Silex\ServiceProviderInterface;
 use Illuminate\Session\CookieStore;
 
-class BaseServiceProvider implements ServiceProviderInterface {
+class CoreServiceProvider implements ServiceProviderInterface {
 
 	/**
 	 * All of the Illuminate sessions to register.
