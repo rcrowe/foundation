@@ -2,7 +2,7 @@
 
 use Closure;
 use ArrayAccess;
-use Illuminate\Container\Container;
+use Illuminate\Container;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
