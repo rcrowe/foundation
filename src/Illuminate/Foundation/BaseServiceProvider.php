@@ -8,6 +8,13 @@ use Illuminate\Session\CookieStore;
 class BaseServiceProvider implements ServiceProviderInterface {
 
 	/**
+	 * All of the Illuminate sessions to register.
+	 *
+	 * @var array
+	 */
+	protected $services = array('Auth', 'Cookie', 'Events', 'Encrypter', 'Files', 'Session');
+
+	/**
 	 * Bootstraps the application.
 	 *
 	 * @param  Silex\Application  $app
@@ -26,12 +33,12 @@ class BaseServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
-		$services = array('Auth', 'Cookie', 'Events', 'Encrypter', 'Files', 'Session');
+		$this->registerSilexServices();
 
 		// To register the services we'll simply spin through the array of them and
 		// call the registrar function for each service, which will simply return
 		// a Closure that we can register with the application's IoC container.
-		foreach ($services as $service)
+		foreach ($this->services as $service)
 		{
 			$resolver = $this->{"register{$service}"}($app);
 
@@ -215,6 +222,19 @@ class BaseServiceProvider implements ServiceProviderInterface {
 		{
 			$app['session']->finish($response, $app['cookie']);
 		});
+	}
+
+	/**
+	 * Register the needed Silex core services.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return void
+	 */
+	protected function registerSilexServices($app)
+	{
+		$app->register(new \Silex\Provider\UrlGeneratorServiceProvider);
+
+		$app->register(new \Silex\Provider\TwigServiceProvider);
 	}
 
 }

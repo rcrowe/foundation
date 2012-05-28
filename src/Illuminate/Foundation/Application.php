@@ -28,11 +28,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$app = $this;
 
-		// We will register the URL service provider by default as this is quite
-		// commonly used when building any non-trivial application and named
-		// routes are very useful for keeping codes flexible and simple.
-		$this->register(new UrlGeneratorServiceProvider);
-
 		$this['controllers'] = $this->share(function() use ($app)
 		{
 			return new ControllerCollection($app);

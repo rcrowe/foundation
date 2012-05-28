@@ -7,6 +7,7 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 	public function testRouteRedirect()
 	{
 		$app = new Application;
+		$app->register(new Silex\Provider\UrlGeneratorServiceProvider);
 		$app->get('foo', function() {})->bind('bar');
 		$response = $app->redirectToRoute('bar');
 		$this->assertEquals('/foo', $response->getTargetUrl());
