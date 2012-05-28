@@ -22,6 +22,8 @@
         "illuminate/support": ">=1.0.0",
         "underscore/Underscore.php": ">=1.0.0",
         "silex/silex": ">=1.0.0",
+        "symfony/translation": "2.*",
+        "symfony/twig-bridge": "2.*",
         "twig/twig": "1.*"
     },
     "autoload": {

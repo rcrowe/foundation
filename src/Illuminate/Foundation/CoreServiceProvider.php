@@ -22,7 +22,18 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	 */
 	public function boot(\Silex\Application $app)
 	{
-		//
+		// The session needs to be started and closed, so we will register a
+		// before and after event to do just that for us. This will manage
+		// loading the session payload, as well as writing the sessions.
+		$app->before(function($request) use ($app)
+		{
+			$app['session']->start($request);
+		});
+
+		$app->after(function($request, $response) use ($app)
+		{
+			$app['session']->finish($response, $app['cookie']);
+		});
 	}
 
 	/**
@@ -194,34 +205,10 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	 */
 	protected function registerSession($app)
 	{
-		$this->registerSessionEvents($app);
-
 		return function() use ($app)
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		};
-	}
-
-	/**
-	 * Register the needed before and after events for sessions.
-	 *
-	 * @param  Silex\Application  $app
-	 * @return void
-	 */
-	protected function registerSessionEvents($app)
-	{
-		// The session needs to be started and closed, so we will register a
-		// before and after event to do just that for us. This will manage
-		// loading the session payload, as well as writing the sessions.
-		$app->before(function($request) use ($app)
-		{
-			$app['session']->start($request);
-		});
-
-		$app->after(function($request, $response) use ($app)
-		{
-			$app['session']->finish($response, $app['cookie']);
-		});
 	}
 
 	/**
@@ -233,6 +220,8 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	protected function registerSilexServices($app)
 	{
 		$app->register(new \Silex\Provider\UrlGeneratorServiceProvider);
+
+		$app->register(new \Silex\Provider\TranslationServiceProvider);
 
 		$app->register(new \Silex\Provider\TwigServiceProvider);
 	}
