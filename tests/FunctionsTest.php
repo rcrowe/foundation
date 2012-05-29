@@ -15,4 +15,13 @@ class FunctionsTest extends Illuminate\Foundation\TestCase {
 		unset($GLOBALS['__illuminate.app']);
 	}
 
+
+	public function testTranslationHelpers()
+	{
+		$app = Illuminate\Foundation\LightSwitch::flip();
+		$app['translator'] = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
+		$app['translator']->expects($this->once())->method('trans')->with($this->equalTo('message.key'), $this->equalTo(array('foo' => 'bar')), $this->equalTo('domain'), $this->equalTo('locale'));
+		trans('message.key', array('foo' => 'bar'), 'domain', 'locale');
+	}
+
 }

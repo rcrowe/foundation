@@ -15,25 +15,16 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	protected $services = array('Auth', 'Cookie', 'Events', 'Encrypter', 'Files', 'Session');
 
 	/**
-	 * Bootstraps the application.
+	 * Bootstrap the application events.
 	 *
 	 * @param  Silex\Application  $app
 	 * @return void
 	 */
 	public function boot(\Silex\Application $app)
 	{
-		// The session needs to be started and closed, so we will register a
-		// before and after event to do just that for us. This will manage
-		// loading the session payload, as well as writing the sessions.
-		$app->before(function($request) use ($app)
-		{
-			$app['session']->start($request);
-		});
+		$this->registerSessionEvents($app);
 
-		$app->after(function($request, $response) use ($app)
-		{
-			$app['session']->finish($response, $app['cookie']);
-		});
+		$this->registerAuthEvents($app);
 	}
 
 	/**
@@ -209,6 +200,28 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		};
+	}
+
+	/**
+	 * Register the events needed for session management.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return void
+	 */
+	protected function registerSessionEvents($app)
+	{
+		// The session needs to be started and closed, so we will register a
+		// before and after event to do just that for us. This will manage
+		// loading the session payload, as well as writing the sessions.
+		$app->before(function($request) use ($app)
+		{
+			$app['session']->start($request);
+		});
+
+		$app->after(function($request, $response) use ($app)
+		{
+			$app['session']->finish($response, $app['cookie']);
+		});
 	}
 
 	/**
