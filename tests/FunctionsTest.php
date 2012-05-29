@@ -22,6 +22,9 @@ class FunctionsTest extends Illuminate\Foundation\TestCase {
 		$app['translator'] = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
 		$app['translator']->expects($this->once())->method('trans')->with($this->equalTo('message.key'), $this->equalTo(array('foo' => 'bar')), $this->equalTo('domain'), $this->equalTo('locale'));
 		trans('message.key', array('foo' => 'bar'), 'domain', 'locale');
+
+		$app['translator']->expects($this->once())->method('transChoice')->with($this->equalTo('message.key'), $this->equalTo(1), $this->equalTo(array('foo' => 'bar')), $this->equalTo('domain'), $this->equalTo('locale'));
+		transChoice('message.key', 1, array('foo' => 'bar'), 'domain', 'locale');
 	}
 
 }
