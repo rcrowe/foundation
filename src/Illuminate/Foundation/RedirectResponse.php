@@ -12,17 +12,6 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
 	protected $session;
 
 	/**
-	 * Set the session store implementation.
-	 *
-	 * @param  Illuminate\Session\Store  $store
-	 * @return void
-	 */
-	public function setSession(SessionStore $session)
-	{
-		$this->session = $session;
-	}
-
-	/**
 	 * Write a piece of data to the session.
 	 *
 	 * @param  string  $key
@@ -34,6 +23,27 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
 		$this->session->put($key, $value);
 
 		return $this;
+	}
+
+	/**
+	 * Get the session store implementation.
+	 *
+	 * @return Illuminate\Session\Store
+	 */
+	public function getSession()
+	{
+		return $this->session;
+	}
+
+	/**
+	 * Set the session store implementation.
+	 *
+	 * @param  Illuminate\Session\Store  $store
+	 * @return void
+	 */
+	public function setSession(SessionStore $session)
+	{
+		$this->session = $session;
 	}
 
 }

@@ -124,9 +124,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		$redirect = new RedirectResponse($url, $status);
 
-		if (isset($app['session']))
+		if (isset($this['session']))
 		{
-			$redirect->setSession($app['session']);
+			$redirect->setSession($this['session']);
 		}
 
 		return $redirect;
