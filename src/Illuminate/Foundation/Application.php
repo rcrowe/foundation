@@ -144,7 +144,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		$url = $this['url_generator']->generate($route, $parameters);
 
-		return parent::redirect($url, $status);
+		return $this->redirect($url, $status);
 	}
 
 	/**

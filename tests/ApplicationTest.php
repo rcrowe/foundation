@@ -1,8 +1,15 @@
 <?php
 
+use Mockery as m;
 use Illuminate\Foundation\Application;
 
 class ApplicationTest extends Illuminate\Foundation\TestCase {
+
+	public function tearDown()
+	{
+		m::close();
+	}
+
 
 	public function testRouteRedirect()
 	{
@@ -49,6 +56,21 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('local', $app['env']);
+	}
+
+
+	public function testAuthMiddlewareIsRegistered()
+	{
+		$app = new Application;
+		$app['auth'] = m::mock('Illuminate\Auth\Guard');
+		$app['auth']->shouldReceive('isGuest')->once()->andReturn(true);
+		$app['url_generator'] = m::mock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
+		$app['url_generator']->shouldReceive('generate')->andReturn('foo');
+		$middleware = $app->getMiddleware('auth');
+		$this->assertTrue($middleware instanceof Closure);
+		$response = $middleware();
+		$this->assertTrue($response instanceof Illuminate\Foundation\RedirectResponse);
+		$this->assertEquals('foo', $response->getTargetUrl());
 	}
 
 }

@@ -25,6 +25,9 @@
         "silex/silex": ">=1.0.0",
         "symfony/translation": "2.*"
     },
+    "require-dev": {
+        "mockery/mockery": "0.7.*"
+    },
     "autoload": {
         "psr-0": {"Illuminate\\Foundation": "src/"}
     }
