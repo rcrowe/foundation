@@ -114,4 +114,15 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertInstanceOf('Illuminate\Session\Store', $redirect->getSession());
 	}
 
+
+	public function testRedirectWithSetsSessiosValue()
+	{
+		$app = new Application;
+		$app['session'] = m::mock('Illuminate\Session\Store');
+		$app['session']->shouldReceive('put')->once()->with('foo', 'bar');
+		$redirect = $app->redirect('boom');
+		$return = $redirect->with('foo', 'bar');
+		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
+	}
+
 }
