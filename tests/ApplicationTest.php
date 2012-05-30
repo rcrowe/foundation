@@ -71,6 +71,12 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$response = $middleware();
 		$this->assertTrue($response instanceof Illuminate\Foundation\RedirectResponse);
 		$this->assertEquals('foo', $response->getTargetUrl());
+
+		$app = new Application;
+		$app['auth'] = m::mock('Illuminate\Auth\Guard');
+		$app['auth']->shouldReceive('isGuest')->once()->andReturn(false);
+		$middleware = $app->getMiddleware('auth');
+		$this->assertNull($middleware());
 	}
 
 }
