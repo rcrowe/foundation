@@ -3,6 +3,7 @@
 use Closure;
 use ArrayAccess;
 use Illuminate\Container;
+use Illuminate\Session\TokenMismatchException;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -28,9 +29,48 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$app = $this;
 
+		// Illuminate extends the default controller collection to add an array
+		// of additional functionality and short-cuts to the class, so we'll
+		// override the default registration in the container with ours.
 		$this['controllers'] = $this->share(function() use ($app)
 		{
 			return new ControllerCollection($app);
+		});
+
+		$this->addCoreMiddlewares();
+	}
+
+	/**
+	 * Register the core middlewares for the application.
+	 *
+	 * @return void
+	 */
+	protected function addCoreMiddlewares()
+	{
+		$app = $this;
+
+		// The "auth" middleware provides a convenient way to verify that a given
+		// user is logged into the application. If they are not, we will just
+		// redirect the users to the "login" named route as a convenience.
+		$this->addMiddleware('auth', function() use ($app)
+		{
+			if ($app['auth']->isGuest())
+			{
+				return $app->redirectToRoute('login');
+			}
+		});
+
+		// The "csrf" middleware provides a simple middleware for checking that a
+		// CSRF token in the request inputs matches the CSRF token stored for
+		// the user in the session data. If it doesn't, we will bail out.
+		$this->addMiddleware('csrf', function() use ($app)
+		{
+			$token = $app['session']->getToken();
+
+			if ($token !== $app['request']->get('csrf_token'))
+			{
+				throw new TokenMismatchException;
+			}
 		});
 	}
 
@@ -84,7 +124,10 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		$redirect = new RedirectResponse($url, $status);
 
-		// @todo: set session instance on redirect to allow for "with" methods...
+		if (isset($app['session']))
+		{
+			$redirect->setSession($app['session']);
+		}
 
 		return $redirect;
 	}
@@ -137,6 +180,17 @@ class Application extends \Silex\Application implements ArrayAccess {
 	public function addMiddleware($name, Closure $middleware)
 	{
 		return $this['controllers']->addMiddleware($name, $middleware);
+	}
+
+	/**
+	 * Get a given middleware Closure.
+	 *
+	 * @param  string   $name
+	 * @return Closure
+	 */
+	public function getMiddleware($name)
+	{
+		return $this['controllers']->getMiddleware($name);
 	}
 
 	/**

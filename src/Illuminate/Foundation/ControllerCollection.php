@@ -282,6 +282,20 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	}
 
 	/**
+	 * Get a given middleware Closure.
+	 *
+	 * @param  string   $name
+	 * @return Closure
+	 */
+	public function getMiddleware($name)
+	{
+		if (isset($this->middlewares[$name]))
+		{
+			return $this->middlewares[$name];
+		}
+	}
+
+	/**
 	 * Get the Illuminate application instance.
 	 *
 	 * @return Illuminate\Application
