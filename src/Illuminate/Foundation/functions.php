@@ -22,6 +22,25 @@ function set_app($application)
 }
 
 /**
+ * Get the CSRF token value.
+ *
+ * @return string
+ */
+function csrf_token()
+{
+	$app = app();
+
+	if (isset($app['session']))
+	{
+		return $app['session']->getToken();
+	}
+	else
+	{
+		throw new RuntimeException("Application session store not set.");
+	}
+}
+
+/**
  * Generate a URL to a named route.
  *
  * @param  string  $route

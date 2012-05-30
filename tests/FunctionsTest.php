@@ -27,4 +27,13 @@ class FunctionsTest extends Illuminate\Foundation\TestCase {
 		transChoice('message.key', 1, array('foo' => 'bar'), 'domain', 'locale');
 	}
 
+
+	public function testCsrfToken()
+	{
+		$app = Illuminate\Foundation\LightSwitch::flip();
+		$app['session'] = $this->getMock('Illuminate\Session\TokenProvider');
+		$app['session']->expects($this->once())->method('getToken')->will($this->returnValue('foo'));
+		$this->assertEquals('foo', csrf_token());
+	}
+
 }
