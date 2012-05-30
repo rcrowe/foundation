@@ -140,7 +140,14 @@ class CoreServiceProvider implements ServiceProviderInterface {
 
 			$cache = $app['blade.cache'];
 
-			return new BladeLoader(new BladeCompiler, new Filesystem, $path, $cache);
+			$blade = new BladeLoader(new BladeCompiler, new Filesystem, $path, $cache);
+
+			// We will set the application instance as a shared piece of data within the
+			// Blade factory so it gets passed to every template that is rendered for
+			// convenience. This allows access to the request, input, session, etc.
+			$blade->share('app', $app);
+
+			return $blade;
 		});
 
 		return function() use ($app)
