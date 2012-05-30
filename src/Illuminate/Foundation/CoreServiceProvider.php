@@ -1,9 +1,13 @@
 <?php namespace Illuminate\Foundation;
 
 use Illuminate\Auth\Guard;
+use Illuminate\Filesystem;
 use Illuminate\CookieCreator;
 use Silex\ServiceProviderInterface;
 use Illuminate\Session\CookieStore;
+use Illuminate\Blade\Loader as BladeLoader;
+use Illuminate\Blade\Factory as BladeFactory;
+use Illuminate\Blade\Compiler as BladeCompiler;
 
 class CoreServiceProvider implements ServiceProviderInterface {
 
@@ -12,7 +16,15 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	 *
 	 * @var array
 	 */
-	protected $services = array('Auth', 'Cookie', 'Events', 'Encrypter', 'Files', 'Session');
+	protected $services = array(
+		'Auth',
+		'Blade',
+		'Cookie',
+		'Events',
+		'Encrypter',
+		'Files',
+		'Session'
+	);
 
 	/**
 	 * Bootstrap the application events.
@@ -109,6 +121,32 @@ class CoreServiceProvider implements ServiceProviderInterface {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Register the Illuminate Blade templating engine.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return Closure
+	 */
+	protected function registerBlade($app)
+	{
+		$app['blade.loader'] = $app->share(function() use ($app)
+		{
+			// We'll create a Blade loader instance with the path and cache paths set on
+			// the application. The loader is responsible for actually returning the
+			// fully qualified paths to the blade views to the factory instance.
+			$path = $app['blade.path'];
+
+			$cache = $app['blade.cache'];
+
+			return new BladeLoader(new BladeCompiler, new Filesystem, $path, $cache);
+		});
+
+		return function() use ($app)
+		{
+			return new BladeFactory($app['blade.loader']);
+		};
 	}
 
 	/**
@@ -235,8 +273,6 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		$app->register(new \Silex\Provider\UrlGeneratorServiceProvider);
 
 		$app->register(new \Silex\Provider\TranslationServiceProvider);
-
-		$app->register(new \Silex\Provider\TwigServiceProvider);
 	}
 
 }
