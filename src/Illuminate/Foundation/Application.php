@@ -227,6 +227,18 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Get a value from the input parameter bag.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return mixed
+	 */
+	public function input($key, $default = null)
+	{
+		return $this['request']->get($key, $default);
+	}
+
+	/**
 	 * Register a binding with the container.
 	 *
 	 * @param  string               $abstract
