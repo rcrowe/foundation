@@ -125,4 +125,14 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
 	}
 
+
+	public function testPrepareRequestInjectsSession()
+	{
+		$app = new Application;
+		$request = Illuminate\Foundation\Request::create('/', 'GET');
+		$app['session'] = m::mock('Illuminate\Session\Store');
+		$app->prepareRequest($request);
+		$this->assertEquals($app['session'], $request->getSession());
+	}
+
 }

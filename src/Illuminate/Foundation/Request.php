@@ -1,6 +1,15 @@
 <?php namespace Illuminate\Foundation;
 
+use Illuminate\Session\Store as SessionStore;
+
 class Request extends \Symfony\Component\HttpFoundation\Request {
+
+	/**
+	 * The Illuminate session store implementation.
+	 *
+	 * @var Illuminate\Session\Store
+	 */
+	protected $session;
 
 	/**
 	 * Determine if the request contains a given input item.
@@ -43,6 +52,18 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Retrieve an old input item.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return string
+	 */
+	public function old($key = null, $default = null)
+	{
+		return $this->getSession()->getOldInput($key, $default);
 	}
 
 	/**
@@ -153,6 +174,32 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	public function getRootUrl()
 	{
 		return $this->getScheme().'://'.$this->getHttpHost().$this->getBasePath();
+	}
+
+	/**
+	 * Get the Illuminate session store implementation.
+	 *
+	 * @return Illuminate\Session\Store
+	 */
+	public function getSession()
+	{
+		if ( ! isset($this->session))
+		{
+			throw new \RuntimeException("Session store not set on request.");
+		}
+
+		return $this->session;
+	}
+
+	/**
+	 * Set the Illuminate session store implementation.
+	 *
+	 * @param  Illuminate\Session\Store  $session
+	 * @return void
+	 */
+	public function setSession(SessionStore $session)
+	{
+		$this->session = $session;
 	}
 
 }

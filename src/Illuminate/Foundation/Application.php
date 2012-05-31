@@ -219,11 +219,32 @@ class Application extends \Silex\Application implements ArrayAccess {
 			$request = Request::createFromGlobals();
 		}
 
+		// Once we have a request object, we will attempt to set the session
+		// on the request so that the old input data may be retrieved by
+		// the developer via the session through very simple methods.
+		$this->prepareRequest($request);
+
 		$response = $this->handle($request);
 
 		$response->send();
 
 		$this->terminate($request, $response);
+	}
+
+	/**
+	 * Prepare the request by injecting any services.
+	 *
+	 * @param  Symfony\Component\HttpFoundation\Request
+	 * @return Symfony\Component\HttpFoundation\Request
+	 */
+	public function prepareRequest(SymfonyRequest $request)
+	{
+		if (isset($this['session']))
+		{
+			$request->setSession($this['session']);
+		}
+
+		return $request;
 	}
 
 	/**

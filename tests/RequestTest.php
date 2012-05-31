@@ -1,8 +1,15 @@
 <?php
 
+use Mockery as m;
 use Illuminate\Foundation\Request;
 
 class RequestTest extends Illuminate\Foundation\TestCase {
+
+	public function tearDown()
+	{
+		m::close();
+	}
+
 
 	public function testHasMethod()
 	{
@@ -78,6 +85,16 @@ class RequestTest extends Illuminate\Foundation\TestCase {
 		$request = Request::create('/', 'GET', array(), array(), array(), array(), json_encode(array('taylor' => 'name')));
 		$json = $request->json();
 		$this->assertEquals('name', $json->taylor);
+	}
+
+
+	public function testOldMethodCallsSession()
+	{
+		$request = Request::create('/', 'GET');
+		$session = m::mock('Illuminate\Session\Store');
+		$session->shouldReceive('getOldInput')->once()->with('foo', 'bar')->andReturn('boom');
+		$request->setSession($session);
+		$this->assertEquals('boom', $request->old('foo', 'bar'));
 	}
 
 }
