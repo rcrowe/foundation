@@ -125,12 +125,4 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
 	}
 
-
-	public function testInputReturnsRequestInput()
-	{
-		$app = new Application;
-		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('foo' => 'bar'));
-		$this->assertEquals('bar', $app->input('foo'));
-	}
-
 }
