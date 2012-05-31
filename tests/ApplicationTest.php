@@ -126,6 +126,17 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 	}
 
 
+	public function testRedirectWithInputFlashesToSession()
+	{
+		$app = new Application;
+		$app['session'] = m::mock('Illuminate\Session\Store');
+		$app['session']->shouldReceive('flashInput')->once()->with(array('foo' => 'bar'));
+		$redirect = $app->redirect('boom');
+		$return = $redirect->withInput(array('foo'=> 'bar'));
+		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
+	}
+
+
 	public function testPrepareRequestInjectsSession()
 	{
 		$app = new Application;

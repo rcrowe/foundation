@@ -12,7 +12,7 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
 	protected $session;
 
 	/**
-	 * Write a piece of data to the session.
+	 * Flash a piece of data to the session.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $value
@@ -21,6 +21,19 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
 	public function with($key, $value)
 	{
 		$this->session->put($key, $value);
+
+		return $this;
+	}
+
+	/**
+	 * Flash an array of input to the session.
+	 *
+	 * @param  array  $input
+	 * @return void
+	 */
+	public function withInput(array $input)
+	{
+		$this->session->flashInput($input);
 
 		return $this;
 	}
