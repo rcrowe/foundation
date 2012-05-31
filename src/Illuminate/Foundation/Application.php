@@ -241,7 +241,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		if (isset($this['session']))
 		{
-			$request->setSession($this['session']);
+			$request->setSessionStore($this['session']);
 		}
 
 		return $request;

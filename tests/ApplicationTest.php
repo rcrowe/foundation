@@ -132,7 +132,7 @@ class ApplicationTest extends Illuminate\Foundation\TestCase {
 		$request = Illuminate\Foundation\Request::create('/', 'GET');
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app->prepareRequest($request);
-		$this->assertEquals($app['session'], $request->getSession());
+		$this->assertEquals($app['session'], $request->getSessionStore());
 	}
 
 }

@@ -63,7 +63,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function old($key = null, $default = null)
 	{
-		return $this->getSession()->getOldInput($key, $default);
+		return $this->getSessionStore()->getOldInput($key, $default);
 	}
 
 	/**
@@ -181,7 +181,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 *
 	 * @return Illuminate\Session\Store
 	 */
-	public function getSession()
+	public function getSessionStore()
 	{
 		if ( ! isset($this->session))
 		{
@@ -197,7 +197,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * @param  Illuminate\Session\Store  $session
 	 * @return void
 	 */
-	public function setSession(SessionStore $session)
+	public function setSessionStore(SessionStore $session)
 	{
 		$this->session = $session;
 	}

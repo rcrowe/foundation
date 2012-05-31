@@ -93,7 +93,7 @@ class RequestTest extends Illuminate\Foundation\TestCase {
 		$request = Request::create('/', 'GET');
 		$session = m::mock('Illuminate\Session\Store');
 		$session->shouldReceive('getOldInput')->once()->with('foo', 'bar')->andReturn('boom');
-		$request->setSession($session);
+		$request->setSessionStore($session);
 		$this->assertEquals('boom', $request->old('foo', 'bar'));
 	}
 
