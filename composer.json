@@ -24,6 +24,8 @@
         "illuminate/validation": ">=1.0.0",
         "underscore/Underscore.php": ">=1.0.0",
         "silex/silex": ">=1.0.0",
+        "symfony/browser-kit": "2.*",
+        "symfony/css-selector": "2.*",
         "symfony/translation": "2.*"
     },
     "require-dev": {
