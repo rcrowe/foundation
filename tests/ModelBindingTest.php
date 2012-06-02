@@ -13,7 +13,7 @@ class ModelBindingTest extends Silex\WebTestCase {
 
 	public function testClosureModelBinder()
 	{
-		$this->app->modelBinder('user', function($id) { return $id.'!'; });
+		$this->app->addModelBinder('user', function($id) { return $id.'!'; });
 		$this->app->get('something/{user}', function($user) { return $user; });
 		$client = $this->createClient();
 		$crawler = $client->request('GET', '/something/taylor');
@@ -23,7 +23,7 @@ class ModelBindingTest extends Silex\WebTestCase {
 
 	public function testCustomModelBinder()
 	{
-		$this->app->modelBinder('user', 'ModelBindingTestBinderStub');
+		$this->app->addModelBinder('user', 'ModelBindingTestBinderStub');
 		$this->app->get('something/{user}', function($user) { return $user; });
 		$client = $this->createClient();
 		$crawler = $client->request('GET', '/something/taylor');
@@ -33,7 +33,7 @@ class ModelBindingTest extends Silex\WebTestCase {
 
 	public function testMultiBinderRegistration()
 	{
-		$this->app->modelBinders(array('user' => 'foo', 'order' => 'bar'));
+		$this->app->addModelBinders(array('user' => 'foo', 'order' => 'bar'));
 		$this->assertEquals('foo', $this->app['controllers']->binders['user']);
 		$this->assertEquals('bar', $this->app['controllers']->binders['order']);
 	}

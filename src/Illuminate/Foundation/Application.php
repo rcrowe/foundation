@@ -154,7 +154,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  mixed                   $binder
 	 * @return Illuminate\Application
 	 */
-	public function modelBinder($wildcard, $binder)
+	public function addModelBinder($wildcard, $binder)
 	{
 		return $this['controllers']->modelBinder($wildcard, $binder);
 	}
@@ -165,7 +165,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  array  $binders
 	 * @return void
 	 */
-	public function modelBinders(array $binders)
+	public function addModelBinders(array $binders)
 	{
 		return $this['controllers']->modelBinders($binders);
 	}
