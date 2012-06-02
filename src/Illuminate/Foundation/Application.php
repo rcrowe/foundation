@@ -373,7 +373,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function __call($method, $parameters)
 	{
-		if (starts_with($method, 'redirectTo'))
+		if (strpos($method, 'redirectTo') === 0)
 		{
 			array_unshift($parameters, strtolower(substr($method, 10)));
 
