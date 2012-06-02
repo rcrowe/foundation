@@ -8,6 +8,7 @@ use Illuminate\Session\CookieStore;
 use Illuminate\Blade\Loader as BladeLoader;
 use Illuminate\Blade\Factory as BladeFactory;
 use Illuminate\Blade\Compiler as BladeCompiler;
+use Illuminate\Validation\Factory as ValidationFactory;
 
 class CoreServiceProvider implements ServiceProviderInterface {
 
@@ -23,7 +24,8 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		'Events',
 		'Encrypter',
 		'Files',
-		'Session'
+		'Session',
+		'Validator',
 	);
 
 	/**
@@ -246,6 +248,24 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		return function() use ($app)
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
+		};
+	}
+
+	/**
+	 * Register the Illuminate validation service.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return Closure
+	 */
+	protected function registerValidator($app)
+	{
+		return function() use ($app)
+		{
+			$validator = new ValidationFactory($app['translator']);
+
+			$validator->setPresenceVerifier($app['validation.presence']);
+
+			return $validator;
 		};
 	}
 
