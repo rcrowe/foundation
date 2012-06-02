@@ -263,7 +263,13 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		{
 			$validator = new ValidationFactory($app['translator']);
 
-			$validator->setPresenceVerifier($app['validation.presence']);
+			// The validation presence verifier is responsible for determing the existence
+			// of values in a given data collection, typically a relational database or
+			// other persistent data store. And it is used to check for uniqueness.
+			if (isset($app['validation.presence']))
+			{
+				$validator->setPresenceVerifier($app['validation.presence']);
+			}
 
 			return $validator;
 		};
@@ -278,8 +284,8 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	protected function registerSessionEvents($app)
 	{
 		// The session needs to be started and closed, so we will register a
-		// before and after event to do just that for us. This will manage
-		// loading the session payload, as well as writing the sessions.
+		// before and after event to do all that for us. This will manage
+		// loading the session payload as well as writing the session.
 		$app->before(function($request) use ($app)
 		{
 			$app['session']->start($request);
