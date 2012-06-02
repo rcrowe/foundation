@@ -2,8 +2,15 @@
 
 use Mockery as m;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\LightSwitch;
 
-class ApplicationTest extends Illuminate\Foundation\TestCase {
+class ApplicationTest extends PHPUnit_Framework_TestCase {
+
+	public static function setUpBeforeClass()
+	{
+		LightSwitch::flip();
+	}
+
 
 	public function tearDown()
 	{

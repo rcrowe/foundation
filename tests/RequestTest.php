@@ -3,7 +3,7 @@
 use Mockery as m;
 use Illuminate\Foundation\Request;
 
-class RequestTest extends Illuminate\Foundation\TestCase {
+class RequestTest extends PHPUnit_Framework_TestCase {
 
 	public function tearDown()
 	{

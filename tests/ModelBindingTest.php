@@ -1,8 +1,15 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\LightSwitch;
 
-class ModelBindingTest extends Illuminate\Foundation\TestCase {
+class ModelBindingTest extends Silex\WebTestCase {
+
+	public static function setUpBeforeClass()
+	{
+		LightSwitch::flip();
+	}
+
 
 	public function testClosureModelBinder()
 	{

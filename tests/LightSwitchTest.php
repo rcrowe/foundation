@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\LightSwitch;
 
-class LightSwitchTest extends Illuminate\Foundation\TestCase {
+class LightSwitchTest extends PHPUnit_Framework_TestCase {
 
 	public function testFlipReturnsApplication()
 	{

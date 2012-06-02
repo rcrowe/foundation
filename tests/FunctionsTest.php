@@ -1,10 +1,19 @@
 <?php
 
-class FunctionsTest extends Illuminate\Foundation\TestCase {
+use Illuminate\Foundation\LightSwitch;
+use Illuminate\Foundation\Application;
+
+class FunctionsTest extends PHPUnit_Framework_TestCase {
+
+	public static function setUpBeforeClass()
+	{
+		Illuminate\Foundation\LightSwitch::flip();
+	}
+
 
 	public function testRouteHelper()
 	{
-		$app = Illuminate\Foundation\LightSwitch::flip();
+		set_app($app = new Application);
 		$app->register(new Silex\Provider\UrlGeneratorServiceProvider);
 		$app->get('foo', function() {})->bind('bar');
 		$this->assertEquals('/foo', route('bar'));
@@ -18,7 +27,7 @@ class FunctionsTest extends Illuminate\Foundation\TestCase {
 
 	public function testTranslationHelpers()
 	{
-		$app = Illuminate\Foundation\LightSwitch::flip();
+		set_app($app = new Application);
 		$app['translator'] = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
 		$app['translator']->expects($this->once())->method('trans')->with($this->equalTo('message.key'), $this->equalTo(array('foo' => 'bar')), $this->equalTo('domain'), $this->equalTo('locale'));
 		trans('message.key', array('foo' => 'bar'), 'domain', 'locale');
@@ -30,7 +39,7 @@ class FunctionsTest extends Illuminate\Foundation\TestCase {
 
 	public function testCsrfToken()
 	{
-		$app = Illuminate\Foundation\LightSwitch::flip();
+		set_app($app = new Application);
 		$app['session'] = $this->getMock('Illuminate\Session\TokenProvider');
 		$app['session']->expects($this->once())->method('getToken')->will($this->returnValue('foo'));
 		$this->assertEquals('foo', csrf_token());
