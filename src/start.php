@@ -78,6 +78,27 @@ $app->register(new CoreServiceProvider);
 
 /*
 |--------------------------------------------------------------------------
+| Register The Core Service Provider
+|--------------------------------------------------------------------------
+|
+| The Illuminate core service provider registers all of the core pieces
+| of the Illuminate framework including session, caching, encryption
+| and more. It's simply a convenient wrapper for the registration.
+|
+*/
+
+if (file_exists($path = $appPath.'/start/production.php'))
+{
+	require $path;
+}
+
+if (file_exists($path = $appPath.'/start/'.$app['env'].'.php'))
+{
+	require $path;
+}
+
+/*
+|--------------------------------------------------------------------------
 | Load The Application Routes
 |--------------------------------------------------------------------------
 |
