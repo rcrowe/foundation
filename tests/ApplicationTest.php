@@ -153,4 +153,24 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($app['session'], $request->getSessionStore());
 	}
 
+
+	public function testInputCallsInputOnRequest()
+	{
+		$app = new Application;
+		$request = m::mock('Illuminate\Foundation\Request');
+		$request->shouldReceive('input')->once()->with('foo', 'bar')->andReturn('baz');
+		$app['request'] = $request;
+		$this->assertEquals('baz', $app->input('foo', 'bar'));
+	}
+
+
+	public function testOldCallsOldOnRequest()
+	{
+		$app = new Application;
+		$request = m::mock('Illuminate\Foundation\Request');
+		$request->shouldReceive('old')->once()->with('foo', 'bar')->andReturn('baz');
+		$app['request'] = $request;
+		$this->assertEquals('baz', $app->old('foo', 'bar'));
+	}
+
 }

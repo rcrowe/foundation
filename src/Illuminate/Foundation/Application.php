@@ -114,6 +114,30 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Retrieve an input item from the request.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return string
+	 */
+	public function input($key = null, $default = null)
+	{
+		return $this['request']->input($key, $default);
+	}
+
+	/**
+	 * Retrieve an old input item.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return string
+	 */
+	public function old($key = null, $default = null)
+	{
+		return $this['request']->old($key, $default);
+	}
+
+	/**
 	 * Generate a RedirectResponse to another URL.
 	 *
 	 * @param  string   $url

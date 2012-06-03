@@ -23,6 +23,16 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	}
 
 	/**
+	 * Get all of the input and files for the request.
+	 *
+	 * @return array
+	 */
+	public function allInput()
+	{
+		return array_merge($this->input(), $this->files->all());
+	}
+
+	/**
 	 * Retrieve an input item from the request.
 	 *
 	 * @param  string  $key
