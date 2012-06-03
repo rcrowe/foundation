@@ -78,12 +78,12 @@ $app->register(new CoreServiceProvider);
 
 /*
 |--------------------------------------------------------------------------
-| Register The Core Service Provider
+| Load The Application Start Script
 |--------------------------------------------------------------------------
 |
-| The Illuminate core service provider registers all of the core pieces
-| of the Illuminate framework including session, caching, encryption
-| and more. It's simply a convenient wrapper for the registration.
+| The start script gives us the application the opportunity to override
+| any of the existing IoC bindings, as well as register its own new
+| bindings for things like repositories, etc. We'll load it here.
 |
 */
 
