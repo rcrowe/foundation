@@ -76,6 +76,20 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testSharedMiddlewaresCanBeAdded()
+	{
+		$app = new Application;
+		$app->addMiddleware('foo', function() { return 'foo!'; });
+		$controller1 = $app->get('something', function() {});
+		$controller2 = $app->get('else', function() {});
+		$app['controllers']->shareMiddleware('foo');
+		$middlewares = $controller1->getRoute()->getOption('_middlewares');
+		$this->assertEquals('foo!', $middlewares[0]());
+		$middlewares = $controller2->getRoute()->getOption('_middlewares');
+		$this->assertEquals('foo!', $middlewares[0]());
+	}
+
+
 	public function testNameShortcut()
 	{
 		$app = new Application;

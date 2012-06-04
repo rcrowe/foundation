@@ -270,6 +270,20 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	}
 
 	/**
+	 * Get a given middleware Closure.
+	 *
+	 * @param  string   $name
+	 * @return Closure
+	 */
+	public function getMiddleware($name)
+	{
+		if (isset($this->middlewares[$name]))
+		{
+			return $this->middlewares[$name];
+		}
+	}
+
+	/**
 	 * Register a middleware with the application.
 	 *
 	 * @param  string   $name
@@ -282,16 +296,20 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	}
 
 	/**
-	 * Get a given middleware Closure.
+	 * Add a middleware to every controller in the collection.
 	 *
-	 * @param  string   $name
-	 * @return Closure
+	 * @param  string  $name
+	 * @return void
 	 */
-	public function getMiddleware($name)
+	public function shareMiddleware($name)
 	{
 		if (isset($this->middlewares[$name]))
 		{
-			return $this->middlewares[$name];
+			return parent::middleware($this->middlewares[$name]);
+		}
+		else
+		{
+			throw new \InvalidArgumentException("Middleware [$name] does not exist.");
 		}
 	}
 
