@@ -59,7 +59,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app->addMiddleware('auth', function() { return 'auth!'; });
 		$controller = $app->get('something', array('before' => 'auth', function() {}));
-		$middlewares = $controller->getRoute()->getOption('_middlewares');
+		$middlewares = $controller->getRoute()->getOption('_before_middlewares');
 		$this->assertEquals('auth!', $middlewares[0]());
 	}
 
@@ -70,23 +70,9 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 		$app->addMiddleware('foo', function() { return 'foo!'; });
 		$app->addMiddleware('bar', function() { return 'bar!'; });
 		$controller = $app->get('something', array('before' => 'foo|bar', function() {}));
-		$middlewares = $controller->getRoute()->getOption('_middlewares');
+		$middlewares = $controller->getRoute()->getOption('_before_middlewares');
 		$this->assertEquals('foo!', $middlewares[0]());
 		$this->assertEquals('bar!', $middlewares[1]());	
-	}
-
-
-	public function testSharedMiddlewaresCanBeAdded()
-	{
-		$app = new Application;
-		$app->addMiddleware('foo', function() { return 'foo!'; });
-		$controller1 = $app->get('something', function() {});
-		$controller2 = $app->get('else', function() {});
-		$app['controllers']->shareMiddleware('foo');
-		$middlewares = $controller1->getRoute()->getOption('_middlewares');
-		$this->assertEquals('foo!', $middlewares[0]());
-		$middlewares = $controller2->getRoute()->getOption('_middlewares');
-		$this->assertEquals('foo!', $middlewares[0]());
 	}
 
 
@@ -109,11 +95,11 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 			$app->get('baz', array('before' => null, function() {}));
 		});
 		$routes = array_values($app['controllers']->flush()->all());
-		$firstMiddlewares = $routes[0]->getOption('_middlewares');
+		$firstMiddlewares = $routes[0]->getOption('_before_middlewares');
 		$this->assertEquals('foo!', $firstMiddlewares[0]());
-		$secondMiddlewares = $routes[1]->getOption('_middlewares');
+		$secondMiddlewares = $routes[1]->getOption('_before_middlewares');
 		$this->assertEquals('foo!', $secondMiddlewares[0]());
-		$thirdMiddlewares = $routes[2]->getOption('_middlewares');
+		$thirdMiddlewares = $routes[2]->getOption('_before_middlewares');
 		$this->assertEquals(0, count($thirdMiddlewares));
 	}
 

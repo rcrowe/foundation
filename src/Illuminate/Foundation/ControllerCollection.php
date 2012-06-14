@@ -113,7 +113,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 		{
 			foreach (explode('|', $to['before']) as $m)
 			{
-				$controller->middleware($this->middlewares[$m]);
+				$controller->before($this->middlewares[$m]);
 			}
 		}
 
@@ -293,24 +293,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	public function addMiddleware($name, Closure $middleware)
 	{
 		$this->middlewares[$name] = $middleware;
-	}
-
-	/**
-	 * Add a middleware to every controller in the collection.
-	 *
-	 * @param  string  $name
-	 * @return void
-	 */
-	public function shareMiddleware($name)
-	{
-		if (isset($this->middlewares[$name]))
-		{
-			return parent::middleware($this->middlewares[$name]);
-		}
-		else
-		{
-			throw new \InvalidArgumentException("Middleware [$name] does not exist.");
-		}
 	}
 
 	/**
