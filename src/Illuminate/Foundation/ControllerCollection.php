@@ -49,7 +49,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 */
 	public function __construct($application)
 	{
-		parent::__construct();
+		parent::__construct($application['route_factory']);
 
 		$this->application = $application;
 	}
