@@ -9,7 +9,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 *
 	 * @var Illuminate\Session\Store
 	 */
-	protected $session;
+	protected $sessionStore;
 
 	/**
 	 * Determine if the request contains a given input item.
@@ -193,12 +193,12 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getSessionStore()
 	{
-		if ( ! isset($this->session))
+		if ( ! isset($this->sessionStore))
 		{
 			throw new \RuntimeException("Session store not set on request.");
 		}
 
-		return $this->session;
+		return $this->sessionStore;
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function setSessionStore(SessionStore $session)
 	{
-		$this->session = $session;
+		$this->sessionStore = $session;
 	}
 
 }
