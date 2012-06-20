@@ -26,6 +26,13 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	public $middlewares = array();
 
 	/**
+	 * The pattern based middleware assignments.
+	 *
+	 * @var array
+	 */
+	public $patterned = array();
+
+	/**
 	 * A keyed collection of wildcard assertion short-cuts.
 	 *
 	 * @var array
@@ -114,6 +121,17 @@ class ControllerCollection extends \Silex\ControllerCollection {
 			foreach (explode('|', $to['before']) as $m)
 			{
 				$controller->before($this->middlewares[$m]);
+			}
+		}
+
+		// Next we'll check for any pattern based middlewares that possibly
+		// apply to this route. This allows the developer to easily set
+		// any middleware to apply to all routes having a given URI.
+		foreach ($this->patterned as $key => $value)
+		{
+			if (str_is($key, $pattern))
+			{
+				$controller->before($this->middlewares[$value]);
 			}
 		}
 
@@ -293,6 +311,18 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	public function addMiddleware($name, Closure $middleware)
 	{
 		$this->middlewares[$name] = $middleware;
+	}
+
+	/**
+	 * Assigns a URI pattern to a named middleware.
+	 *
+	 * @param  string   $pattern
+	 * @param  string   $middleware
+	 * @return void
+	 */
+	public function assignMiddleware($pattern, $middleware)
+	{
+		$this->patterned[$pattern] = $middleware;
 	}
 
 	/**
