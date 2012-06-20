@@ -209,13 +209,13 @@ class Application extends \Silex\Application implements ArrayAccess {
 	/**
 	 * Assigns a URI pattern to a named middleware.
 	 *
-	 * @param  string   $pattern
 	 * @param  string   $middleware
+	 * @param  string   $pattern
 	 * @return void
 	 */
-	public function assignMiddleware($pattern, $middleware)
+	public function assignMiddleware($middleware, $pattern)
 	{
-		return $this['controllers']->assignMiddleware($pattern, $middleware);
+		return $this['controllers']->assignMiddleware($middleware, $pattern);
 	}
 
 	/**

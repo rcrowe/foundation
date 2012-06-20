@@ -80,7 +80,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	{
 		$app = new Application;
 		$app->addMiddleware('foo', function() { return 'foo!'; });
-		$app->assignMiddleware('something/*', 'foo');
+		$app->assignMiddleware('foo', 'something/*');
 		$controller = $app->get('something/bar', function() {});
 		$middlewares = $controller->getRoute()->getOption('_before_middlewares');
 		$this->assertEquals('foo!', $middlewares[0]());

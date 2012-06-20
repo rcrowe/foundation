@@ -316,11 +316,11 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	/**
 	 * Assigns a URI pattern to a named middleware.
 	 *
-	 * @param  string   $pattern
 	 * @param  string   $middleware
+	 * @param  string   $pattern
 	 * @return void
 	 */
-	public function assignMiddleware($pattern, $middleware)
+	public function assignMiddleware($middleware, $pattern)
 	{
 		$this->patterned[$pattern] = $middleware;
 	}
