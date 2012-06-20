@@ -320,7 +320,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 * @param  string   $pattern
 	 * @return void
 	 */
-	public function assignMiddleware($middleware, $pattern)
+	public function matchMiddleware($middleware, $pattern)
 	{
 		$this->patterned[$pattern] = $middleware;
 	}

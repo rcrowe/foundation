@@ -213,9 +213,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  string   $pattern
 	 * @return void
 	 */
-	public function assignMiddleware($middleware, $pattern)
+	public function matchMiddleware($middleware, $pattern)
 	{
-		return $this['controllers']->assignMiddleware($middleware, $pattern);
+		return $this['controllers']->matchMiddleware($middleware, $pattern);
 	}
 
 	/**
