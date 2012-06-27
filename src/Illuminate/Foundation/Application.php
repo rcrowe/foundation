@@ -29,7 +29,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$app = $this;
 
-		// Illuminate extends the default controller collection to add an array
+		// Illuminate extends the default controller collections to add an array
 		// of additional functionality and short-cuts to the class, so we'll
 		// override the default registration in the container with ours.
 		$this['controllers'] = $this->share(function() use ($app)
@@ -37,15 +37,18 @@ class Application extends \Silex\Application implements ArrayAccess {
 			return new ControllerCollection($app);
 		});
 
-		$this->addCoreMiddlewares();
+		foreach (array('Auth', 'Csrf') as $middleware)
+		{
+			$this->{"add{$middleware}Middleware"}();
+		}
 	}
 
 	/**
-	 * Register the core middlewares for the application.
+	 * Register the Auth middleware for the application.
 	 *
 	 * @return void
 	 */
-	protected function addCoreMiddlewares()
+	protected function addAuthMiddleware()
 	{
 		$app = $this;
 
@@ -59,6 +62,16 @@ class Application extends \Silex\Application implements ArrayAccess {
 				return $app->redirectToRoute('login');
 			}
 		});
+	}
+
+	/**
+	 * Register the CSRF middleware for the application.
+	 *
+	 * @return void
+	 */
+	protected function addCsrfMiddleware()
+	{
+		$app = $this;
 
 		// The "csrf" middleware provides a simple middleware for checking that a
 		// CSRF token in the request inputs matches the CSRF token stored for
