@@ -13,7 +13,7 @@ class LightSwitch {
 	{
 		// Since we'll be using Underscore.php in a procedural style to avoid
 		// E_STRICT errors, we will force the file to be loaded here since
-		// Composer will not be resolving it lazily using the mappings.
+		// Composer will not be resolving it lazily using it's mappings.
 		if ( ! class_exists('__'))
 		{
 			spl_autoload_call('__');
