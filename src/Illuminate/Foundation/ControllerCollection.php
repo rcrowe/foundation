@@ -137,7 +137,7 @@ class ControllerCollection extends \Silex\ControllerCollection {
 
 		// The "on" key in the array is a short cut for setting the methods
 		// the route should be available for. Multiple HTTP methods may
-		// be specified by using the bar character as a delimiter.
+		// be specified by using the bar character as our delimiter.
 		if (isset($to['on']))
 		{
 			$controller->method(strtoupper($to['on']));
