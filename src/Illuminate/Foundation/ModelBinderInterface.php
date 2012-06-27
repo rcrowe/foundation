@@ -7,7 +7,7 @@ interface ModelBinderInterface {
 	/**
 	 * Resolve a route model binding by ID.
 	 *
-	 * @param  mixed                                     $id
+	 * @param  mixed $id
 	 * @param  Symfony\Component\HttpFoundation\Request  $request
 	 * @return mixed
 	 */
