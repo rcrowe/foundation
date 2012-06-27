@@ -240,7 +240,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Hnadles the given request and delivers the response.
+	 * Handles the given request and delivers the response.
 	 *
 	 * @param  Symfony\Component\HttpFoundation\Request  $request
 	 * @return void
@@ -264,6 +264,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		$response->send();
 
+		// Once we have successfully run the request, we can terminate it so
+		// the request can be completely done and any final event may be
+		// fired off by the application before the request is ended.
 		$this->terminate($request, $response);
 	}
 
