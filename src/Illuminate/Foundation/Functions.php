@@ -62,7 +62,7 @@ function route($route, $parameters = array(), $absolute = false)
  * @param  string  $locale
  * @return string
  */
-function trans($id, $parameters = array(), $domain = null, $locale = null)
+function trans($id, $parameters = array(), $domain = 'messages', $locale = null)
 {
 	$app = app();
 
@@ -86,7 +86,7 @@ function trans($id, $parameters = array(), $domain = null, $locale = null)
  * @param  string  $locale
  * @return string
  */
-function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null)
+function transChoice($id, $number, array $parameters = array(), $domain = 'messages', $locale = null)
 {
 	$app = app();
 

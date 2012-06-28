@@ -41,6 +41,21 @@ foreach ($config as $key => $value)
 
 /*
 |--------------------------------------------------------------------------
+| Register The Core Service Provider
+|--------------------------------------------------------------------------
+|
+| The Illuminate core service provider registers all of the core pieces
+| of the Illuminate framework including session, caching, encryption
+| and more. It's simply a convenient wrapper for the registration.
+|
+*/
+
+use Illuminate\Foundation\CoreServiceProvider;
+
+$app->register(new CoreServiceProvider);
+
+/*
+|--------------------------------------------------------------------------
 | Load The Application Translation Messages
 |--------------------------------------------------------------------------
 |
@@ -60,21 +75,6 @@ if (isset($app['translator.domains']))
 }
 
 $app['translator.domains'] = array_merge($domains, compact('messages'));
-
-/*
-|--------------------------------------------------------------------------
-| Register The Core Service Provider
-|--------------------------------------------------------------------------
-|
-| The Illuminate core service provider registers all of the core pieces
-| of the Illuminate framework including session, caching, encryption
-| and more. It's simply a convenient wrapper for the registration.
-|
-*/
-
-use Illuminate\Foundation\CoreServiceProvider;
-
-$app->register(new CoreServiceProvider);
 
 /*
 |--------------------------------------------------------------------------
