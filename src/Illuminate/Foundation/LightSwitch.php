@@ -1,7 +1,5 @@
 <?php namespace Illuminate\Foundation;
 
-use Illuminate\Support\Helpers;
-
 class LightSwitch {
 
 	/**
@@ -18,8 +16,6 @@ class LightSwitch {
 		{
 			spl_autoload_call('__');
 		}
-
-		Helpers::register();
 
 		require_once __DIR__.'/../../helpers.php';
 
