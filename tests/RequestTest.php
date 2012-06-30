@@ -102,7 +102,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		$file = $this->getMock('Symfony\Component\HttpFoundation\File\UploadedFile', null, array(__FILE__, 'photo.jpg'));
 		$request = Request::create('/', 'GET', array('foo' => 'bar'), array(), array('baz' => $file));
-		$this->assertEquals(array('foo' => 'bar', 'baz' => $file), $request->allInput());
+		$this->assertEquals(array('foo' => 'bar', 'baz' => $file), $request->everything());
 	}
 
 }

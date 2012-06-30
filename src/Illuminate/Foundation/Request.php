@@ -27,7 +27,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 *
 	 * @return array
 	 */
-	public function allInput()
+	public function everything()
 	{
 		return array_merge($this->input(), $this->files->all());
 	}
