@@ -33,5 +33,6 @@
     },
     "autoload": {
         "psr-0": {"Illuminate\\Foundation": "src/"}
-    }
+    },
+    "minimum-stability": "dev"
 }
