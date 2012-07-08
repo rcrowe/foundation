@@ -23,7 +23,7 @@
         "illuminate/session": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
         "underscore/Underscore.php": ">=1.0.0",
-        "silex/silex": ">=1.0.0",
+        "silex/silex": "dev-master",
         "symfony/browser-kit": "2.*",
         "symfony/css-selector": "2.*",
         "symfony/translation": "2.*"
