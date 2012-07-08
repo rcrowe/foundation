@@ -32,7 +32,9 @@
         "mockery/mockery": "0.7.*"
     },
     "autoload": {
-        "psr-0": {"Illuminate\\Foundation": "src/"}
+        "psr-0": {
+            "Illuminate\\Foundation": "src/"
+        }
     },
     "minimum-stability": "dev"
 }
