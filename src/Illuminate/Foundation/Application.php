@@ -83,11 +83,11 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		$app = $this;
 
-		// The "csrf" middleware provides a simple middleware for checking that a
-		// CSRF token in the request inputs matches the CSRF token stored for
-		// the user in the session data. If it doesn't, we will bail out.
 		$this->addMiddleware('csrf', function() use ($app)
 		{
+			// The "csrf" middleware provides a simple middleware for checking that a
+			// CSRF token in the request inputs matches the CSRF token stored for
+			// the user in the session data. If it doesn't, we will bail out.
 			$token = $app['session']->getToken();
 
 			if ($token !== $app['request']->get('csrf_token'))

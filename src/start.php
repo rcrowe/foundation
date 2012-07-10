@@ -7,7 +7,7 @@
 |
 | You may specify a config for each environment. The default config will be
 | included on every request and the environment config gives a chance to
-| customize the application such as tweaking each service's options.
+| customize the applications such as tweaking each service's options.
 |
 */
 

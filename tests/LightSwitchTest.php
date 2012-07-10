@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\LightSwitch;
+use Illuminate\Foundation\Lightbulb;
 
-class LightSwitchTest extends PHPUnit_Framework_TestCase {
+class LightbulbTest extends PHPUnit_Framework_TestCase {
 
 	public function testFlipReturnsApplication()
 	{
-		$application = LightSwitch::flip();
+		$application = Lightbulb::on();
 		$this->assertTrue($application instanceof Application);
 		$this->assertTrue($GLOBALS['__illuminate.app'] === $application);
 		unset($GLOBALS['__illuminate.app']);

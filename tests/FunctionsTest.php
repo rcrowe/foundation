@@ -1,14 +1,14 @@
 <?php
 
 use Mockery as m;
-use Illuminate\Foundation\LightSwitch;
+use Illuminate\Foundation\Lightbulb;
 use Illuminate\Foundation\Application;
 
 class FunctionsTest extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass()
 	{
-		Illuminate\Foundation\LightSwitch::flip();
+		Illuminate\Foundation\Lightbulb::on();
 	}
 
 
