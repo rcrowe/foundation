@@ -174,12 +174,12 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testViewMethodCallsRenderOnBlade()
+	public function testShowMethodCallsRenderOnBlade()
 	{
 		$app = new Application;
 		$app['blade'] = m::mock('Illuminate\Blade\Factory');
 		$app['blade']->shouldReceive('render')->once()->with('foo', array('bar' => 'baz'))->andReturn('boom');
-		$this->assertEquals('boom', $app->view('foo', array('bar' => 'baz')));
+		$this->assertEquals('boom', $app->show('foo', array('bar' => 'baz')));
 	}
 
 }

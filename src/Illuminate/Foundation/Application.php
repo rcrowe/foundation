@@ -131,7 +131,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 * @param  array   $parameters
 	 * @return string
 	 */
-	public function view($view, array $parameters = array())
+	public function show($view, array $parameters = array())
 	{
 		return $this['blade']->render($view, $parameters);
 	}
