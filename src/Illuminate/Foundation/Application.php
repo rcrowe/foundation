@@ -125,6 +125,18 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
+	 * Get the evaluated contents of the given view.
+	 *
+	 * @param  string  $view
+	 * @param  array   $parameters
+	 * @return string
+	 */
+	public function view($view, array $parameters = array())
+	{
+		return $this['blade']->render($view, $parameters);
+	}
+
+	/**
 	 * Register a route group with shared attributes.
 	 *
 	 * @param  array    $attributes

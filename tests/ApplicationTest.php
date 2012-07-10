@@ -173,4 +173,13 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('baz', $app->old('foo', 'bar'));
 	}
 
+
+	public function testViewMethodCallsRenderOnBlade()
+	{
+		$app = new Application;
+		$app['blade'] = m::mock('Illuminate\Blade\Factory');
+		$app['blade']->shouldReceive('render')->once()->with('foo', array('bar' => 'baz'))->andReturn('boom');
+		$this->assertEquals('boom', $app->view('foo', array('bar' => 'baz')));
+	}
+
 }
