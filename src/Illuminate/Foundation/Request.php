@@ -45,7 +45,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 
 		// If the key is null, we'll merge the request input with the query string
 		// and return the entire array. This makes it convenient to get all of
-		// the input for the entire Request from both of the input sources.
+		// the inputs for the entire Request from both of the input sources.
 		if (is_null($key))
 		{
 			return array_merge($input, $this->query());

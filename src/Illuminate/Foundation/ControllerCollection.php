@@ -1,6 +1,4 @@
-<?php namespace Illuminate\Foundation;
-
-use Closure;
+<?php namespace Illuminate\Foundation; use Closure;
 
 class ControllerCollection extends \Silex\ControllerCollection {
 
@@ -10,13 +8,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 * @var array
 	 */
 	public $grouped = array();
-
-	/**
-	 * A keyed colletion of model binders.
-	 *
-	 * @var array
-	 */
-	public $binders = array();
 
 	/**
 	 * A keyed collection of available middlewares.
@@ -37,9 +28,16 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	 *
 	 * @var array
 	 */
-	public $patterns = array(
+	protected $patterns = array(
 		'#:' => '\d+',
 	);
+
+	/**
+	 * The custom flags for the framework.
+	 *
+	 * @var array
+	 */
+	protected $flags = array('https', 'as', 'on', 'before');
 
 	/**
 	 * The Illuminate application instance.
@@ -72,61 +70,138 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	{
 		list($pattern, $asserts) = $this->formatPattern($pattern);
 
-		// If the given $to is just a Closure, we'll just go ahead and convert it
-		// to an array so we can treat all registrations the same. This will
-		// just make the logic more consistent and simpler on our side.
-		if ($to instanceof Closure)
-		{
-			$to = array($to);
-		}
+		// If the given "to" is just a Closure we'll just go ahead and convert it
+		// into an array so we can code all registrations the same. This makes
+		// the registration coding more consistent and simpler on this side.
+		if ($to instanceof Closure) $to = array($to);
 
-		// Now that it is arrayed, it is being used to short-cut into the various
-		// methods on the Silex\Controller. This allows for easy setting of
-		// things like the route name and middlewares in terse syntax.
 		if (count($this->grouped) > 0)
 		{
 			$to = array_merge(end($this->grouped), $to);
 		}
 
-		$callable = __($to)->find(function($value)
-		{
-			return $value instanceof Closure;
-		});
+		// Next we'll need to find the callable Closure in the routes array which
+		// should just be the value that is a Closure instance in given array.
+		// Once we have it we will call base "match" method to register it.
+		$callable = $this->findCallable($to);
 
 		$controller = parent::match($pattern, $callable);
 
-		// The "https" flag specifies that the route should only respond to
-		// secure HTTPS requests. HTTP requests are sent to the "secure"
-		// version of the route when attempting to access the route.
-		if (isset($to['https']))
-		{
-			$scheme = $to['https'] ? 'requireHttps' : 'requireHttp';
+		$this->handleRouteFlags($to, $controller);
 
-			$controller->$scheme();
+		// Next we will check for any pattern based middlewares that could apply
+		// to this route. This allows the developer to easily set any of the
+		// middlewares to apply to all routes having a given request URI.
+		$this->applyPatternFilters($pattern, $controller);
+
+		foreach ($asserts as $key => $pattern)
+		{
+			$controller->assert($key, $pattern);
 		}
 
-		// The "as" key on the array specifes the name of the routes, so we
-		// will pass it along to the "bind" method on the controller to
-		// set its name so it can be easily resolved by route name.
-		if (isset($to['as']))
-		{
-			$controller->bind($to['as']);
-		}
+		return $controller;
+	}
 
-		// The "before" key on the array specifies the middlewares that are
-		// attached to the route, so we will parse them and pass them to
-		// the "middlewares" method on the controller to set them all.
-		if (isset($to['before']))
+	/**
+	 * Find the callable Closure from a route array.
+	 *
+	 * @param  array    $to
+	 * @return Closure
+	 */
+	protected function findCallable($to)
+	{
+		return __($to)->find(function($value)
 		{
-			foreach (explode('|', $to['before']) as $m)
+			return $value instanceof Closure;
+		});
+	}
+
+	/**
+	 * Handle the setup of the custom framework ruote flags.
+	 *
+	 * @param  array  $to
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function handleRouteFlags($to, $controller)
+	{
+		foreach ($this->flags as $flag)
+		{
+			// Each flag handles a short-cut into the Silex routing engine and just
+			// provides a cleaner way to interact with the various options that
+			// are available for each route like filters, names, HTTPS, etc.
+			if (isset($to[$flag]))
 			{
-				$controller->before($this->middlewares[$m]);
+				$this->{"defineRoute".ucwords($flag)}($to, $controller);
 			}
 		}
+	}
 
-		// Next we'll check for any pattern based middlewares that possibly
-		// apply to this route. This allows the developer to easily set
-		// any middleware to apply to all routes having a given URI.
+	/**
+	 * Handle the "https" route flag.
+	 *
+	 * @param  array  $to
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function defineRouteHttps($to, $controller)
+	{
+		$scheme = $to['https'] ? 'requireHttps' : 'requireHttp';
+
+		$controller->$scheme();
+	}
+
+	/**
+	 * Handle the "as" route flag.
+	 *
+	 * @param  array  $to
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function defineRouteAs($to, $controller)
+	{
+		$controller->bind($to['as']);
+	}
+
+	/**
+	 * Handle the "on" route flag.
+	 *
+	 * @param  array  $to
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function defineRouteOn($to, $controller)
+	{
+		$controller->method(strtoupper($to['on']));
+	}
+
+	/**
+	 * Handle the "before" route flag.
+	 *
+	 * @param  array  $to
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function defineRouteBefore($to, $controller)
+	{
+		foreach (explode('|', $to['before']) as $m)
+		{
+			$controller->before($this->middlewares[$m]);
+		}
+	}
+
+	/**
+	 * Apply any pattern based filter to a route.
+	 *
+	 * @param  string  $pattern
+	 * @param  Silex\Controller  $controller
+	 * @return void
+	 */
+	protected function applyPatternFilters($pattern, $controller)
+	{
+		// To apply pattern based filters we will just iterate through each of the
+		// patterns that have been registered with the collection and check if
+		// they match the route being registered. If they do, we apply them.
 		foreach ($this->patterned as $key => $value)
 		{
 			if (str_is($key, $pattern))
@@ -134,26 +209,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 				$controller->before($this->middlewares[$value]);
 			}
 		}
-
-		// The "on" key in the array is a short cut for setting the methods
-		// the route should be available for. Multiple HTTP methods may
-		// be specified by using the bar character as our delimiter.
-		if (isset($to['on']))
-		{
-			$controller->method(strtoupper($to['on']));
-		}
-
-		// Once the controller short-cuts have been registered we'll finish
-		// up by registering the asserts about the parameters as well as
-		// registering any model converters/binders for the controller.
-		foreach ($asserts as $key => $pattern)
-		{
-			$controller->assert($key, $pattern);
-		}
-
-		$this->registerBinders($controller);
-
-		return $controller;
 	}
 
 	/**
@@ -166,13 +221,11 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	{
 		$asserts = array();
 
-		$pattern = str_replace('{id}', '{#id}', $pattern);
-
 		preg_match_all('/\{(#:)(.+)\}/', $pattern, $matches);
 
-		// Once we have an array of all of the matches, we can simple trim off
+		// Once we have an array of all of the matches, we can simple trim down
 		// the short-cut operator and add an assert with the proper regular
-		// expression that performs the functionality of the short-cuts.
+		// expressions that performs the functionality of the shortcuts.
 		foreach ($matches[0] as $key => $match)
 		{
 			$pattern = str_replace($match, '{'.$matches[2][$key].'}', $pattern);
@@ -181,67 +234,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 		}
 
 		return array($pattern, $asserts);		
-	}
-
-	/**
-	 * Register the model binders as converters on the controller.
-	 *
-	 * @param  Silex\Controller  $controller
-	 * @return void
-	 */
-	protected function registerBinders($controller)
-	{
-		foreach ($this->binders as $wildcard => $binder)
-		{
-			if (strstr($controller->getRoute()->getPattern(), $wildcard))
-			{
-				$binder = $this->binders[$wildcard];
-
-				// If the binder is simply a Closure, we can register like any other
-				// Silex converter as it simply follows the default expectations
-				// of Silex and we don't need to do anything special for it.
-				if ($binder instanceof Closure)
-				{
-					$controller->convert($wildcard, $binder);
-				}
-
-				// If the binder isn't a Closure, we'll assume it is a custom model
-				// binder and register a special binder that will resolve the
-				// ModelBinder for the type to convert the given value.
-				else
-				{
-					$this->customBinder($controller, $wildcard, $binder);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Build a custom wildcard converter for the given controller.
-	 *
-	 * @param  Silex\Controller  $controller
-	 * @param  string            $wildcard
-	 * @param  string            $binder
-	 * @return void
-	 */
-	protected function customBinder($controller, $wildcard, $binder)
-	{
-		$container = $this->application->container;
-
-		$controller->convert($wildcard, function($id, $request) use ($container, $binder)
-		{
-			$resolver = $container->make($binder);
-
-			// The ModelBinder interface defines a simple contract that specifies
-			// the class can retrieve a model instance by the given ID. All of
-			// the binders must implement this interface or we'll bail out.
-			if ( ! $resolver instanceof ModelBinderInterface)
-			{
-				throw new \RuntimeException("Model binders must implement ModelBinder.");
-			}
-
-			return $resolver->resolveBinding($id, $request);
-		});
 	}
 
 	/**
@@ -259,32 +251,6 @@ class ControllerCollection extends \Silex\ControllerCollection {
 		$callback($this->application);
 
 		array_pop($this->grouped);
-	}
-
-	/**
-	 * Register a model binder with the application.
-	 *
-	 * @param  string                  $wildcard
-	 * @param  mixed                   $binder
-	 * @return Illuminate\Application
-	 */
-	public function modelBinder($wildcard, $binder)
-	{
-		$this->binders[$wildcard] = $binder;
-	}
-
-	/**
-	 * Register an array of model binders with the application.
-	 *
-	 * @param  array  $binders
-	 * @return void
-	 */
-	public function modelBinders(array $binders)
-	{
-		foreach ($binders as $wildcard => $binder)
-		{
-			$this->modelBinder($wildcard, $binder);
-		}
 	}
 
 	/**

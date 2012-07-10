@@ -37,6 +37,16 @@ class Application extends \Silex\Application implements ArrayAccess {
 			return new ControllerCollection($app);
 		});
 
+		$this->addCoreMiddlewares();
+	}
+
+	/**
+	 * Register the core framework middlewares.
+	 *
+	 * @return void
+	 */
+	protected function addCoreMiddlewares()
+	{
 		foreach (array('Auth', 'Csrf') as $middleware)
 		{
 			$this->{"add{$middleware}Middleware"}();
@@ -99,9 +109,9 @@ class Application extends \Silex\Application implements ArrayAccess {
 
 		foreach ($environments as $environment => $hosts)
 		{
-			// To determine the current environment, we'll simply spin through
-			// the possible environments and look for a host that matches a
-			// host in the request context, then return that environment.
+			// To determine the current environment, we'll simply iterate through
+			// the possible environments and look for a host that matches our
+			// host in the requests context, then return that environment.
 			foreach ($hosts as $host)
 			{
 				if (str_is($base, $host))
@@ -185,29 +195,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 	}
 
 	/**
-	 * Register a model binder with the application.
-	 *
-	 * @param  string                  $wildcard
-	 * @param  mixed                   $binder
-	 * @return Illuminate\Application
-	 */
-	public function addModelBinder($wildcard, $binder)
-	{
-		return $this['controllers']->modelBinder($wildcard, $binder);
-	}
-
-	/**
-	 * Register an array of model binders with the application.
-	 *
-	 * @param  array  $binders
-	 * @return void
-	 */
-	public function addModelBinders(array $binders)
-	{
-		return $this['controllers']->modelBinders($binders);
-	}
-
-	/**
 	 * Register a named middleware with the application.
 	 *
 	 * @param  string   $name
@@ -260,7 +247,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function run(SymfonyRequest $request = null)
 	{
-		// If not request is given, we'll simply create one from PHP's global
+		// If no requests are given, we'll simply create one from PHP's global
 		// variables and send it into the handle method, which will create
 		// a Response that we can now send back to the client's browser.
 		if (is_null($request))

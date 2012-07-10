@@ -51,7 +51,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	{
 		$this->registerSilexServices($app);
 
-		// To register the services we'll simply spin through the array of them and
+		// To register the services we'll simply spin through the arrays of them and
 		// call the registrar function for each service, which will simply return
 		// a Closure that we can register with the application's IoC container.
 		foreach ($this->services as $service)
@@ -114,7 +114,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		{
 			// If the authentication service has been used, we'll check for any cookies
 			// that may be queued by the service. These cookies are all queued until
-			// they are attached to a Response object at the end of the requests.
+			// they are attached onto Response objects at the end of the requests.
 			if (isset($app['auth.loaded']))
 			{
 				foreach ($app['auth']->getQueuedCookies() as $cookie)
@@ -172,7 +172,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 
 		// The Illuminate cookie creator is just a convenient way to make cookies
 		// that share a given set of options. Typically cookies created by the
-		// application will have the same settings so this just DRYs it up.
+		// application will have the same settings so this just DRY's it up.
 		return function() use ($app)
 		{
 			$options = $app['cookie.options'];
@@ -265,7 +265,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 
 			// The validation presence verifier is responsible for determing the existence
 			// of values in a given data collection, typically a relational database or
-			// other persistent data store. And it is used to check for uniqueness.
+			// other persistent data stores. And it is used to check for uniqueness.
 			if (isset($app['validation.presence']))
 			{
 				$validator->setPresenceVerifier($app['validation.presence']);
@@ -285,7 +285,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 	{
 		// The session needs to be started and closed, so we will register a
 		// before and after event to do all that for us. This will manage
-		// loading the session payload as well as writing the session.
+		// loading the session payloads as well as writing the session.
 		$app->before(function($request) use ($app)
 		{
 			$app['session']->start($request);

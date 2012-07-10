@@ -1,5 +1,6 @@
 <?php
 
+use Mockery as m;
 use Illuminate\Foundation\LightSwitch;
 use Illuminate\Foundation\Application;
 
@@ -8,6 +9,27 @@ class FunctionsTest extends PHPUnit_Framework_TestCase {
 	public static function setUpBeforeClass()
 	{
 		Illuminate\Foundation\LightSwitch::flip();
+	}
+
+
+	public function tearDown()
+	{
+		m::close();
+	}
+
+
+	public function testPathHelper()
+	{
+		set_app($app = new Application);
+		$app['request'] = m::mock('Illuminate\Foundation\Request');
+		$app['request']->shouldReceive('getHttpHost')->andReturn('www.foo.com');
+		$app['request']->shouldReceive('getBasePath')->andReturn('/web');
+		$app['request']->shouldReceive('getScheme')->once()->andReturn('https://');
+		$this->assertEquals('https://www.foo.com/web/bar', path('bar'));
+		$this->assertEquals('https://www.foo.com/web/bar', path('bar', true));
+		$this->assertEquals('http://www.foo.com/web/bar', path('bar', false));
+		$this->assertEquals('http://www.foo.com/web/bar', http_path('bar'));
+		$this->assertEquals('https://www.foo.com/web/bar', https_path('bar'));
 	}
 
 
