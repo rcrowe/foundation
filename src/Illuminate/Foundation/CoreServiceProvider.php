@@ -9,6 +9,7 @@ use Illuminate\Blade\Loader as BladeLoader;
 use Illuminate\Blade\Factory as BladeFactory;
 use Illuminate\Blade\Compiler as BladeCompiler;
 use Illuminate\Validation\Factory as ValidationFactory;
+use Illuminate\Glow\Register as Glow;
 
 class CoreServiceProvider implements ServiceProviderInterface {
 
@@ -26,6 +27,7 @@ class CoreServiceProvider implements ServiceProviderInterface {
 		'Files',
 		'Session',
 		'Validator',
+		'Glow',
 	);
 
 	/**
@@ -272,6 +274,20 @@ class CoreServiceProvider implements ServiceProviderInterface {
 			}
 
 			return $validator;
+		};
+	}
+
+	/**
+	 * Register the Illuminate Glow service.
+	 *
+	 * @param  Silex\Application  $app
+	 * @return Closure
+	 */
+	protected function registerGlow($app)
+	{
+		return function() use ($app)
+		{
+			return new Glow;
 		};
 	}
 
