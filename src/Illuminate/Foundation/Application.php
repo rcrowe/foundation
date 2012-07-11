@@ -4,6 +4,7 @@ use Closure;
 use ArrayAccess;
 use Illuminate\Container;
 use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpFoundation\Response;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -134,6 +135,19 @@ class Application extends \Silex\Application implements ArrayAccess {
 	public function show($view, array $parameters = array())
 	{
 		return $this['blade']->render($view, $parameters);
+	}
+
+	/**
+	 * Return a new response from the application.
+	 *
+	 * @param  string  $content
+	 * @param  int     $status
+	 * @param  array   $headers
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public function respond($content = '', $status = 200, $headers = array())
+	{
+		return new Response($content, $status, $headers);
 	}
 
 	/**

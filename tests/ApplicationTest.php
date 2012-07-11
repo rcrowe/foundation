@@ -182,4 +182,14 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('boom', $app->show('foo', array('bar' => 'baz')));
 	}
 
+
+	public function testRespondMethodReturnsResponse()
+	{
+		$app = new Application;
+		$response = $app->respond('foo', 404, array('foo' => 'bar'));
+		$this->assertEquals('foo', $response->getContent());
+		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertEquals('bar', $response->headers->get('foo'));
+	}
+
 }
