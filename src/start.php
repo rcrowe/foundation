@@ -7,7 +7,7 @@
 |
 | You may specify a config for each environment. The default config will be
 | included on every request and the environment config gives a chance to
-| customize the applications such as tweaking each service's options.
+| customize the applications such as tweaking these service's options.
 |
 */
 
@@ -41,18 +41,21 @@ foreach ($config as $key => $value)
 
 /*
 |--------------------------------------------------------------------------
-| Register The Core Service Provider
+| Register The Core Service Providers
 |--------------------------------------------------------------------------
 |
-| The Illuminate core service provider registers all of the core pieces
+| The Illuminate core service providers register all of the core pieces
 | of the Illuminate framework including session, caching, encryption
 | and more. It's simply a convenient wrapper for the registration.
 |
 */
 
-use Illuminate\Foundation\CoreServiceProvider;
+foreach ($app['providers'] as $provider)
+{
+	$provider = '\\'.ltrim($provider, '\\');
 
-$app->register(new CoreServiceProvider);
+	$app->register(new $provider);
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +107,7 @@ if (file_exists($path = $appPath.'/start/'.$app['env'].'.php'))
 |
 | The Application routes are kept separate from the application starting
 | just to keep the file a little cleaner. We'll go ahead and load in
-| all of the routes now and return the application to the caller.
+| all of the routes now and return the application to the callers.
 |
 */
 
