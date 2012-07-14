@@ -56,7 +56,7 @@ function path($path, $https = null)
 	// for, either http or https. Then we will add the path to the URLs.
 	if (is_null($https))
 	{
-		$scheme = $request->getScheme();
+		$scheme = $request->getScheme().'://';
 	}
 	elseif ($https)
 	{
