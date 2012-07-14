@@ -24,8 +24,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function __construct()
 	{
-		$this->container = new Container;
-
 		parent::__construct();
 
 		$app = $this;
@@ -310,100 +308,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 		}
 
 		return $request;
-	}
-
-	/**
-	 * Register a binding with the container.
-	 *
-	 * @param  string               $abstract
-	 * @param  Closure|string|null  $concrete
-	 * @param  bool                 $shared
-	 * @return void
-	 */
-	public function bind($abstract, $concrete = null, $shared = false)
-	{
-		return $this->container->bind($abstract, $concrete, $shared);
-	}
-
-	/**
-	 * Register a shared binding in the container.
-	 *
-	 * @param  string               $abstract
-	 * @param  Closure|string|null  $concrete
-	 * @return void
-	 */
-	public function sharedBinding($abstract, $concrete = null)
-	{
-		return $this->container->sharedBinding($abstract, $concrete);
-	}
-
-	/**
-	 * Register an existing instance as shared in the container.
-	 *
-	 * @param  string  $abstract
-	 * @param  mixed   $instance
-	 * @return void
-	 */
-	public function instance($abstract, $instance)
-	{
-		return $this->container->instance($abstract, $instance);
-	}
-
-	/**
-	 * Alias a type to a shorter name.
-	 *
-	 * @param  string  $abstract
-	 * @param  string  $alias
-	 * @return void
-	 */
-	public function alias($abstract, $alias)
-	{
-		return $this->container->alias($abstract, $value);
-	}
-
-	/**
-	 * Determine if a value exists by offset.
-	 *
-	 * @param  string  $key
-	 * @return bool
-	 */
-	public function offsetExists($key)
-	{
-		return isset($this->container[$key]);
-	}
-
-	/**
-	 * Get a value by offset.
-	 *
-	 * @param  string  $key
-	 * @return mixed
-	 */
-	public function offsetGet($key)
-	{
-		return $this->container[$key];
-	}
-
-	/**
-	 * Set a value by offset.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
-	 * @return void
-	 */
-	public function offsetSet($key, $value)
-	{
-		$this->container[$key] = $value;
-	}
-
-	/**
-	 * Unset a value by offset.
-	 *
-	 * @param  string  $key
-	 * @return void
-	 */
-	public function offsetUnset($key)
-	{
-		unset($this->container[$key]);
 	}
 
 	/**

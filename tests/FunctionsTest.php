@@ -24,7 +24,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase {
 		$app['request'] = m::mock('Illuminate\Foundation\Request');
 		$app['request']->shouldReceive('getHttpHost')->andReturn('www.foo.com');
 		$app['request']->shouldReceive('getBasePath')->andReturn('/web');
-		$app['request']->shouldReceive('getScheme')->once()->andReturn('https://');
+		$app['request']->shouldReceive('getScheme')->once()->andReturn('https');
 		$this->assertEquals('https://www.foo.com/web/bar', path('bar'));
 		$this->assertEquals('https://www.foo.com/web/bar', path('bar', true));
 		$this->assertEquals('http://www.foo.com/web/bar', path('bar', false));
