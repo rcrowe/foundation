@@ -5,6 +5,7 @@ use Illuminate\Blade\Loader;
 use Illuminate\Blade\Factory;
 use Illuminate\Blade\Compiler;
 use Silex\ServiceProviderInterface;
+use Illuminate\Validation\MessageBag;
 
 class BladeServiceProvider implements ServiceProviderInterface {
 
@@ -53,6 +54,10 @@ class BladeServiceProvider implements ServiceProviderInterface {
 			if (isset($app['session']) and $app['session']->has('errors'))
 			{
 				$blade->share('errors', $app['session']->get('errors'));
+			}
+			else
+			{
+				$blade->share('errors', new MessageBag);
 			}
 
 			return $blade;

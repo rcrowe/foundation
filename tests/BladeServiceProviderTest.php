@@ -20,6 +20,13 @@ class BladeServiceProviderTest extends PHPUnit_Framework_TestCase {
 		$app['blade.loader'] = m::mock('Illuminate\Blade\Loader');
 		$shared = $app['blade']->getShared();
 		$this->assertEquals('foo', $shared['errors']);
+
+		$app = new Illuminate\Foundation\Application;
+		$app->register(new Illuminate\Foundation\Provider\BladeServiceProvider);
+		$app['blade.loader'] = m::mock('Illuminate\Blade\Loader');
+		$shared = $app['blade']->getShared();
+		$this->assertInstanceOf('Illuminate\Validation\MessageBag', $shared['errors']);
+		$this->assertEquals(0, count($shared['errors']));
 	}
 
 }
