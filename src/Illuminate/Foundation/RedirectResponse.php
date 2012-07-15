@@ -20,7 +20,7 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
 	 */
 	public function with($key, $value)
 	{
-		$this->session->put($key, $value);
+		$this->session->flash($key, $value);
 
 		return $this;
 	}

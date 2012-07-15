@@ -126,7 +126,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	{
 		$app = new Application;
 		$app['session'] = m::mock('Illuminate\Session\Store');
-		$app['session']->shouldReceive('put')->once()->with('foo', 'bar');
+		$app['session']->shouldReceive('flash')->once()->with('foo', 'bar');
 		$redirect = $app->redirect('boom');
 		$return = $redirect->with('foo', 'bar');
 		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
