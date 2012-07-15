@@ -27,7 +27,7 @@ class BladeServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
-		$app['blade.loader'] = $app->share(function() use ($app)
+		$app['blade.loader'] = $app->share(function($app)
 		{
 			// We'll create a Blade loader instance with the path and cache paths set on
 			// the application. The loader is responsible for actually returning the
@@ -41,7 +41,7 @@ class BladeServiceProvider implements ServiceProviderInterface {
 			return $loader;
 		});
 
-		$app['blade'] = $app->share(function() use ($app)
+		$app['blade'] = $app->share(function($app)
 		{
 			$blade = new Factory($app['blade.loader']);
 
@@ -49,6 +49,11 @@ class BladeServiceProvider implements ServiceProviderInterface {
 			// Blade factory so it gets passed to every template that is rendered for
 			// convenience. This allows access to the request, input, session, etc.
 			$blade->share('app', $app);
+
+			if (isset($app['session']) and $app['session']->has('errors'))
+			{
+				$blade->share('errors', $app['session']->get('errors'));
+			}
 
 			return $blade;
 		});
