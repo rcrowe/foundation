@@ -31,6 +31,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		$request = Request::create('/', 'GET', array('name' => 'Taylor', 'age' => 25));
 		$this->assertEquals(array('age' => 25), $request->only('age'));
+		$this->assertEquals(array('name' => 'Taylor', 'age' => 25), $request->only('name', 'age'));
 	}
 
 
@@ -38,6 +39,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		$request = Request::create('/', 'GET', array('name' => 'Taylor', 'age' => 25));
 		$this->assertEquals(array('name' => 'Taylor'), $request->except('age'));
+		$this->assertEquals(array(), $request->except('age', 'name'));
 	}
 
 

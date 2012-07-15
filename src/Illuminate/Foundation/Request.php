@@ -84,6 +84,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function only($keys)
 	{
+		$keys = is_array($keys) ? $keys : func_get_args();
+
 		return array_intersect_key($this->input(), array_flip((array) $keys));
 	}
 
@@ -95,6 +97,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function except($keys)
 	{
+		$keys = is_array($keys) ? $keys : func_get_args();
+
 		return array_diff_key($this->input(), array_flip((array) $keys));
 	}
 
