@@ -46,6 +46,17 @@ class DB extends Facade {
 
 }
 
+class On extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	public static function getName() { return 'controllers'; }
+
+}
+
 class Session extends Facade {
 
 	/**
