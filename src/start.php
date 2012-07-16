@@ -41,6 +41,26 @@ foreach ($config as $key => $value)
 
 /*
 |--------------------------------------------------------------------------
+| Load The Illuminate Facades
+|--------------------------------------------------------------------------
+|
+| The facades provide a terser static interface over the various parts
+| of the application, allowing their methods to be accessed through
+| a mixtures of magic methods and facade derivatives. It's slick.
+|
+*/
+
+use Illuminate\Foundation\Facade;
+
+if (isset($app['facade']) and $app['facade'])
+{
+	Facade::setFacadeApplication($app);
+
+	Facade::loadFacades();
+}
+
+/*
+|--------------------------------------------------------------------------
 | Register The Core Service Providers
 |--------------------------------------------------------------------------
 |
