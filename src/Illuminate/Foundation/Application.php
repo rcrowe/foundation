@@ -132,7 +132,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function show($view, array $parameters = array())
 	{
-		return $this['blade']->render($view, $parameters);
+		return $this['blade']->show($view, $parameters);
 	}
 
 	/**
