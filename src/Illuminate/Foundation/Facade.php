@@ -22,7 +22,7 @@ abstract class Facade {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function setFacadeApplication(Application $app)
+	public static function setFacadeApplication(Application $app)
 	{
 		static::$app = $app;
 	}
