@@ -14,7 +14,10 @@ abstract class Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName();
+	protected static function getName()
+	{
+		throw new \RuntimeException("Facade does not implement getName method.");
+	}
 
 	/**
 	 * Set the application instance.
