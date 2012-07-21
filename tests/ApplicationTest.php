@@ -69,6 +69,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testAuthMiddlewareIsRegistered()
 	{
 		$app = new Application;
+		$app->register(new Illuminate\Foundation\Provider\AuthServiceProvider);
 		$app['auth'] = m::mock('Illuminate\Auth\Guard');
 		$app['auth']->shouldReceive('isGuest')->once()->andReturn(true);
 		$app['url_generator'] = m::mock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
@@ -80,6 +81,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo', $response->getTargetUrl());
 
 		$app = new Application;
+		$app->register(new Illuminate\Foundation\Provider\AuthServiceProvider);
 		$app['auth'] = m::mock('Illuminate\Auth\Guard');
 		$app['auth']->shouldReceive('isGuest')->once()->andReturn(false);
 		$middleware = $app->getMiddleware('auth');
@@ -93,6 +95,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testCsrfMiddlewareThrowsExcpetion()
 	{
 		$app = new Application;
+		$app->register(new Illuminate\Foundation\Provider\SessionServiceProvider);
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'bar'));
@@ -104,6 +107,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testCsrfMiddlewareDoesntThrowWhenMatch()
 	{
 		$app = new Application;
+		$app->register(new Illuminate\Foundation\Provider\SessionServiceProvider);
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'foo'));

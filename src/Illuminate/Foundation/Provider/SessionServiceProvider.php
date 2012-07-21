@@ -1,7 +1,8 @@
 <?php namespace Illuminate\Foundation\Provider;
 
-use Illuminate\Session\CookieStore;
 use Silex\ServiceProviderInterface;
+use Illuminate\Session\CookieStore;
+use Illuminate\Session\TokenMismatchException;
 
 class SessionServiceProvider implements ServiceProviderInterface {
 
@@ -28,6 +29,8 @@ class SessionServiceProvider implements ServiceProviderInterface {
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		});
+
+		$this->addSessionMiddleware($app);
 	}
 
 	/**
@@ -49,6 +52,28 @@ class SessionServiceProvider implements ServiceProviderInterface {
 		$app->after(function($request, $response) use ($app)
 		{
 			$app['session']->finish($response, $app['cookie']);
+		});
+	}
+
+	/**
+	 * Register the CSRF middleware for the application.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function addSessionMiddleware($app)
+	{
+		$app->addMiddleware('csrf', function() use ($app)
+		{
+			// The "csrf" middleware provides a simple middleware for checking that a
+			// CSRF token in the request inputs matches the CSRF token stored for
+			// the user in the session data. If it doesn't, we will bail out.
+			$token = $app['session']->getToken();
+
+			if ($token !== $app['request']->get('csrf_token'))
+			{
+				throw new TokenMismatchException;
+			}
 		});
 	}
 

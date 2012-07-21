@@ -24,6 +24,19 @@ class AuthServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register(\Silex\Application $app)
 	{
+		$this->registerAuthProvider($app);
+
+		$this->registerAuthMiddleware($app);
+	}
+
+	/**
+	 * Register the authentication provider.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerAuthProvider($app)
+	{
 		$app['auth'] = $app->share(function() use ($app)
 		{
 			// Once the authentication service has actually been requested by the developer
@@ -73,6 +86,26 @@ class AuthServiceProvider implements ServiceProviderInterface {
 				{
 					$response->headers->setCookie($cookie);
 				}
+			}
+		});
+	}
+
+	/**
+	 * Register the middleware for the auth library.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerAuthMiddleware($app)
+	{
+		// The "auth" middleware provides a convenient way to verify that a given
+		// user is logged into the application. If they are not, we will just
+		// redirect the users to the "login" named route as a convenience.
+		$app->addMiddleware('auth', function() use ($app)
+		{
+			if ($app['auth']->isGuest())
+			{
+				return $app->redirectToRoute('login');
 			}
 		});
 	}

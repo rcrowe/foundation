@@ -3,7 +3,6 @@
 use Closure;
 use ArrayAccess;
 use Illuminate\Container;
-use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -34,65 +33,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 		$this['controllers'] = $this->share(function() use ($app)
 		{
 			return new ControllerCollection($app);
-		});
-
-		$this->addCoreMiddlewares();
-	}
-
-	/**
-	 * Register the core framework middlewares.
-	 *
-	 * @return void
-	 */
-	protected function addCoreMiddlewares()
-	{
-		foreach (array('Auth', 'Csrf') as $middleware)
-		{
-			$this->{"add{$middleware}Middleware"}();
-		}
-	}
-
-	/**
-	 * Register the Auth middleware for the application.
-	 *
-	 * @return void
-	 */
-	protected function addAuthMiddleware()
-	{
-		$app = $this;
-
-		// The "auth" middleware provides a convenient way to verify that a given
-		// user is logged into the application. If they are not, we will just
-		// redirect the users to the "login" named route as a convenience.
-		$this->addMiddleware('auth', function() use ($app)
-		{
-			if ($app['auth']->isGuest())
-			{
-				return $app->redirectToRoute('login');
-			}
-		});
-	}
-
-	/**
-	 * Register the CSRF middleware for the application.
-	 *
-	 * @return void
-	 */
-	protected function addCsrfMiddleware()
-	{
-		$app = $this;
-
-		$this->addMiddleware('csrf', function() use ($app)
-		{
-			// The "csrf" middleware provides a simple middleware for checking that a
-			// CSRF token in the request inputs matches the CSRF token stored for
-			// the user in the session data. If it doesn't, we will bail out.
-			$token = $app['session']->getToken();
-
-			if ($token !== $app['request']->get('csrf_token'))
-			{
-				throw new TokenMismatchException;
-			}
 		});
 	}
 
