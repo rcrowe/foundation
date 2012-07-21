@@ -14,7 +14,7 @@ abstract class Facade {
 	 *
 	 * @return string
 	 */
-	abstract public static function getName();
+	protected static function getName();
 
 	/**
 	 * Set the application instance.
@@ -32,7 +32,7 @@ abstract class Facade {
 	 *
 	 * @return void
 	 */
-	public function loadFacades()
+	public static function loadFacades()
 	{
 		require_once __DIR__.'/../../facades.php';
 	}

@@ -9,7 +9,7 @@ class Auth extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'auth'; }
+	protected static function getName() { return 'auth'; }
 
 }
 
@@ -20,7 +20,7 @@ class Blade extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'blade'; }
+	protected static function getName() { return 'blade'; }
 
 }
 
@@ -31,7 +31,7 @@ class Cache extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'cache'; }
+	protected static function getName() { return 'cache'; }
 
 }
 
@@ -42,7 +42,7 @@ class DB extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'db'; }
+	protected static function getName() { return 'db'; }
 
 }
 
@@ -53,7 +53,7 @@ class On extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'controllers'; }
+	protected static function getName() { return 'controllers'; }
 
 }
 
@@ -64,7 +64,7 @@ class Session extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'session'; }
+	protected static function getName() { return 'session'; }
 
 }
 
@@ -75,6 +75,6 @@ class Validator extends Facade {
 	 *
 	 * @return string
 	 */
-	public static function getName() { return 'validator'; }
+	protected static function getName() { return 'validator'; }
 
 }
