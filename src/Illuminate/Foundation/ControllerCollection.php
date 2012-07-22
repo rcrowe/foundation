@@ -60,6 +60,18 @@ class ControllerCollection extends \Silex\ControllerCollection {
 	}
 
 	/**
+	 * Register a route that matches any HTTP method.
+	 *
+	 * @param  string            $pattern
+	 * @param  mixed             $to
+	 * @return Silex\Controller
+	 */
+	public function any($pattern, $to)
+	{
+		return $this->match($pattern, $to);
+	}
+
+	/**
 	 * Register a route with the application.
 	 *
 	 * @param  string            $pattern
