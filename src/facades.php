@@ -127,7 +127,7 @@ class Response extends Facade {
 	 */
 	public static function json($data = array(), $status = 200, $headers = array())
 	{
-		return static::getFacadeApplication()->json($data, $status, $headers);
+		return static::$app->json($data, $status, $headers);
 	}
 
 }
