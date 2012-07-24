@@ -106,18 +106,6 @@ class Response extends Facade {
 	}
 
 	/**
-	 * Get the evaluated contents of the given view.
-	 *
-	 * @param  string  $view
-	 * @param  array   $parameters
-	 * @return string
-	 */
-	public static function show($view, array $parameters = array())
-	{
-		return static::$app->show($view, $parameters);
-	}
-
-	/**
 	 * Convert some data into a JSON response.
 	 *
 	 * @param  mixed  $data
