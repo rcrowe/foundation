@@ -102,7 +102,7 @@ class Response extends Facade {
 	 */
 	public static function make($content = '', $status = 200, $headers = array())
 	{
-		return static::getFacadeApplication()->respond($content, $status, $headers);
+		return static::$app->respond($content, $status, $headers);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Response extends Facade {
 	 */
 	public static function show($view, array $parameters = array())
 	{
-		return static::getFacadeApplication()->show($view, $parameters);
+		return static::$app->show($view, $parameters);
 	}
 
 	/**
