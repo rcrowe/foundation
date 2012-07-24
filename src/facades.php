@@ -90,6 +90,48 @@ class Request extends Facade {
 
 }
 
+class Response extends Facade {
+
+	/**
+	 * Return a new response from the application.
+	 *
+	 * @param  string  $content
+	 * @param  int     $status
+	 * @param  array   $headers
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public static function make($content = '', $status = 200, $headers = array())
+	{
+		return static::getFacadeApplication()->respond($content, $status, $headers);
+	}
+
+	/**
+	 * Get the evaluated contents of the given view.
+	 *
+	 * @param  string  $view
+	 * @param  array   $parameters
+	 * @return string
+	 */
+	public static function show($view, array $parameters = array())
+	{
+		return static::getFacadeApplication()->show($view, $parameters);
+	}
+
+	/**
+	 * Convert some data into a JSON response.
+	 *
+	 * @param  mixed  $data
+	 * @param  int    $status
+	 * @param  array  $headers
+	 * @return Symfony\Component\HttpFoundation\JsonResponse
+	 */
+	public static function json($data = array(), $status = 200, $headers = array())
+	{
+		return static::getFacadeApplication()->json($data, $status, $headers);
+	}
+
+}
+
 class Session extends Facade {
 
 	/**
