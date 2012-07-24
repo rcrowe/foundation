@@ -14,9 +14,19 @@ abstract class Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName()
+	protected static function getFacadeAccessor()
 	{
-		throw new \RuntimeException("Facade does not implement getName method.");
+		throw new \RuntimeException("Facade does not implement getFacadeAccessor method.");
+	}
+
+	/**
+	 * Get the application instance behind the facade.
+	 *
+	 * @return Illuminate\Foundation\Application
+	 */
+	public static function getFacadeApplication()
+	{
+		return static::$app;
 	}
 
 	/**
@@ -49,7 +59,9 @@ abstract class Facade {
 	 */
 	public static function __callStatic($method, $parameters)
 	{
-		$instance = static::$app[static::getName()];
+		$name = static::getFacadeAccessor();
+
+		$instance = is_object($name) ? $name : static::$app[$name];
 
 		return call_user_func_array(array($instance, $method), $parameters);
 	}

@@ -9,7 +9,7 @@ class Auth extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'auth'; }
+	protected static function getFacadeAccessor() { return 'auth'; }
 
 }
 
@@ -20,7 +20,7 @@ class Blade extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'blade'; }
+	protected static function getFacadeAccessor() { return 'blade'; }
 
 }
 
@@ -31,7 +31,7 @@ class Cache extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'cache'; }
+	protected static function getFacadeAccessor() { return 'cache'; }
 
 }
 
@@ -42,7 +42,7 @@ class DB extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'db'; }
+	protected static function getFacadeAccessor() { return 'db'; }
 
 }
 
@@ -53,7 +53,18 @@ class On extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'controllers'; }
+	protected static function getFacadeAccessor() { return 'controllers'; }
+
+}
+
+class Request extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'request'; }
 
 }
 
@@ -64,7 +75,7 @@ class Session extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'session'; }
+	protected static function getFacadeAccessor() { return 'session'; }
 
 }
 
@@ -75,6 +86,6 @@ class Validator extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getName() { return 'validator'; }
+	protected static function getFacadeAccessor() { return 'validator'; }
 
 }
