@@ -47,7 +47,7 @@ function csrf_token()
  * @param  bool    $https
  * @return string
  */
-function path($path, $https = null)
+function path($path = null, $https = null)
 {
 	$request = app()->request;
 
