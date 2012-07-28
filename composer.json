@@ -34,7 +34,10 @@
     "autoload": {
         "psr-0": {
             "Illuminate\\Foundation": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "minimum-stability": "dev"
 }
