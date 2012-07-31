@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Container;
+use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Provider\ServiceProvider;
@@ -207,12 +208,15 @@ class Application extends Container {
 	 * Tie a registered middleware to a URI pattern.
 	 *
 	 * @param  string  $pattern
-	 * @param  string  $name
+	 * @param  string|array  $name
 	 * @return void
 	 */
-	public function matchMiddleware($pattern, $name)
+	public function matchMiddleware($pattern, $names)
 	{
-		$this->patternMiddlewares[$pattern][] = $name;
+		foreach ((array) $names as $name)
+		{
+			$this->patternMiddlewares[$pattern][] = $name;
+		}
 	}
 
 	/**
@@ -231,19 +235,28 @@ class Application extends Container {
 			$request = $this['request'];
 		}
 
-		// Once we have a request object, we will attempt to set the session
-		// on the request so that the old input data may be retrieved by
-		// the developer via the session through very simple methods.
 		$this->prepareRequest($request);
 
-		$response = $this->handle($request);
+		// First we will call the "before" global middlware, which we'll give
+		// a chance to override the normal request process when a response
+		// is returned by the middlewares. Otherwise we call the routes.
+		$response =  $this->callGlobalMiddleware('before');
+
+		if (is_null($response))
+		{
+			$response = $this->handle($request);
+		}
+
+		$response = $this->prepareResponse($response);
+
+		// Once we have executed the route and called the "after" middleware
+		// we will send the response back to the browser and then call a
+		// last finish middleware to allow any last minute processing.
+		$this->callAfterMiddleware($response);
 
 		$response->send();
 
-		// Once we have successfully run the request, we can terminate it so
-		// the request can be completely done and any final event may be
-		// fired off by the applications before the request is ended.
-		$this->terminate($request, $response);
+		$this->callFinishMiddleware($response);
 	}
 
 	/**
@@ -272,7 +285,121 @@ class Application extends Container {
 	{
 		$route = $this['router']->match($request);
 
-		return $route->run($request);
+		// Once we have the route and before middlewares, we'll iterate through them
+		// and call each one. If one of them returns a response, we will let that
+		// value override the rest of the request process and return that out.
+		$before = $this->getBeforeMiddlewares($route, $request);
+
+		foreach ($before as $middleware)
+		{
+			$response = $this->callMiddleware($middleware);
+
+			if ( ! is_null($response)) return $response;
+		}
+
+		// If none of the before middlewares returned a response, we'll just execute
+		// the route that matched the request, then call the after filters for it
+		// and return the response back out so it will get sent to the clients.
+		$response = $route->run($request);
+
+		foreach ($route->getAfterMiddlewares() as $middleware)
+		{
+			$this->callMiddleware($middleware, array($response));
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get the before middlewares for a request and route.
+	 *
+	 * @param  Illuminate\Routing\Route  $route
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return array
+	 */
+	protected function getBeforeMiddlewares(Route $route, Request $request)
+	{
+		$before = $route->getBeforeMiddlewares();
+
+		return array_merge($before, $this->findPatternMiddlewares($request));
+	}
+
+	/**
+	 * Find the patterned middlewares matching a request.
+	 *
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return array
+	 */
+	protected function findPatternMiddlewares(Request $request)
+	{
+		$middlewares = array();
+
+		foreach ($this->patternMiddlewares as $pattern => $values)
+		{
+			// To find the pattern middlewares for a request, we just need to check the
+			// registered patterns against the path info for the current request to
+			// the application, and if it matches we'll merge in the middlewares.
+			if (str_is('/'.$pattern, $request->getPathInfo()))
+			{
+				$middlewares = array_merge($middlewares, $values);
+			}
+		}
+
+		return $middlewares;
+	}
+
+	/**
+	 * Call the "before" global middlware.
+	 *
+	 * @return mixed
+	 */
+	protected function callAfterMiddleware(Response $response)
+	{
+		return $this->callGlobalMiddleware('after', array($response));
+	}
+
+	/**
+	 * Call the "finish" global middlware.
+	 *
+	 * @return mixed
+	 */
+	protected function callFinishMiddleware(Response $response)
+	{
+		return $this->callGlobalMiddleware('finish', array($response));
+	}
+
+	/**
+	 * Call a given middleware with the parameters.
+	 *
+	 * @param  string  $name
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
+	protected function callMiddleware($name, array $parameters = array())
+	{
+		array_unshift($parameters, $this['request']);
+
+		if (isset($this->middlewares[$name]))
+		{
+			return call_user_func_array($this->middlewares[$name], $parameters);
+		}
+	}
+
+	/**
+	 * Call a given global middleware with the parameters.
+	 *
+	 * @param  string  $name
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
+	protected function callGlobalMiddleware($name, array $parameters = array())
+	{
+		array_unshift($parameters, $this['request']);
+
+		if (isset($this->globalMiddlewares[$name]))
+		{
+			return call_user_func_array($this->globalMiddlewares[$name], $parameters);
+		}
 	}
 
 	/**
