@@ -1,35 +1,24 @@
 <?php namespace Illuminate\Foundation\Provider;
 
 use Illuminate\CookieCreator;
-use Silex\ServiceProviderInterface;
+use Illuminate\Foundation\Application;
 
-class CookieServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @param  Silex\Application  $app
-	 * @return void
-	 */
-	public function boot(\Silex\Application $app)
-	{
-		//
-	}
+class CookieServiceProvider extends ServiceProvider {
 
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
 		$app['cookie.options'] = $this->cookieDefaults();
 
 		// The Illuminate cookie creator is just a convenient way to make cookies
 		// that share a given set of options. Typically cookies created by the
 		// application will have the same settings so this just DRY's it up.
-		$app['cookie'] = $app->share(function() use ($app)
+		$app['cookie'] = $app->share(function($app)
 		{
 			$options = $app['cookie.options'];
 

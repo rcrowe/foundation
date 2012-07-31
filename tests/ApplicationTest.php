@@ -18,81 +18,29 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testRouteRedirect()
-	{
-		$app = new Application;
-		$app->register(new Silex\Provider\UrlGeneratorServiceProvider);
-		$app->get('foo', function() {})->bind('bar');
-		$response = $app->redirectToRoute('bar');
-		$this->assertEquals('/foo', $response->getTargetUrl());
-		$this->assertEquals(302, $response->getStatusCode());
-		$response = $app->redirectToBar();
-		$this->assertEquals('/foo', $response->getTargetUrl());
-		$this->assertEquals(302, $response->getStatusCode());
-
-		$app->get('baz/{name}', function() {})->bind('boom');
-		$app->flush();
-		$response = $app->redirectToRoute('boom', array('name' => 'taylor'));
-		$this->assertEquals('/baz/taylor', $response->getTargetUrl());
-		$response = $app->redirectToBoom(array('name' => 'taylor'));
-		$this->assertEquals('/baz/taylor', $response->getTargetUrl());
-	}
-
-
-	public function testCreateMountable()
-	{
-		$application = new Application;
-		$mount = $application->newMountable();
-		$this->assertTrue($mount instanceof Illuminate\Foundation\ControllerCollection);
-		$this->assertTrue($application === $mount->getApplication());
-	}
-
-
 	public function testEnvironmenetDetection()
 	{
 		$app = new Application;
-		$app['request_context']->setHost('foo');
+		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
+		$app['request']->shouldReceive('getHost')->andReturn('foo');
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('default', $app['env']);
 
 		$app = new Application;
-		$app['request_context']->setHost('localhost');
+		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
+		$app['request']->shouldReceive('getHost')->andReturn('localhost');
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('local', $app['env']);
 	}
 
-
-	public function testAuthMiddlewareIsRegistered()
-	{
-		$app = new Application;
-		$app->register(new Illuminate\Foundation\Provider\AuthServiceProvider);
-		$app['auth'] = m::mock('Illuminate\Auth\Guard');
-		$app['auth']->shouldReceive('isGuest')->once()->andReturn(true);
-		$app['url_generator'] = m::mock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
-		$app['url_generator']->shouldReceive('generate')->andReturn('foo');
-		$middleware = $app->getMiddleware('auth');
-		$this->assertTrue($middleware instanceof Closure);
-		$response = $middleware();
-		$this->assertTrue($response instanceof Illuminate\Foundation\RedirectResponse);
-		$this->assertEquals('foo', $response->getTargetUrl());
-
-		$app = new Application;
-		$app->register(new Illuminate\Foundation\Provider\AuthServiceProvider);
-		$app['auth'] = m::mock('Illuminate\Auth\Guard');
-		$app['auth']->shouldReceive('isGuest')->once()->andReturn(false);
-		$middleware = $app->getMiddleware('auth');
-		$this->assertNull($middleware());
-	}
-
-
 	/**
 	 * @expectedException Illuminate\Session\TokenMismatchException
 	 */
-	public function testCsrfMiddlewareThrowsExcpetion()
+	public function testCsrfMiddlewareThrowsException()
 	{
 		$app = new Application;
 		$app->register(new Illuminate\Foundation\Provider\SessionServiceProvider);
@@ -155,26 +103,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app->prepareRequest($request);
 		$this->assertEquals($app['session'], $request->getSessionStore());
-	}
-
-
-	public function testInputCallsInputOnRequest()
-	{
-		$app = new Application;
-		$request = m::mock('Illuminate\Foundation\Request');
-		$request->shouldReceive('input')->once()->with('foo', 'bar')->andReturn('baz');
-		$app['request'] = $request;
-		$this->assertEquals('baz', $app->input('foo', 'bar'));
-	}
-
-
-	public function testOldCallsOldOnRequest()
-	{
-		$app = new Application;
-		$request = m::mock('Illuminate\Foundation\Request');
-		$request->shouldReceive('old')->once()->with('foo', 'bar')->andReturn('baz');
-		$app['request'] = $request;
-		$this->assertEquals('baz', $app->old('foo', 'bar'));
 	}
 
 

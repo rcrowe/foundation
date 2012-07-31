@@ -1,17 +1,17 @@
 <?php namespace Illuminate\Foundation\Provider;
 
 use Illuminate\Auth\Guard;
-use Silex\ServiceProviderInterface;
+use Illuminate\Foundation\Application;
 
-class AuthServiceProvider implements ServiceProviderInterface {
+class AuthServiceProvider extends ServiceProvider {
 
 	/**
 	 * Bootstrap the application events.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function boot(\Silex\Application $app)
+	public function boot(Application $app)
 	{
 		$this->registerAuthEvents($app);
 	}
@@ -19,10 +19,10 @@ class AuthServiceProvider implements ServiceProviderInterface {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
 		$this->registerAuthProvider($app);
 
@@ -37,7 +37,7 @@ class AuthServiceProvider implements ServiceProviderInterface {
 	 */
 	protected function registerAuthProvider($app)
 	{
-		$app['auth'] = $app->share(function() use ($app)
+		$app['auth'] = $app->share(function($app)
 		{
 			// Once the authentication service has actually been requested by the developer
 			// we will set a variable in the application indicating such. This helps us
@@ -51,7 +51,7 @@ class AuthServiceProvider implements ServiceProviderInterface {
 
 			// The user provider is responsible for actually fetching the user information
 			// out of whatever storage mechanism the developer is using and giving the
-			// user back to the guard. This interface abstracts the user retrieval.
+			// user back to the guard. This interface abstracts the users retrieval.
 			$provider = $app['auth.provider'];
 
 			$guard = new Guard($provider, $app['session'], $app['request']);
@@ -70,7 +70,7 @@ class AuthServiceProvider implements ServiceProviderInterface {
 	/**
 	 * Register the events needed for authentication.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
 	protected function registerAuthEvents($app)

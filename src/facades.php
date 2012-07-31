@@ -75,7 +75,7 @@ class On extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function getFacadeAccessor() { return 'controllers'; }
+	protected static function getFacadeAccessor() { return 'router'; }
 
 }
 

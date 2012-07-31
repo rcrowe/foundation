@@ -4,29 +4,18 @@ use Illuminate\Filesystem;
 use Illuminate\Blade\Loader;
 use Illuminate\Blade\Factory;
 use Illuminate\Blade\Compiler;
-use Silex\ServiceProviderInterface;
 use Illuminate\Validation\MessageBag;
+use Illuminate\Foundation\Application;
 
-class BladeServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @param  Silex\Application  $app
-	 * @return void
-	 */
-	public function boot(\Silex\Application $app)
-	{
-		//
-	}
+class BladeServiceProvider extends ServiceProvider {
 
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
 		$app['blade.loader'] = $app->share(function($app)
 		{

@@ -1,30 +1,19 @@
 <?php namespace Illuminate\Foundation\Provider;
 
 use Illuminate\Validation\Factory;
-use Silex\ServiceProviderInterface;
+use Illuminate\Foundation\Application;
 
-class ValidatorServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @param  Silex\Application  $app
-	 * @return void
-	 */
-	public function boot(\Silex\Application $app)
-	{
-		//
-	}
+class ValidatorServiceProvider extends ServiceProvider {
 
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
-		$app['validator'] = $app->share(function() use ($app)
+		$app['validator'] = $app->share(function($app)
 		{
 			$validator = new Factory($app['translator']);
 

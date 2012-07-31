@@ -1,19 +1,33 @@
 <?php namespace Illuminate\Foundation;
 
 use Closure;
-use ArrayAccess;
 use Illuminate\Container;
+use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Illuminate\Foundation\Provider\ServiceProvider;
 
-class Application extends Container implements ArrayAccess {
+class Application extends Container {
 
 	/**
-	 * The Illuminate container instance.
+	 * The application middlewares.
 	 *
-	 * @var Illuminate\Container
+	 * @var array
 	 */
-	public $container;
+	protected $middlewares = array();
+
+	/**
+	 * The pattern to middleware bindings.
+	 *
+	 * @var array
+	 */
+	protected $patternMiddlewares = array();
+
+	/**
+	 * The global middlewares for the application.
+	 *
+	 * @var array
+	 */
+	protected $globalMiddlewares = array();
 
 	/**
 	 * Create a new Illuminate application instance.
@@ -22,9 +36,26 @@ class Application extends Container implements ArrayAccess {
 	 */
 	public function __construct()
 	{
-		parent::__construct();
+		$this['router'] = new Router;
 
 		$this['request'] = Request::createFromGlobals();
+	}
+
+	/**
+	 * Register a service provider with the application.
+	 *
+	 * @param  Illuminate\Foundation\ServiceProvider  $provider
+	 * @param  array  $options
+	 * @return void
+	 */
+	public function register(ServiceProvider $provider, array $options = array())
+	{
+		$provider->register($this);
+
+		foreach ($options as $key => $value)
+		{
+			$this[$key] = $value;
+		}
 	}
 
 	/**
@@ -55,6 +86,39 @@ class Application extends Container implements ArrayAccess {
 	}
 
 	/**
+	 * Register a "before" application middleware.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function before(Closure $callback)
+	{
+		$this->globalMiddlewares['before'][] = $callback;
+	}
+
+	/**
+	 * Register an "after" application middleware.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function after(Closure $callback)
+	{
+		$this->globalMiddlewares['after'][] = $callback;
+	}
+
+	/**
+	 * Register a "finish" application middleware.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function finish(Closure $callback)
+	{
+		$this->globalMiddlewares['finish'][] = $callback;
+	}
+
+	/**
 	 * Get the evaluated contents of the given view.
 	 *
 	 * @param  string  $view
@@ -77,30 +141,6 @@ class Application extends Container implements ArrayAccess {
 	public function respond($content = '', $status = 200, $headers = array())
 	{
 		return new Response($content, $status, $headers);
-	}
-
-	/**
-	 * Retrieve an input item from the request.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
-	 * @return string
-	 */
-	public function input($key = null, $default = null)
-	{
-		return $this['request']->input($key, $default);
-	}
-
-	/**
-	 * Retrieve an old input item.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
-	 * @return string
-	 */
-	public function old($key = null, $default = null)
-	{
-		return $this['request']->old($key, $default);
 	}
 
 	/**
@@ -138,6 +178,44 @@ class Application extends Container implements ArrayAccess {
 	}
 
 	/**
+	 * Register a new middleware with the application.
+	 *
+	 * @param  string   $name
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function addMiddleware($name, Closure $callback)
+	{
+		$this->middlewares[$name] = $callback;
+	}
+
+	/**
+	 * Get a registered middleware callback.
+	 *
+	 * @param  string   $name
+	 * @return Closure
+	 */
+	public function getMiddleware($name)
+	{
+		if (array_key_exists($name, $this->middlewares))
+		{
+			return $this->middlewares[$name];
+		}
+	}
+
+	/**
+	 * Tie a registered middleware to a URI pattern.
+	 *
+	 * @param  string  $pattern
+	 * @param  string  $name
+	 * @return void
+	 */
+	public function matchMiddleware($pattern, $name)
+	{
+		$this->patternMiddlewares[$pattern][] = $name;
+	}
+
+	/**
 	 * Handles the given request and delivers the response.
 	 *
 	 * @param  Illuminate\Foundation\Request  $request
@@ -164,17 +242,17 @@ class Application extends Container implements ArrayAccess {
 
 		// Once we have successfully run the request, we can terminate it so
 		// the request can be completely done and any final event may be
-		// fired off by the application before the request is ended.
+		// fired off by the applications before the request is ended.
 		$this->terminate($request, $response);
 	}
 
 	/**
 	 * Prepare the request by injecting any services.
 	 *
-	 * @param  Symfony\Component\HttpFoundation\Request
-	 * @return Symfony\Component\HttpFoundation\Request
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return Illuminate\Foundation\Request
 	 */
-	public function prepareRequest(SymfonyRequest $request)
+	public function prepareRequest(Request $request)
 	{
 		if (isset($this['session']))
 		{

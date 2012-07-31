@@ -1,18 +1,18 @@
 <?php namespace Illuminate\Foundation\Provider;
 
-use Silex\ServiceProviderInterface;
 use Illuminate\Session\CookieStore;
+use Illuminate\Foundation\Application;
 use Illuminate\Session\TokenMismatchException;
 
-class SessionServiceProvider implements ServiceProviderInterface {
+class SessionServiceProvider extends ServiceProvider {
 
 	/**
 	 * Bootstrap the application events.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function boot(\Silex\Application $app)
+	public function boot(Application $app)
 	{
 		$this->registerSessionEvents($app);
 	}
@@ -20,12 +20,12 @@ class SessionServiceProvider implements ServiceProviderInterface {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
-		$app['session'] = $app->share(function() use ($app)
+		$app['session'] = $app->share(function($app)
 		{
 			return new CookieStore($app['encrypter'], $app['cookie']);
 		});
@@ -36,7 +36,7 @@ class SessionServiceProvider implements ServiceProviderInterface {
 	/**
 	 * Register the events needed for session management.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
 	protected function registerSessionEvents($app)

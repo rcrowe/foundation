@@ -1,29 +1,18 @@
 <?php namespace Illuminate\Foundation\Provider;
 
-use Silex\ServiceProviderInterface;
+use Illuminate\Foundation\Application;
 
-class EventsServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @param  Silex\Application  $app
-	 * @return void
-	 */
-	public function boot(\Silex\Application $app)
-	{
-		//
-	}
+class EventsServiceProvider extends ServiceProvider {
 
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Silex\Application  $app
+	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(\Silex\Application $app)
+	public function register(Application $app)
 	{
-		$app['events'] = $app->share(function() use ($app)
+		$app['events'] = $app->share(function($app)
 		{
 			return new \Illuminate\Events\Dispatcher;
 		});
