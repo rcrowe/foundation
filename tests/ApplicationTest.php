@@ -1,8 +1,9 @@
 <?php
 
 use Mockery as m;
-use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Request;
 use Illuminate\Foundation\Lightbulb;
+use Illuminate\Foundation\Application;
 
 class ApplicationTest extends PHPUnit_Framework_TestCase {
 
@@ -15,6 +16,16 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function tearDown()
 	{
 		m::close();
+	}
+
+
+	public function testBasicRoutingIntegration()
+	{
+		$app = new Application;
+		$app['router']->get('/foo', function() { return 'bar'; });
+		$app['request'] = Request::create('/foo');
+		$response = $app->run();
+		$this->assertEquals('bar', $response->getContent());
 	}
 
 

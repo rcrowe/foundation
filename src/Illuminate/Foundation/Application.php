@@ -250,29 +250,11 @@ class Application extends Container {
 		$response = $this->prepareResponse($response);
 
 		// Once we have executed the route and called the "after" middleware
-		// we will send the response back to the browser and then call a
-		// last finish middleware to allow any last minute processing.
+		// we are ready to return the Response back to the consumer so it
+		// may be sent back to the client and displayed by the browsers.
 		$this->callAfterMiddleware($response);
 
-		$response->send();
-
-		$this->callFinishMiddleware($response);
-	}
-
-	/**
-	 * Prepare the request by injecting any services.
-	 *
-	 * @param  Illuminate\Foundation\Request  $request
-	 * @return Illuminate\Foundation\Request
-	 */
-	public function prepareRequest(Request $request)
-	{
-		if (isset($this['session']))
-		{
-			$request->setSessionStore($this['session']);
-		}
-
-		return $request;
+		return $response;
 	}
 
 	/**
@@ -290,23 +272,29 @@ class Application extends Container {
 		// value override the rest of the request process and return that out.
 		$before = $this->getBeforeMiddlewares($route, $request);
 
+		$response = null;
+
 		foreach ($before as $middleware)
 		{
 			$response = $this->callMiddleware($middleware);
-
-			if ( ! is_null($response)) return $response;
 		}
 
 		// If none of the before middlewares returned a response, we'll just execute
 		// the route that matched the request, then call the after filters for it
 		// and return the response back out so it will get sent to the clients.
-		$response = $route->run($request);
+		if (is_null($response))
+		{
+			$response = $route->run($request);
+		}
 
 		foreach ($route->getAfterMiddlewares() as $middleware)
 		{
 			$this->callMiddleware($middleware, array($response));
 		}
 
+		// Once all of the after middlewares are called we should be able to return
+		// the completed response object back to the consumer so it may be given
+		// to the client as a response. The Responses should be in final form.
 		return $response;
 	}
 
@@ -349,11 +337,40 @@ class Application extends Container {
 	}
 
 	/**
+	 * Prepare the request by injecting any services.
+	 *
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return Illuminate\Foundation\Request
+	 */
+	public function prepareRequest(Request $request)
+	{
+		if (isset($this['session']))
+		{
+			$request->setSessionStore($this['session']);
+		}
+
+		return $request;
+	}
+
+	/**
+	 * Prepare the given value as a Response object.
+	 *
+	 * @param  mixed  $value
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public function prepareResponse($value)
+	{
+		if ( ! $value instanceof Response) $value = new Response($value);
+
+		return $value;
+	}
+
+	/**
 	 * Call the "before" global middlware.
 	 *
 	 * @return mixed
 	 */
-	protected function callAfterMiddleware(Response $response)
+	public function callAfterMiddleware(Response $response)
 	{
 		return $this->callGlobalMiddleware('after', array($response));
 	}
@@ -363,7 +380,7 @@ class Application extends Container {
 	 *
 	 * @return mixed
 	 */
-	protected function callFinishMiddleware(Response $response)
+	public function callFinishMiddleware(Response $response)
 	{
 		return $this->callGlobalMiddleware('finish', array($response));
 	}
