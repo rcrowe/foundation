@@ -4,10 +4,9 @@ use Closure;
 use ArrayAccess;
 use Illuminate\Container;
 use Symfony\Component\HttpFoundation\Response;
-use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class Application extends \Silex\Application implements ArrayAccess {
+class Application extends Container implements ArrayAccess {
 
 	/**
 	 * The Illuminate container instance.
@@ -17,7 +16,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	public $container;
 
 	/**
-	 * Create a new Illuminate application.
+	 * Create a new Illuminate application instance.
 	 *
 	 * @return void
 	 */
@@ -25,15 +24,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	{
 		parent::__construct();
 
-		$app = $this;
-
-		// Illuminate extends the default controller collections to add an array
-		// of additional functionality and short-cuts to the class, so we'll
-		// override the default registration in the container with ours.
-		$this['controllers'] = $this->share(function() use ($app)
-		{
-			return new ControllerCollection($app);
-		});
+		$this['request'] = Request::createFromGlobals();
 	}
 
 	/**
@@ -44,7 +35,7 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function detectEnvironment(array $environments)
 	{
-		$base = $this['request_context']->getHost();
+		$base = $this['request']->getHost();
 
 		foreach ($environments as $environment => $hosts)
 		{
@@ -86,18 +77,6 @@ class Application extends \Silex\Application implements ArrayAccess {
 	public function respond($content = '', $status = 200, $headers = array())
 	{
 		return new Response($content, $status, $headers);
-	}
-
-	/**
-	 * Register a route group with shared attributes.
-	 *
-	 * @param  array    $attributes
-	 * @param  Closure  $callback
-	 * @return void
-	 */
-	public function group(array $attributes, Closure $callback)
-	{
-		return $this['controllers']->group($attributes, $callback);
 	}
 
 	/**
@@ -153,70 +132,25 @@ class Application extends \Silex\Application implements ArrayAccess {
 	 */
 	public function redirectToRoute($route, $parameters = array(), $status = 302)
 	{
-		$url = $this['url_generator']->generate($route, $parameters);
+		//
 
 		return $this->redirect($url, $status);
 	}
 
 	/**
-	 * Register a named middleware with the application.
-	 *
-	 * @param  string   $name
-	 * @param  Closure  $middleware
-	 * @return void
-	 */
-	public function addMiddleware($name, Closure $middleware)
-	{
-		return $this['controllers']->addMiddleware($name, $middleware);
-	}
-
-	/**
-	 * Assigns a URI pattern to a named middleware.
-	 *
-	 * @param  string   $middleware
-	 * @param  string   $pattern
-	 * @return void
-	 */
-	public function matchMiddleware($middleware, $pattern)
-	{
-		return $this['controllers']->matchMiddleware($middleware, $pattern);
-	}
-
-	/**
-	 * Get a given middleware Closure.
-	 *
-	 * @param  string   $name
-	 * @return Closure
-	 */
-	public function getMiddleware($name)
-	{
-		return $this['controllers']->getMiddleware($name);
-	}
-
-	/**
-	 * Create a new mountable controller collection.
-	 *
-	 * @return Illuminate\Foundation\ControllerCollection
-	 */
-	public function newMountable()
-	{
-		return new ControllerCollection($this);
-	}
-
-	/**
 	 * Handles the given request and delivers the response.
 	 *
-	 * @param  Symfony\Component\HttpFoundation\Request  $request
+	 * @param  Illuminate\Foundation\Request  $request
 	 * @return void
 	 */
-	public function run(SymfonyRequest $request = null)
+	public function run(Request $request = null)
 	{
 		// If no requests are given, we'll simply create one from PHP's global
 		// variables and send it into the handle method, which will create
 		// a Response that we can now send back to the client's browser.
 		if (is_null($request))
 		{
-			$request = Request::createFromGlobals();
+			$request = $this['request'];
 		}
 
 		// Once we have a request object, we will attempt to set the session
@@ -248,6 +182,19 @@ class Application extends \Silex\Application implements ArrayAccess {
 		}
 
 		return $request;
+	}
+
+	/**
+	 * Handle the given request and get the response.
+	 *
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	protected function handle(Request $request)
+	{
+		$route = $this['router']->match($request);
+
+		return $route->run($request);
 	}
 
 	/**
