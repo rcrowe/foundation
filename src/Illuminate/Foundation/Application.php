@@ -249,12 +249,14 @@ class Application extends Container {
 
 		$response = $this->prepareResponse($response);
 
+		$this->callAfterMiddleware($response);
+
 		// Once we have executed the route and called the "after" middleware
 		// we are ready to return the Response back to the consumer so it
 		// may be sent back to the client and displayed by the browsers.
-		$this->callAfterMiddleware($response);
+		$response->send();
 
-		return $response;
+		$this->callFinishMiddleware($response);
 	}
 
 	/**
@@ -263,7 +265,7 @@ class Application extends Container {
 	 * @param  Illuminate\Foundation\Request  $request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	protected function handle(Request $request)
+	public function handle(Request $request)
 	{
 		$route = $this['router']->match($request);
 
