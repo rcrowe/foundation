@@ -444,7 +444,7 @@ class Application extends Container {
 	{
 		array_unshift($parameters, $this['request']);
 
-		if (is_array($this->globalMiddlewares[$name]))
+		if (isset($this->globalMiddlewares[$name]))
 		{
 			foreach ($this->globalMiddlewares[$name] as $middleware)
 			{
