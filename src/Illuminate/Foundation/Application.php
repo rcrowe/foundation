@@ -83,7 +83,7 @@ class Application extends Container {
 			// host in the requests context, then return that environment.
 			foreach ($hosts as $host)
 			{
-				if (str_is($base, $host))
+				if (str_is($host, $base))
 				{
 					return $this['env'] = $environment;
 				}
