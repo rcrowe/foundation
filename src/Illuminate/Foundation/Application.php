@@ -7,9 +7,11 @@ use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Provider\ServiceProvider;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class Application extends Container {
+class Application extends Container implements HttpKernelInterface {
 
 	/**
 	 * The application middlewares.
@@ -31,6 +33,13 @@ class Application extends Container {
 	 * @var array
 	 */
 	protected $globalMiddlewares = array();
+
+	/**
+	 * The current requests being executed.
+	 *
+	 * @var array
+	 */
+	protected $requestStack = array();
 
 	/**
 	 * Create a new Illuminate application instance.
@@ -271,7 +280,7 @@ class Application extends Container {
 
 		if (is_null($response))
 		{
-			$response = $this->handle($request);
+			$response = $this->getResponse($request);
 		}
 		else
 		{
@@ -294,7 +303,7 @@ class Application extends Container {
 	 * @param  Illuminate\Foundation\Request  $request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public function handle(Request $request)
+	public function getResponse(Request $request)
 	{
 		$route = $this['router']->match($request);
 
@@ -327,6 +336,21 @@ class Application extends Container {
 		// the completed response object back to the consumer so it may be given
 		// to the client as a response. The Responses should be in final form.
 		return $this->prepareResponse($response);
+	}
+
+	/**
+	 * Handle the given request and get the response.
+	 *
+	 * @implements HttpKernelInterface::handle
+	 *
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @param  int   $type
+	 * @param  bool  $catch
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public function handle(SymfonyRequest $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		return $this->getResponse($request);
 	}
 
 	/**

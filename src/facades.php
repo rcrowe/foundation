@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Facade;
+use Illuminate\Support\Facade;
 
 class Auth extends Facade {
 
@@ -13,7 +13,19 @@ class Auth extends Facade {
 
 }
 
-class Blade extends Facade {
+class View extends Facade {
+
+	/**
+	 * Retrieve the evaluated contents of a template.
+	 *
+	 * @param  string  $view
+	 * @param  array   $parameters
+	 * @return string
+	 */
+	public static function of($view, array $parameters = array())
+	{
+		return static::$app['blade']->show($view, $parameters);
+	}
 
 	/**
 	 * Get the registered name of the component.
@@ -65,6 +77,17 @@ class DB extends Facade {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() { return 'db'; }
+
+}
+
+class Event extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'events'; }
 
 }
 

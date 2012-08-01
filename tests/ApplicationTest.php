@@ -24,7 +24,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['router']->get('/foo', function() { return 'bar'; });
 		$app['request'] = Request::create('/foo');
-		$response = $app->handle($app['request']);
+		$response = $app->getResponse($app['request']);
 		$this->assertEquals('bar', $response->getContent());
 	}
 

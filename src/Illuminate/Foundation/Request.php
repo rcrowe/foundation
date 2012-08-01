@@ -1,8 +1,9 @@
 <?php namespace Illuminate\Foundation;
 
 use Illuminate\Session\Store as SessionStore;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class Request extends \Symfony\Component\HttpFoundation\Request {
+class Request extends SymfonyRequest {
 
 	/**
 	 * The Illuminate session store implementation.

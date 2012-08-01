@@ -63,13 +63,13 @@ foreach ($config as $key => $value)
 |
 */
 
-use Illuminate\Foundation\Facade;
+use Illuminate\Support\Facade;
 
 if (isset($app['facade']) and $app['facade'])
 {
 	Facade::setFacadeApplication($app);
 
-	Facade::loadFacades();
+	require_once __DIR__.'/facades.php';
 }
 
 /*
