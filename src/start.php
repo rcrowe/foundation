@@ -2,12 +2,25 @@
 
 /*
 |--------------------------------------------------------------------------
+| Register Application Exception Handling
+|--------------------------------------------------------------------------
+|
+| We will go ahead and register the application exception handling here
+| which will provide a nice output of exception details and a stack
+// trace in the event of exceptions during application execution.
+|
+*/
+
+$app->startExceptionHandling();
+
+/*
+|--------------------------------------------------------------------------
 | Load The Environment Configuration
 |--------------------------------------------------------------------------
 |
-| You may specify a config for each environment. The default config will be
-| included on every request and the environment config gives a chance to
-| customize the applications such as tweaking these service's options.
+| You may specify a config for each environment. The default config will
+| be included on every request and the environment config gives us a
+| chance to customize the applications such as adjusting services.
 |
 */
 
@@ -84,7 +97,7 @@ foreach ($app['providers'] as $provider)
 |
 | Here we'll load all of the language messages for the application, which
 | are all stored in a single language file. The translator service is
-| automatically registered for us via the core services provider.
+| automatically registered for us via the core services providers.
 |
 */
 

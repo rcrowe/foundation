@@ -24,8 +24,9 @@
         "illuminate/session": ">=1.0.0",
         "illuminate/support": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
-        "underscore/Underscore.php": ">=1.0.0",
-        "symfony/translation": "2.*"
+        "symfony/http-kernel": "2.*",
+        "symfony/translation": "2.*",
+        "underscore/Underscore.php": ">=1.0.0"
     },
     "require-dev": {
         "mockery/mockery": "0.7.*"

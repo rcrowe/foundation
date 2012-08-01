@@ -6,6 +6,8 @@ use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Provider\ServiceProvider;
+use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 class Application extends Container {
 
@@ -43,20 +45,25 @@ class Application extends Container {
 	}
 
 	/**
-	 * Register a service provider with the application.
+	 * Register exception handling for the application.
 	 *
-	 * @param  Illuminate\Foundation\ServiceProvider  $provider
-	 * @param  array  $options
 	 * @return void
 	 */
-	public function register(ServiceProvider $provider, array $options = array())
+	public function startExceptionHandling()
 	{
-		$provider->register($this);
+		ErrorHandler::register(-1);
 
-		foreach ($options as $key => $value)
+		$me = $this;
+
+		// We'll register a custom exception handler that will wrap the usage of the
+		// HTTP Kernel component's exception handlers. This gives us a chance to
+		// trigger any other events that may take care of things like logging.
+		set_exception_handler(function($exception) use ($me)
 		{
-			$this[$key] = $value;
-		}
+			$handler = new ExceptionHandler($me['debug']);
+
+			$handler->handle($exception);
+		});
 	}
 
 	/**
@@ -84,6 +91,26 @@ class Application extends Container {
 		}
 
 		return $this['env'] = 'default';
+	}
+
+	/**
+	 * Register a service provider with the application.
+	 *
+	 * @param  Illuminate\Foundation\Provider\ServiceProvider  $provider
+	 * @param  array  $options
+	 * @return void
+	 */
+	public function register(ServiceProvider $provider, array $options = array())
+	{
+		$provider->register($this);
+
+		// Once we have registered the service, we will iterate through the options
+		// and set each of them on the application so they will be available on
+		// the actual loading of the service objects and for developer usage.
+		foreach ($options as $key => $value)
+		{
+			$this[$key] = $value;
+		}
 	}
 
 	/**
@@ -246,8 +273,10 @@ class Application extends Container {
 		{
 			$response = $this->handle($request);
 		}
-
-		$response = $this->prepareResponse($response);
+		else
+		{
+			$response = $this->prepareResponse($response);
+		}
 
 		$this->callAfterMiddleware($response);
 
@@ -271,7 +300,7 @@ class Application extends Container {
 
 		// Once we have the route and before middlewares, we'll iterate through them
 		// and call each one. If one of them returns a response, we will let that
-		// value override the rest of the request process and return that out.
+		// value overrides the rest of the request process and return that out.
 		$before = $this->getBeforeMiddlewares($route, $request);
 
 		$response = null;
@@ -283,7 +312,7 @@ class Application extends Container {
 
 		// If none of the before middlewares returned a response, we'll just execute
 		// the route that matched the request, then call the after filters for it
-		// and return the response back out so it will get sent to the clients.
+		// and return the responses back out so it will get sent to the clients.
 		if (is_null($response))
 		{
 			$response = $route->run($request);
@@ -297,7 +326,7 @@ class Application extends Container {
 		// Once all of the after middlewares are called we should be able to return
 		// the completed response object back to the consumer so it may be given
 		// to the client as a response. The Responses should be in final form.
-		return $response;
+		return $this->prepareResponse($response);
 	}
 
 	/**
@@ -415,9 +444,12 @@ class Application extends Container {
 	{
 		array_unshift($parameters, $this['request']);
 
-		if (isset($this->globalMiddlewares[$name]))
+		if (is_array($this->globalMiddlewares[$name]))
 		{
-			return call_user_func_array($this->globalMiddlewares[$name], $parameters);
+			foreach ($this->globalMiddlewares[$name] as $middleware)
+			{
+				return call_user_func_array($middleware, $parameters);
+			}
 		}
 	}
 
