@@ -26,6 +26,7 @@
         "illuminate/support": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
         "symfony/browser-kit": "2.*",
+        "symfony/css-selector": "2.*",
         "symfony/dom-crawler": "2.*",
         "symfony/http-kernel": "2.*",
         "symfony/translation": "2.*",
