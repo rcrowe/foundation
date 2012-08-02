@@ -241,6 +241,16 @@ class Request extends SymfonyRequest {
 	}
 
 	/**
+	 * Determine if the request is the result of an AJAX call.
+	 * 
+	 * @return bool
+	 */
+	public function ajax()
+	{
+		return $this->isXmlHttpRequest();
+	}
+
+	/**
 	 * Get the root URL for the application.
 	 *
 	 * @return string
