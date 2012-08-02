@@ -140,6 +140,17 @@ class Request extends SymfonyRequest {
 	}
 
 	/**
+	 * Determine if the uploaded data contains a file.
+	 *
+	 * @param  string  $key
+	 * @return bool
+	 */
+	public function has_file($key)
+	{
+		return is_null($this->retrieveItem('files', $key, null));
+	}
+
+	/**
 	 * Retrieve a header from the request.
 	 *
 	 * @param  string  $key

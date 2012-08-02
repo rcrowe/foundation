@@ -164,3 +164,32 @@ class Validator extends Facade {
 	protected static function getFacadeAccessor() { return 'validator'; }
 
 }
+
+class Input extends Facade {
+
+	/**
+	 * Get an item from the input data.
+	 *
+	 * This method is used for all request verbs (GET, POST, PUT, and DELETE)
+	 *
+	 * @param  string $key
+	 * @param  mixed  $default
+	 * @return mixed
+	 */
+	public static function get($key = null, $default = null)
+	{
+		return static::$app['request']->input($key, $default);
+	}
+
+	/**
+	 * Get all of the input data for the request, including files.
+	 * @return array
+	 */
+	public static function all()
+	{
+		return static::$app['request']->all();
+	}
+
+	protected static function getFacadeAccessor() { return 'request'; }
+
+}

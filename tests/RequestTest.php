@@ -74,6 +74,24 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('Symfony\Component\HttpFoundation\File\UploadedFile', $request->file('foo'));
 	}
 
+	public function testHasFileMethod()
+	{
+		$request = Request::create('/', 'GET', array(), array(), array());
+		$this->assertFalse($request->has_file('foo'));
+
+		$files = array(
+			'foo' => array(
+				'size' => 500,
+				'name' => 'foo.jpg',
+				'tmp_name' => __FILE__,
+				'type' => 'blah',
+				'error' => null,
+			),
+		);
+		$request = Request::create('/', 'GET', array(), array(), $files);
+		$this->assertTrue($request->has_file('foo'));
+	}
+
 
 	public function testHeaderMethod()
 	{
