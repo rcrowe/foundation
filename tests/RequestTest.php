@@ -106,7 +106,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$request = Request::create('/', 'GET', array('name' => 'Taylor'));
 		$replace = array('buddy' => 'Dayle');
 		$request->replace($replace);
-		$this->assertEquals(null, $request->input('name'));
+		$this->assertEquals(null, $request->input('name', null));
 		$this->assertEquals('Dayle', $request->input('buddy'));
 	}
 
