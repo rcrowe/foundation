@@ -92,6 +92,23 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($request->has_file('foo'));
 	}
 
+	public function testMergeMethod()
+	{
+		$request = Request::create('/', 'GET', array('name' => 'Taylor'));
+		$merge = array('buddy' => 'Dayle');
+		$request->merge($merge);
+		$this->assertEquals('Taylor', $request->input('name'));
+		$this->assertEquals('Dayle', $request->input('buddy'));
+	}
+
+	public function testReplaceMethod()
+	{
+		$request = Request::create('/', 'GET', array('name' => 'Taylor'));
+		$replace = array('buddy' => 'Dayle');
+		$request->replace($replace);
+		$this->assertEquals(null, $request->input('name'));
+		$this->assertEquals('Dayle', $request->input('buddy'));
+	}
 
 	public function testHeaderMethod()
 	{
