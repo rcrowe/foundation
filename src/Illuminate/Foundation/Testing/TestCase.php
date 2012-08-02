@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Testing;
 
-class TestCase extends PHPUnit_Framework_TestCase {
+class TestCase extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * The Illuminate application instance.
