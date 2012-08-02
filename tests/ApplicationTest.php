@@ -24,8 +24,51 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['router']->get('/foo', function() { return 'bar'; });
 		$app['request'] = Request::create('/foo');
-		$response = $app->getResponse($app['request']);
+		$response = $app->dispatch($app['request']);
 		$this->assertEquals('bar', $response->getContent());
+	}
+
+
+	public function testBeforeFilterHaltsResponse()
+	{
+		$app = new Application;
+		$app->before(function() { return 'foo'; });
+		$app['router']->get('/foo', function() { return 'bar'; });
+		$app['request'] = Request::create('/foo');
+		$response = $app->dispatch($app['request']);
+		$this->assertEquals('foo', $response->getContent());
+	}
+
+
+	public function testRouteBeforeMiddlewareHaltsResponse()
+	{
+		$app = new Application;
+		$route = $app['router']->get('/foo', function() { return 'bar'; });
+		$route->before('filter');
+		$app->addMiddleware('filter', function() { return 'foo'; });
+		$app['request'] = Request::create('/foo');
+		$response = $app->dispatch($app['request']);
+		$this->assertEquals('foo', $response->getContent());
+	}
+
+
+	public function testAllFiltersAreCalled()
+	{
+		$_SERVER['__filter.test'] = 0;
+		$app = new Application;
+		$app->before(function() { $_SERVER['__filter.test']++; });
+		$app->before(function() { $_SERVER['__filter.test']++; });
+		$app->after(function() { $_SERVER['__filter.test']++; });
+		$app->after(function() { $_SERVER['__filter.test']++; });
+		$route = $app['router']->get('/foo', function() { return 'bar'; });
+		$route->before('filter1', 'filter2');
+		$route->after('filter1', 'filter2');
+		$app->addMiddleware('filter1', function() { $_SERVER['__filter.test']++; });
+		$app->addMiddleware('filter2', function() { $_SERVER['__filter.test']++; });
+		$app['request'] = Request::create('/foo');
+		$response = $app->dispatch($app['request']);
+		$this->assertEquals(8, $_SERVER['__filter.test']);
+		unset($_SERVER['__filter.test']);
 	}
 
 

@@ -14,6 +14,13 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 class Application extends Container implements HttpKernelInterface {
 
 	/**
+	 * Indicates if the application has "booted".
+	 *
+	 * @var bool
+	 */
+	protected $booted = false;
+
+	/**
 	 * The application middlewares.
 	 *
 	 * @var array
@@ -33,6 +40,13 @@ class Application extends Container implements HttpKernelInterface {
 	 * @var array
 	 */
 	protected $globalMiddlewares = array();
+
+	/**
+	 * All of the registered service providers.
+	 *
+	 * @var array
+	 */
+	protected $serviceProviders = array();
 
 	/**
 	 * The current requests being executed.
@@ -120,6 +134,8 @@ class Application extends Container implements HttpKernelInterface {
 		{
 			$this[$key] = $value;
 		}
+
+		$this->serviceProviders[] = $provider;
 	}
 
 	/**
@@ -258,40 +274,12 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Handles the given request and delivers the response.
 	 *
-	 * @param  Illuminate\Foundation\Request  $request
 	 * @return void
 	 */
-	public function run(Request $request = null)
+	public function run()
 	{
-		// If no requests are given, we'll simply create one from PHP's global
-		// variables and send it into the handle method, which will create
-		// a Response that we can now send back to the client's browser.
-		if (is_null($request))
-		{
-			$request = $this['request'];
-		}
+		$response = $this->dispatch($this['request']);
 
-		$this->prepareRequest($request);
-
-		// First we will call the "before" global middlware, which we'll give
-		// a chance to override the normal request process when a response
-		// is returned by the middlewares. Otherwise we call the routes.
-		$response =  $this->callGlobalMiddleware('before');
-
-		if (is_null($response))
-		{
-			$response = $this->getResponse($request);
-		}
-		else
-		{
-			$response = $this->prepareResponse($response);
-		}
-
-		$this->callAfterMiddleware($response);
-
-		// Once we have executed the route and called the "after" middleware
-		// we are ready to return the Response back to the consumer so it
-		// may be sent back to the client and displayed by the browsers.
 		$response->send();
 
 		$this->callFinishMiddleware($response);
@@ -303,8 +291,30 @@ class Application extends Container implements HttpKernelInterface {
 	 * @param  Illuminate\Foundation\Request  $request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public function getResponse(Request $request)
+	public function dispatch(Request $request)
 	{
+		// Before we handle the requests we need to make sure the application has been
+		// booted up. The boot process will call the "boot" method on each service
+		// provider giving them all a chance to register any application events.
+		if ( ! $this->booted)
+		{
+			$this->boot();
+
+			$this->booted = true;
+		}
+
+		$this->prepareRequest($request);
+
+		// First we will call the "before" global middlware, which we'll give a chance
+		// to override the normal requests process when a response is returned by a
+		// middlewares. Otherwise we'll call the route just like a normal reuqest.
+		$response =  $this->callGlobalMiddleware('before');
+
+		if ( ! is_null($response))
+		{
+			return $this->prepareResponse($response);
+		}
+
 		$route = $this['router']->match($request);
 
 		// Once we have the route and before middlewares, we'll iterate through them
@@ -324,8 +334,10 @@ class Application extends Container implements HttpKernelInterface {
 		// and return the responses back out so it will get sent to the clients.
 		if (is_null($response))
 		{
-			$response = $route->run($request);
+			$response = $this->runRoute($route, $request);
 		}
+
+		$response = $this->prepareResponse($response);
 
 		foreach ($route->getAfterMiddlewares() as $middleware)
 		{
@@ -335,11 +347,41 @@ class Application extends Container implements HttpKernelInterface {
 		// Once all of the after middlewares are called we should be able to return
 		// the completed response object back to the consumer so it may be given
 		// to the client as a response. The Responses should be in final form.
+		$this->callAfterMiddleware($response);
+
 		return $this->prepareResponse($response);
 	}
 
 	/**
+	 * Execute the given route with the request.
+	 *
+	 * @param  Illuminate\Routing\Route  $route
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @return mixed
+	 */
+	protected function runRoute(Route $route, Request $request)
+	{
+		// When making a request to a route, we'll push the current request object
+		// onto the request stack and set the given request as the new request
+		// that is active. This allows for true HMVC requests within routes.
+		$this->requestStack[] = $this['request'];
+
+		$this['request'] = $request;
+
+		$response = $route->run($request);
+
+		// Once the route has been run we'll want to pop the old request back into
+		// the active position so any request prior to an HMVC call can run as
+		// expected without worrying about the HMVC request waxing its data.
+		$this['request'] = array_pop($this->requestStack);
+
+		return $response;
+	}
+
+	/**
 	 * Handle the given request and get the response.
+	 *
+	 * Provides compatibility with BrowserKit functional testing.
 	 *
 	 * @implements HttpKernelInterface::handle
 	 *
@@ -350,7 +392,20 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function handle(SymfonyRequest $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		return $this->getResponse($request);
+		return $this->dispatch($request);
+	}
+
+	/**
+	 * Boot the application's service providers.
+	 *
+	 * @return void
+	 */
+	protected function boot()
+	{
+		foreach ($this->serviceProviders as $provider)
+		{
+			$provider->boot($this);
+		}
 	}
 
 	/**
@@ -470,11 +525,26 @@ class Application extends Container implements HttpKernelInterface {
 
 		if (isset($this->globalMiddlewares[$name]))
 		{
+			// There may be multiple handlers registered for a global middleware so we
+			// will need to spin through each one and execute each of them and will
+			// return back first non-null responses we come across from a filter.
 			foreach ($this->globalMiddlewares[$name] as $middleware)
 			{
-				return call_user_func_array($middleware, $parameters);
+				$response = call_user_func_array($middleware, $parameters);
+
+				if ( ! is_null($response)) return $response;
 			}
 		}
+	}
+
+	/**
+	 * Get the current application request stack.
+	 *
+	 * @return array
+	 */
+	public function getRequestStack()
+	{
+		return $this->requestStack;
 	}
 
 	/**
