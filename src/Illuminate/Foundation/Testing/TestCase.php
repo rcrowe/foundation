@@ -1,6 +1,4 @@
-<?php namespace Illuminate\Foundation;
-
-use Symfony\Component\HttpKernel\Client;
+<?php namespace Illuminate\Foundation\Testing;
 
 class TestCase extends PHPUnit_Framework_TestCase {
 
@@ -14,7 +12,7 @@ class TestCase extends PHPUnit_Framework_TestCase {
 	/**
 	 * The HttpKernel client instance.
 	 *
-	 * @var Symfony\Component\HttpKernel\Client
+	 * @var Illuminate\Foundation\Testing\CLient
 	 */
 	protected $client;
 
@@ -39,16 +37,6 @@ class TestCase extends PHPUnit_Framework_TestCase {
 	protected function createClient(array $server = array())
 	{
 		return new Client($this->app, $server);
-	}
-
-	/**
-	 * Execute a request against the test client application.
-	 *
-	 * @return Symfony\Component\DomCrawler\Crawler
-	 */
-	public function request()
-	{
-		// @todo
 	}
 
 }
