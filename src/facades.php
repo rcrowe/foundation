@@ -1,6 +1,5 @@
 <?php
 
-use Closure;
 use Illuminate\Support\Facade;
 
 class Auth extends Facade {
@@ -92,6 +91,40 @@ class Event extends Facade {
 
 }
 
+class Input extends Facade {
+
+	/**
+	 * Get an item from the input data.
+	 *
+	 * This method is used for all request verbs (GET, POST, PUT, and DELETE)
+	 *
+	 * @param  string $key
+	 * @param  mixed  $default
+	 * @return mixed
+	 */
+	public static function get($key = null, $default = null)
+	{
+		return static::$app['request']->input($key, $default);
+	}
+
+	/**
+	 * Get all of the input data for the request, including files.
+	 * @return array
+	 */
+	public static function all()
+	{
+		return static::$app['request']->everything();
+	}
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'request'; }
+
+}
+
 class On extends Facade {
 
 	/**
@@ -100,6 +133,17 @@ class On extends Facade {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() { return 'router'; }
+
+}
+
+class Profiler extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'profiler'; }
 
 }
 
@@ -163,46 +207,5 @@ class Validator extends Facade {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() { return 'validator'; }
-
-}
-
-class Input extends Facade {
-
-	/**
-	 * Get an item from the input data.
-	 *
-	 * This method is used for all request verbs (GET, POST, PUT, and DELETE)
-	 *
-	 * @param  string $key
-	 * @param  mixed  $default
-	 * @return mixed
-	 */
-	public static function get($key = null, $default = null)
-	{
-		return static::$app['request']->input($key, $default);
-	}
-
-	/**
-	 * Get all of the input data for the request, including files.
-	 * @return array
-	 */
-	public static function all()
-	{
-		return static::$app['request']->everything();
-	}
-
-	protected static function getFacadeAccessor() { return 'request'; }
-
-}
-
-class IoC extends Facade {
-
-	protected static function getFacadeAccessor() { return static::$app; }
-
-}
-
-class Profiler extends Facade {
-
-	protected static function getFacadeAccessor() { return 'profiler'; }
 
 }
