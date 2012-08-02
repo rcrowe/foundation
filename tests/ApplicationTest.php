@@ -25,6 +25,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app['router']->get('/foo', function() { return 'bar'; });
 		$app['request'] = Request::create('/foo');
 		$response = $app->dispatch($app['request']);
+		$this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
 		$this->assertEquals('bar', $response->getContent());
 	}
 
