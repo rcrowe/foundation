@@ -1,5 +1,6 @@
 <?php
 
+use Closure;
 use Illuminate\Support\Facade;
 
 class Auth extends Facade {
@@ -191,5 +192,17 @@ class Input extends Facade {
 	}
 
 	protected static function getFacadeAccessor() { return 'request'; }
+
+}
+
+class IoC extends Facade {
+
+	protected static function getFacadeAccessor() { return static::$app; }
+
+}
+
+class Profiler extends Facade {
+
+	protected static function getFacadeAccessor() { return 'profiler'; }
 
 }
