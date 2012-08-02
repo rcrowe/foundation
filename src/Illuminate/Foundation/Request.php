@@ -147,7 +147,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function has_file($key)
 	{
-		return is_null($this->retrieveItem('files', $key, null));
+		return $this->files->has($key);
 	}
 
 	/**
