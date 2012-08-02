@@ -187,7 +187,7 @@ class Input extends Facade {
 	 */
 	public static function all()
 	{
-		return static::$app['request']->all();
+		return static::$app['request']->everything();
 	}
 
 	protected static function getFacadeAccessor() { return 'request'; }
