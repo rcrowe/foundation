@@ -183,6 +183,52 @@ class Request extends SymfonyRequest {
 	}
 
 	/**
+	 * Flash the input for the current request to the session.
+	 *
+	 * @param  string $filter
+	 * @param  array  $keys
+	 * @return void
+	 */
+	public function flash($filter = null, $keys = array())
+	{
+		$flash = ( ! is_null($filter)) ? $this->$filter($keys) : $this->input();
+
+		$this->sessionStore->flashInput($flash);
+	}
+
+	/**
+	 * Flush all of the old input from the session.
+	 *
+	 * @return void
+	 */
+	public function flush()
+	{
+		$this->sessionStore->flashInput(array());
+	}
+
+	/**
+	 * Merge new input into the current request's input array.
+	 *
+	 * @param  array  $input
+	 * @return void
+	 */
+	public function merge(array $input)
+	{
+		$this->request->add($input);
+	}
+
+	/**
+	 * Replace the input for the current request.
+	 *
+	 * @param  array  $input
+	 * @return void
+	 */
+	public function replace(array $input)
+	{
+		$this->request->replace($input);
+	}
+
+	/**
 	 * Get the JSON payload for the request.
 	 *
 	 * @return object
