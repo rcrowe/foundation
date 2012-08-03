@@ -42,4 +42,22 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 		unset($_SERVER['__exception.handler']);
 	}
 
+
+	public function testFiveHundredCodeGivenOnNormalExceptions()
+	{
+		$handler = new ExceptionHandler;
+		$exception = new RuntimeException;
+		$callback = function($e, $code) { return $code; };
+		$this->assertEquals(500, $handler->handle($exception, array($callback)));	
+	}
+
+
+	public function testHttpStatusCodeGivenOnHttpExceptions()
+	{
+		$handler = new ExceptionHandler;
+		$exception = new Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+		$callback = function($e, $code) { return $code; };
+		$this->assertEquals(404, $handler->handle($exception, array($callback)));	
+	}
+
 }
