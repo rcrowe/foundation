@@ -544,7 +544,7 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register exception handling for the application.
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function startExceptionHandling()
 	{
@@ -552,17 +552,19 @@ class Application extends Container implements HttpKernelInterface {
 
 		$me = $this;
 
-		// We'll register a custom exception handler that will wrap the usage of the
-		// HTTP Kernel component's exception handlers. This gives us a chance to
-		// trigger any other events that may take care of things like logging.
-		set_exception_handler(function($exception) use ($me)
+		return $this->setExceptionHandler(function($exception) use ($me)
 		{
-			$me->getErrorHandlers();
+			$handlers = $me->getErrorHandlers();
 
 			$response = $me['exception']->handleException($exception, $handlers);
 
+			// If one of the custom error handlers returned a response, we will send that
+			// response back to the client after preparing it. This allows a specific
+			// type of exceptions to handled by a Closure giving good flexibility.
 			if ( ! is_null($response))
 			{
+				$response = $this->prepareResponse($response);
+
 				$response->send();
 			}
 			else
@@ -570,6 +572,19 @@ class Application extends Container implements HttpKernelInterface {
 				$me['kernel.exception']->handle($exception);
 			}
 		});
+	}
+
+	/**
+	 * Set the given Closure as the exception handler.
+	 *
+	 * This function is mainly needed for mocking purposes.
+	 *
+	 * @param  Closure  $handler
+	 * @return mixed
+	 */
+	protected function setExceptionHandler(Closure $handler)
+	{
+		return set_exception_handler($handler);
 	}
 
 	/**
@@ -591,6 +606,16 @@ class Application extends Container implements HttpKernelInterface {
 	public function getRequestStack()
 	{
 		return $this->requestStack;
+	}
+
+	/**
+	 * Get the array of error handlers.
+	 *
+	 * @return array
+	 */
+	public function getErrorHandlers()
+	{
+		return $this->errorHandlers;
 	}
 
 	/**

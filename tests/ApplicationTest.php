@@ -187,4 +187,59 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('bar', $response->headers->get('foo'));
 	}
 
+
+	public function testExceptionHandlingSendsResponseFromCustomHandler()
+	{
+		$app = new ApplicationCustomExceptionHandlerStub;
+		$exception = new Exception;
+		$errorHandler = m::mock('stdClass');
+		$errorHandler->shouldReceive('register')->once()->with(-1);
+		$exceptionHandler = m::mock('stdClass');
+		$exceptionHandler->shouldReceive('handleException')->once()->with($exception, array())->andReturn('foo');
+		$kernelHandler = m::mock('stdClass');
+		$kernelHandler->shouldReceive('handle')->never();
+		$app['kernel.exception'] = $kernelHandler;
+		$app['kernel.error'] = $errorHandler;
+		$app['exception'] = $exceptionHandler;
+		$handler = $app->startExceptionHandling();
+		$handler($exception);
+	}
+
+
+	public function testNoResponseFromCustomHandlerCallsKernelExceptionHandler()
+	{
+		$app = new ApplicationKernelExceptionHandlerStub;
+		$exception = new Exception;
+		$errorHandler = m::mock('stdClass');
+		$errorHandler->shouldReceive('register')->once()->with(-1);
+		$exceptionHandler = m::mock('stdClass');
+		$exceptionHandler->shouldReceive('handleException')->once()->with($exception, array())->andReturn(null);
+		$kernelHandler = m::mock('stdClass');
+		$kernelHandler->shouldReceive('handle')->once()->with($exception);
+		$app['kernel.exception'] = $kernelHandler;
+		$app['kernel.error'] = $errorHandler;
+		$app['exception'] = $exceptionHandler;
+		$handler = $app->startExceptionHandling();
+		$handler($exception);
+	}
+
+}
+
+class ApplicationCustomExceptionHandlerStub extends Illuminate\Foundation\Application {
+
+	public function prepareResponse($value)
+	{
+		$response = m::mock('Symfony\Component\HttpFoundation\Response');
+		$response->shouldReceive('send')->once();
+		return $response;
+	}
+
+	protected function setExceptionHandler(Closure $handler) { return $handler; }
+
+}
+
+class ApplicationKernelExceptionHandlerStub extends Illuminate\Foundation\Application {
+
+	protected function setExceptionHandler(Closure $handler) { return $handler; }
+
 }
