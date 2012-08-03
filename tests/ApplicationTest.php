@@ -195,7 +195,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$errorHandler = m::mock('stdClass');
 		$errorHandler->shouldReceive('register')->once()->with(-1);
 		$exceptionHandler = m::mock('stdClass');
-		$exceptionHandler->shouldReceive('handleException')->once()->with($exception, array())->andReturn('foo');
+		$exceptionHandler->shouldReceive('handle')->once()->with($exception, array())->andReturn('foo');
 		$kernelHandler = m::mock('stdClass');
 		$kernelHandler->shouldReceive('handle')->never();
 		$app['kernel.exception'] = $kernelHandler;
@@ -213,7 +213,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$errorHandler = m::mock('stdClass');
 		$errorHandler->shouldReceive('register')->once()->with(-1);
 		$exceptionHandler = m::mock('stdClass');
-		$exceptionHandler->shouldReceive('handleException')->once()->with($exception, array())->andReturn(null);
+		$exceptionHandler->shouldReceive('handle')->once()->with($exception, array())->andReturn(null);
 		$kernelHandler = m::mock('stdClass');
 		$kernelHandler->shouldReceive('handle')->once()->with($exception);
 		$app['kernel.exception'] = $kernelHandler;

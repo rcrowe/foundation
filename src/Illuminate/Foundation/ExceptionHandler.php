@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation;
 
 use Closure;
-use ReflectionMethod;
+use ReflectionFunction;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionHandler {
@@ -13,9 +13,9 @@ class ExceptionHandler {
 	 * @param  array  $handlers
 	 * @return void
 	 */
-	public function handleException($exception, array $handlers)
+	public function handle($exception, array $handlers)
 	{
-		foreach ($this->errorHandlers as $handler)
+		foreach ($handlers as $handler)
 		{
 			// If this exception handler does not handle the given exception, we will
 			// just go the next one. A Handler may type-hint the exception that it
@@ -55,25 +55,25 @@ class ExceptionHandler {
 	 */
 	protected function handlesException(Closure $handler, $exception)
 	{
-		$reflection = new ReflectionMethod($handler);
+		$reflection = new ReflectionFunction($handler);
 
-		return $reflection->getNumberOfParameters() > 0 or $this->hints($reflection, $exception);
+		return $reflection->getNumberOfParameters() == 0 or $this->hints($reflection, $exception);
 	}
 
 	/**
 	 * Determine if the given handler type hints the exception.
 	 *
-	 * @param  ReflectionMethod  $reflection
+	 * @param  ReflectionFunction  $reflection
 	 * @param  Exception  $exception
 	 * @return bool
 	 */
-	protected function hints(ReflectionMethod $reflection, $exception)
+	protected function hints(ReflectionFunction $reflection, $exception)
 	{
 		$parameters = $reflection->getParameters();
 
 		$expected = $parameters[0];
 
-		return $expected->getClass() and $expected->getClass()->isInstance($exception);
+		return ! $expected->getClass() or $expected->getClass()->isInstance($exception);
 	}
 
 }

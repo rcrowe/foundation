@@ -548,6 +548,9 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function startExceptionHandling()
 	{
+		// By registering the error handler with a level of -1, we state that we want
+		// all PHP errors converted to ErrorExceptions and thrown, which provides
+		// a quite strict development environment, but prevents unseen errors.
 		$this['kernel.error']->register(-1);
 
 		$me = $this;
@@ -556,7 +559,7 @@ class Application extends Container implements HttpKernelInterface {
 		{
 			$handlers = $me->getErrorHandlers();
 
-			$response = $me['exception']->handleException($exception, $handlers);
+			$response = $me['exception']->handle($exception, $handlers);
 
 			// If one of the custom error handlers returned a response, we will send that
 			// response back to the client after preparing it. This allows a specific
