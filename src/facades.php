@@ -136,17 +136,6 @@ class Input extends Facade {
 
 }
 
-class On extends Facade {
-
-	/**
-	 * Get the registered name of the component.
-	 *
-	 * @return string
-	 */
-	protected static function getFacadeAccessor() { return 'router'; }
-
-}
-
 class Profiler extends Facade {
 
 	/**
@@ -196,6 +185,17 @@ class Response extends Facade {
 	{
 		return static::$app->json($data, $status, $headers);
 	}
+
+}
+
+class Route extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'router'; }
 
 }
 
