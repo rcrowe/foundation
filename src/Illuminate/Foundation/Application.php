@@ -566,7 +566,7 @@ class Application extends Container implements HttpKernelInterface {
 			// type of exceptions to handled by a Closure giving good flexibility.
 			if ( ! is_null($response))
 			{
-				$response = $this->prepareResponse($response);
+				$response = $me->prepareResponse($response);
 
 				$response->send();
 			}
