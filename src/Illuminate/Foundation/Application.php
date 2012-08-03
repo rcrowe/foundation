@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Provider\ServiceProvider;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
 
 class Application extends Container implements HttpKernelInterface {
 
@@ -19,6 +19,13 @@ class Application extends Container implements HttpKernelInterface {
 	 * @var bool
 	 */
 	protected $booted = false;
+
+	/**
+	 * The current requests being executed.
+	 *
+	 * @var array
+	 */
+	protected $requestStack = array();
 
 	/**
 	 * The application middlewares.
@@ -49,11 +56,11 @@ class Application extends Container implements HttpKernelInterface {
 	protected $serviceProviders = array();
 
 	/**
-	 * The current requests being executed.
+	 * All of the registered error handlers.
 	 *
 	 * @var array
 	 */
-	protected $requestStack = array();
+	protected $errorHandlers = array();
 
 	/**
 	 * Create a new Illuminate application instance.
@@ -65,28 +72,11 @@ class Application extends Container implements HttpKernelInterface {
 		$this['router'] = new Router;
 
 		$this['request'] = Request::createFromGlobals();
-	}
 
-	/**
-	 * Register exception handling for the application.
-	 *
-	 * @return void
-	 */
-	public function startExceptionHandling()
-	{
-		ErrorHandler::register(-1);
-
-		$me = $this;
-
-		// We'll register a custom exception handler that will wrap the usage of the
-		// HTTP Kernel component's exception handlers. This gives us a chance to
-		// trigger any other events that may take care of things like logging.
-		set_exception_handler(function($exception) use ($me)
-		{
-			$handler = new ExceptionHandler($me['debug']);
-
-			$handler->handle($exception);
-		});
+		// The exception handler class takes care of determining which of the bound
+		// exception handler Closures should be called for a given exception and
+		// gets the response from them. We'll bind it here to allow overrides.
+		$this->registerExceptionHandlers();
 	}
 
 	/**
@@ -535,6 +525,62 @@ class Application extends Container implements HttpKernelInterface {
 				if ( ! is_null($response)) return $response;
 			}
 		}
+	}
+
+	/**
+	 * Register the exception handler instances.
+	 *
+	 * @return void
+	 */
+	protected function registerExceptionHandlers()
+	{
+		$this['exception'] = function() { return new ExceptionHandler; };
+
+		$this['kernel.error'] = function() { return new ErrorHandler; };
+
+		$this['kernel.exception'] = function() { return new KernelHandler; };
+	}
+
+	/**
+	 * Register exception handling for the application.
+	 *
+	 * @return void
+	 */
+	public function startExceptionHandling()
+	{
+		$this['kernel.error']->register(-1);
+
+		$me = $this;
+
+		// We'll register a custom exception handler that will wrap the usage of the
+		// HTTP Kernel component's exception handlers. This gives us a chance to
+		// trigger any other events that may take care of things like logging.
+		set_exception_handler(function($exception) use ($me)
+		{
+			$me->getErrorHandlers();
+
+			$response = $me['exception']->handleException($exception, $handlers);
+
+			if ( ! is_null($response))
+			{
+				$response->send();
+			}
+			else
+			{
+				$me['kernel.exception']->handle($exception);
+			}
+		});
+	}
+
+	/**
+	 * Register an application error handler.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function error(Closure $callback)
+	{
+		$this->errorHandlers[] = $callback;
 	}
 
 	/**
