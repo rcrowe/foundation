@@ -2,8 +2,8 @@
 
 use Illuminate\Filesystem;
 use Illuminate\Blade\Loader;
-use Illuminate\Blade\Factory;
 use Illuminate\Blade\Compiler;
+use Illuminate\Blade\Environment;
 use Illuminate\Validation\MessageBag;
 use Illuminate\Foundation\Application;
 
@@ -33,7 +33,7 @@ class BladeServiceProvider extends ServiceProvider {
 
 		$app['blade'] = $app->share(function($app)
 		{
-			$blade = new Factory($app['blade.loader']);
+			$blade = new Environment($app['blade.loader']);
 
 			// We will set the application instance as a shared piece of data within the
 			// Blade factory so it gets passed to every template that is rendered for
