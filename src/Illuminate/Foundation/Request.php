@@ -215,6 +215,7 @@ class Request extends SymfonyRequest {
 	public function merge(array $input)
 	{
 		$this->request->add($input);
+
 		$this->query->add($input);
 	}
 
@@ -227,6 +228,7 @@ class Request extends SymfonyRequest {
 	public function replace(array $input)
 	{
 		$this->request->replace($input);
+
 		$this->query->replace($input);
 	}
 

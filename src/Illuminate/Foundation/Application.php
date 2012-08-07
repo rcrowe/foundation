@@ -5,9 +5,11 @@ use Illuminate\Container;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Foundation\Provider\ServiceProvider;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
 
@@ -162,18 +164,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Get the evaluated contents of the given view.
-	 *
-	 * @param  string  $view
-	 * @param  array   $parameters
-	 * @return string
-	 */
-	public function show($view, array $parameters = array())
-	{
-		return $this['blade']->show($view, $parameters);
-	}
-
-	/**
 	 * Return a new response from the application.
 	 *
 	 * @param  string  $content
@@ -181,43 +171,22 @@ class Application extends Container implements HttpKernelInterface {
 	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public function respond($content = '', $status = 200, $headers = array())
+	public function respond($content = '', $status = 200, array $headers = array())
 	{
 		return new Response($content, $status, $headers);
 	}
 
 	/**
-	 * Generate a RedirectResponse to another URL.
+	 * Return a new JSON response from the application.
 	 *
-	 * @param  string   $url
-	 * @param  int      $status
-	 * @return Illuminate\RedirectResponse
-	 */
-	public function redirect($url, $status = 302)
-	{
-		$redirect = new RedirectResponse($url, $status);
-
-		if (isset($this['session']))
-		{
-			$redirect->setSession($this['session']);
-		}
-
-		return $redirect;
-	}
-
-	/**
-	 * Create a redirect response to a named route.
-	 *
-	 * @param  string  $route
-	 * @param  array   $parameters
+	 * @param  string  $content
 	 * @param  int     $status
-	 * @return Symfony\Component\HttpFoundation\RedirectResponse
+	 * @param  array   $headers
+	 * @return Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	public function redirectToRoute($route, $parameters = array(), $status = 302)
+	public function json($data = array(), $status = 200, array $headers = array())
 	{
-		//
-
-		return $this->redirect($url, $status);
+		return new JsonResponse($data, $status, $headers);
 	}
 
 	/**
@@ -289,8 +258,6 @@ class Application extends Container implements HttpKernelInterface {
 		if ( ! $this->booted)
 		{
 			$this->boot();
-
-			$this->booted = true;
 		}
 
 		$this->prepareRequest($request);
@@ -307,12 +274,10 @@ class Application extends Container implements HttpKernelInterface {
 
 		$route = $this['router']->match($request);
 
-		// Once we have the route and before middlewares, we'll iterate through them
-		// and call each one. If one of them returns a response, we will let that
-		// value overrides the rest of the request process and return that out.
+		// Once we have the route and before middlewares, we will iterate through them
+		// and call each one. If a given filter returns a response we will let that
+		// value override the rest of the request cycle and return the Responses.
 		$before = $this->getBeforeMiddlewares($route, $request);
-
-		$response = null;
 
 		foreach ($before as $middleware)
 		{
@@ -322,21 +287,21 @@ class Application extends Container implements HttpKernelInterface {
 		// If none of the before middlewares returned a response, we'll just execute
 		// the route that matched the request, then call the after filters for it
 		// and return the responses back out so it will get sent to the clients.
-		if (is_null($response))
+		if ( ! isset($response))
 		{
 			$response = $this->runRoute($route, $request);
 		}
 
 		$response = $this->prepareResponse($response);
 
+		// Once all of the after middlewares are called we should be able to return
+		// the completed response object back to the consumer so it may be given
+		// to the client as a response. The Responses should be in final form.
 		foreach ($route->getAfterMiddlewares() as $middleware)
 		{
 			$this->callMiddleware($middleware, array($response));
 		}
 
-		// Once all of the after middlewares are called we should be able to return
-		// the completed response object back to the consumer so it may be given
-		// to the client as a response. The Responses should be in final form.
 		$this->callAfterMiddleware($response);
 
 		return $this->prepareResponse($response);
@@ -396,6 +361,8 @@ class Application extends Container implements HttpKernelInterface {
 		{
 			$provider->boot($this);
 		}
+
+		$this->booted = true;
 	}
 
 	/**
@@ -528,6 +495,19 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Throw an HttpException with the given data.
+	 *
+	 * @param  int     $code
+	 * @param  string  $message
+	 * @param  array   $headers
+	 * @return void
+	 */
+	public function abort($code, $message = '', array $headers = array())
+	{
+		throw new HttpException($code, $message, null, $headers);
+	}
+
+	/**
 	 * Register the exception handler instances.
 	 *
 	 * @return void
@@ -563,7 +543,7 @@ class Application extends Container implements HttpKernelInterface {
 
 			// If one of the custom error handlers returned a response, we will send that
 			// response back to the client after preparing it. This allows a specific
-			// type of exceptions to handled by a Closure giving good flexibility.
+			// type of exceptions to handled by a Closure giving great flexibility.
 			if ( ! is_null($response))
 			{
 				$response = $me->prepareResponse($response);

@@ -24,29 +24,6 @@ class Auth extends Facade {
 
 }
 
-class View extends Facade {
-
-	/**
-	 * Retrieve the evaluated contents of a template.
-	 *
-	 * @param  string  $view
-	 * @param  array   $parameters
-	 * @return string
-	 */
-	public static function of($view, array $parameters = array())
-	{
-		return static::$app['blade']->show($view, $parameters);
-	}
-
-	/**
-	 * Get the registered name of the component.
-	 *
-	 * @return string
-	 */
-	protected static function getFacadeAccessor() { return 'blade'; }
-
-}
-
 class Cache extends Facade {
 
 	/**
@@ -168,7 +145,7 @@ class Response extends Facade {
 	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public static function make($content = '', $status = 200, $headers = array())
+	public static function make($content = '', $status = 200, array $headers = array())
 	{
 		return static::$app->respond($content, $status, $headers);
 	}
@@ -181,7 +158,7 @@ class Response extends Facade {
 	 * @param  array  $headers
 	 * @return Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	public static function json($data = array(), $status = 200, $headers = array())
+	public static function json($data = array(), $status = 200, array $headers = array())
 	{
 		return static::$app->json($data, $status, $headers);
 	}
@@ -218,5 +195,16 @@ class Validator extends Facade {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() { return 'validator'; }
+
+}
+
+class View extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'blade'; }
 
 }

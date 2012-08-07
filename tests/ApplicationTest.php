@@ -127,7 +127,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(true);
 	}
 
-
+	/*
 	public function testRedirectSetsSession()
 	{
 		$app = new Application;
@@ -157,7 +157,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$return = $redirect->withInput(array('foo'=> 'bar'));
 		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
 	}
-
+	*/
 
 	public function testPrepareRequestInjectsSession()
 	{
@@ -166,15 +166,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app->prepareRequest($request);
 		$this->assertEquals($app['session'], $request->getSessionStore());
-	}
-
-
-	public function testShowMethodCallsRenderOnBlade()
-	{
-		$app = new Application;
-		$app['blade'] = m::mock('Illuminate\Blade\Factory');
-		$app['blade']->shouldReceive('show')->once()->with('foo', array('bar' => 'baz'))->andReturn('boom');
-		$this->assertEquals('boom', $app->show('foo', array('bar' => 'baz')));
 	}
 
 
