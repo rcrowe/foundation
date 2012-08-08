@@ -295,7 +295,7 @@ class Application extends Container implements HttpKernelInterface {
 
 		if ( ! is_null($response))
 		{
-			return $this->prepareResponse($response);
+			return $this->prepareResponse($response, $request);
 		}
 
 		$route = $this['router']->dispatch($request);
@@ -318,7 +318,7 @@ class Application extends Container implements HttpKernelInterface {
 			$response = $route->run();
 		}
 
-		$response = $this->prepareResponse($response);
+		$response = $this->prepareResponse($response, $request);
 
 		// Once all of the "after" middlewares are called we should be able to return
 		// the completed response object back to the consumers so it will be given
@@ -330,7 +330,7 @@ class Application extends Container implements HttpKernelInterface {
 
 		$this->callAfterMiddleware($response);
 
-		return $this->prepareResponse($response);
+		return $response;
 	}
 
 	/**
@@ -423,13 +423,14 @@ class Application extends Container implements HttpKernelInterface {
 	 * Prepare the given value as a Response object.
 	 *
 	 * @param  mixed  $value
+	 * @param  Illuminate\Foundation\Request  $request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public function prepareResponse($value)
+	public function prepareResponse($value, Request $request)
 	{
 		if ( ! $value instanceof Response) $value = new Response($value);
 
-		return $value;
+		return $value->prepare($request);
 	}
 
 	/**
@@ -546,7 +547,7 @@ class Application extends Container implements HttpKernelInterface {
 			// type of exceptions to handled by a Closure giving great flexibility.
 			if ( ! is_null($response))
 			{
-				$response = $me->prepareResponse($response);
+				$response = $me->prepareResponse($response, $me['request']);
 
 				$response->send();
 			}
