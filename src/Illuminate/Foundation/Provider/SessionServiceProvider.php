@@ -41,9 +41,9 @@ class SessionServiceProvider extends ServiceProvider {
 	 */
 	protected function registerSessionEvents($app)
 	{
-		// The session needs to be started and closed, so we will register a
-		// before and after event to do all that for us. This will manage
-		// loading the session payloads as well as writing the session.
+		// The session needs to be started and closed, so we will register a before
+		// and after event to do all that for us. This will manage the loading
+		// the session payloads as well as writing them after each request.
 		$app->before(function($request) use ($app)
 		{
 			$app['session']->start($request);
