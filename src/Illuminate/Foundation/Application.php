@@ -231,6 +231,32 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Execute a callback in a request context.
+	 *
+	 * @param  Illuminate\Foundation\Request  $request
+	 * @param  Closure  $callback
+	 * @return mixed
+	 */
+	public function using(Request $request, Closure $callback)
+	{
+		// When making a request to a route, we'll push the current request object
+		// onto the request stack and set the given request as the new request
+		// that is active. This allows for true HMVC requests within routes.
+		$this->requestStack[] = $this['request'];
+
+		$this['request'] = $request;
+
+		$result = $callback();
+
+		// Once the route has been run we'll want to pop the old request back into
+		// the active position so any request prior to an HMVC call can run as
+		// expected without worrying about the HMVC request waxing its data.
+		$this['request'] = array_pop($this->requestStack);
+
+		return $result;
+	}
+
+	/**
 	 * Handles the given request and delivers the response.
 	 *
 	 * @return void
@@ -272,7 +298,7 @@ class Application extends Container implements HttpKernelInterface {
 			return $this->prepareResponse($response);
 		}
 
-		$route = $this['router']->match($request);
+		$route = $this['router']->dispatch($request);
 
 		// Once we have the route and before middlewares, we will iterate through them
 		// and call each one. If a given filter returns a response we will let that
@@ -284,19 +310,19 @@ class Application extends Container implements HttpKernelInterface {
 			$response = $this->callMiddleware($middleware);
 		}
 
-		// If none of the before middlewares returned a response, we'll just execute
-		// the route that matched the request, then call the after filters for it
-		// and return the responses back out so it will get sent to the clients.
+		// If none of the before middlewares returned a response, we will just execute
+		// the route that matched the request, then call the after filters for this
+		// and return the responses back out and they'll get sent to the clients.
 		if ( ! isset($response))
 		{
-			$response = $this->runRoute($route, $request);
+			$response = $route->run();
 		}
 
 		$response = $this->prepareResponse($response);
 
-		// Once all of the after middlewares are called we should be able to return
-		// the completed response object back to the consumer so it may be given
-		// to the client as a response. The Responses should be in final form.
+		// Once all of the "after" middlewares are called we should be able to return
+		// the completed response object back to the consumers so it will be given
+		// to the client as a response. The Responses should be final and ready.
 		foreach ($route->getAfterMiddlewares() as $middleware)
 		{
 			$this->callMiddleware($middleware, array($response));
@@ -305,32 +331,6 @@ class Application extends Container implements HttpKernelInterface {
 		$this->callAfterMiddleware($response);
 
 		return $this->prepareResponse($response);
-	}
-
-	/**
-	 * Execute the given route with the request.
-	 *
-	 * @param  Illuminate\Routing\Route  $route
-	 * @param  Illuminate\Foundation\Request  $request
-	 * @return mixed
-	 */
-	protected function runRoute(Route $route, Request $request)
-	{
-		// When making a request to a route, we'll push the current request object
-		// onto the request stack and set the given request as the new request
-		// that is active. This allows for true HMVC requests within routes.
-		$this->requestStack[] = $this['request'];
-
-		$this['request'] = $request;
-
-		$response = $route->run($request);
-
-		// Once the route has been run we'll want to pop the old request back into
-		// the active position so any request prior to an HMVC call can run as
-		// expected without worrying about the HMVC request waxing its data.
-		$this['request'] = array_pop($this->requestStack);
-
-		return $response;
 	}
 
 	/**
