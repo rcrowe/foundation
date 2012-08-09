@@ -1,4 +1,4 @@
-<?php namespace Illuminate\Foundation\Provider;
+<?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Validation\Factory;
 use Illuminate\Foundation\Application;

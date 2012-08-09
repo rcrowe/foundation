@@ -6,7 +6,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Illuminate\Foundation\Provider\ServiceProvider;
+use Illuminate\Foundation\Providers\ServiceProvider;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -111,7 +111,7 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register a service provider with the application.
 	 *
-	 * @param  Illuminate\Foundation\Provider\ServiceProvider  $provider
+	 * @param  Illuminate\Foundation\Providers\ServiceProvider  $provider
 	 * @param  array  $options
 	 * @return void
 	 */

@@ -1,4 +1,4 @@
-<?php namespace Illuminate\Foundation\Provider;
+<?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\CookieCreator;
 use Illuminate\Foundation\Application;
@@ -13,14 +13,14 @@ class CookieServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
-		$app['cookie.options'] = $this->cookieDefaults();
+		$app['cookie.defaults'] = $this->cookieDefaults();
 
 		// The Illuminate cookie creator is just a convenient way to make cookies
 		// that share a given set of options. Typically cookies created by the
 		// application will have the same settings so this just DRY's it up.
 		$app['cookie'] = $app->share(function($app)
 		{
-			$options = $app['cookie.options'];
+			$options = $app['cookie.defaults'];
 
 			extract($options);
 

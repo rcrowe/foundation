@@ -1,8 +1,8 @@
-<?php namespace Illuminate\Foundation\Provider;
+<?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Foundation\Application;
 
-class EncrypterServiceProvider extends ServiceProvider {
+class FilesServiceProvider extends ServiceProvider {
 
 	/**
 	 * Register the service provider.
@@ -12,9 +12,9 @@ class EncrypterServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
-		$app['encrypter'] = $app->share(function($app)
+		$app['files'] = $app->share(function($app)
 		{
-			return new \Illuminate\Encrypter($app['encrypter.key']);
+			return new \Illuminate\Filesystem;
 		});
 	}
 
