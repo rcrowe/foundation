@@ -15,6 +15,19 @@ $app->startExceptionHandling();
 
 /*
 |--------------------------------------------------------------------------
+| Register The Filesystem Object
+|--------------------------------------------------------------------------
+|
+| The Filesystem object will be used by the application in a variety of
+| of ways, but we are primarily concerned with it here for laoding a
+| group of configuration files holding arrays for the application.
+|
+*/
+
+$app['files'] = new Illuminate\Filesystem;
+
+/*
+|--------------------------------------------------------------------------
 | Load The Environment Configuration
 |--------------------------------------------------------------------------
 |
