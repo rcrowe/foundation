@@ -13,6 +13,7 @@ class BladeServiceProviderTest extends PHPUnit_Framework_TestCase {
 	public function testErrorsAreShared()
 	{
 		$app = new Illuminate\Foundation\Application;
+		$app['path'] = __DIR__;
 		$app['session'] = m::mock('stdClass');
 		$app['session']->shouldReceive('has')->once()->with('errors')->andReturn(true);
 		$app['session']->shouldReceive('get')->once()->with('errors')->andReturn('foo');
@@ -22,6 +23,7 @@ class BladeServiceProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo', $shared['errors']);
 
 		$app = new Illuminate\Foundation\Application;
+		$app['path'] = __DIR__;
 		$app->register(new Illuminate\Foundation\Providers\BladeServiceProvider);
 		$app['blade.loader'] = m::mock('Illuminate\Blade\Loader');
 		$shared = $app['blade']->getShared();

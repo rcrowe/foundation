@@ -55,7 +55,9 @@ class CacheManager extends Manager {
 	 */
 	protected function createFileDriver()
 	{
-		return new FileStore($this->app['files'], $this->app['cache.path']);
+		$path = $this->app['config']['cache.path'];
+
+		return new FileStore($this->app['files'], $path);
 	}
 
 	/**
@@ -65,11 +67,11 @@ class CacheManager extends Manager {
 	 */
 	protected function createMemcachedDriver()
 	{
-		$config = $this->app['cache.memcached'];
+		$servers = $this->app['config']['cache.memcached'];
 
 		$memcached = $this->app['memcached.connector']->connect($config);
 
-		return new MemcachedStore($memcached, $this->app['cache.prefix']);
+		return new MemcachedStore($memcached, $this->app['config']['cache.prefix']);
 	}
 
 	/**

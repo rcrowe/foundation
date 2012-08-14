@@ -17,16 +17,16 @@ class BladeServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
+		$app['blade.path'] = $app['path'].'/views';
+
+		$app['blade.cache'] = $app['blade.path'].'/cache';
+
 		$app['blade.loader'] = $app->share(function($app)
 		{
 			// We'll create a Blade loader instance with the path and cache paths set on
 			// the application. The loader is responsible for actually returning the
 			// fully qualified paths to the blade views to the factory instances.
-			$path = $app['blade.path'];
-
-			$cache = $app['blade.cache'];
-
-			$loader = new Loader(new Compiler, new Filesystem, $path, $cache);
+			$loader = new Loader(new Compiler, new Filesystem, $app['blade.path'], $app['blade.cache']);
 
 			return $loader;
 		});

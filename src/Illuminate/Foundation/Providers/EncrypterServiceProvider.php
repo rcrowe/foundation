@@ -14,7 +14,7 @@ class EncrypterServiceProvider extends ServiceProvider {
 	{
 		$app['encrypter'] = $app->share(function($app)
 		{
-			return new \Illuminate\Encrypter($app['encrypter.key']);
+			return new \Illuminate\Encrypter($app['config']['app.key']);
 		});
 	}
 

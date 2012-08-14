@@ -2,6 +2,21 @@
 
 /*
 |--------------------------------------------------------------------------
+| Register Class Imports
+|--------------------------------------------------------------------------
+|
+| Here we will just import a few classes that we need during the booting
+| of the framework. These are mainly classes that involve loading the
+| configuration files for the application, such as the file system.
+|
+*/
+
+use Illuminate\Filesystem;
+use Illuminate\Config\FileLoader as ConfigLoader;
+use Illuminate\Config\Repository as ConfigRepository;
+
+/*
+|--------------------------------------------------------------------------
 | Register Application Exception Handling
 |--------------------------------------------------------------------------
 |
@@ -15,55 +30,20 @@ $app->startExceptionHandling();
 
 /*
 |--------------------------------------------------------------------------
-| Register The Filesystem Object
+| Register The Configuration Repository
 |--------------------------------------------------------------------------
 |
-| The Filesystem object will be used by the application in a variety of
-| of ways, but we are primarily concerned with it here for laoding a
-| group of configuration files holding arrays for the application.
+| The configuration repository is used to lazily load in the options for
+| this application from the configuration files. The files are easily
+| separated by their concerns so they do not become really crowded.
 |
 */
 
-$app['files'] = new Illuminate\Filesystem;
+$path = $app['path'].'/config';
 
-/*
-|--------------------------------------------------------------------------
-| Load The Environment Configuration
-|--------------------------------------------------------------------------
-|
-| You may specify a config for each environment. The default config will
-| be included on every request and the environment config gives us a
-| chance to customize the applications such as adjusting services.
-|
-*/
+$loader = new ConfigLoader(new Filesystem, $path);
 
-$config = array();
-
-if (file_exists($path = $appPath.'/config/production.php'))
-{
-	$config = require $path;
-}
-
-if (file_exists($path = $appPath.'/config/'.$app['env'].'.php'))
-{
-	$config = array_merge($config, require $path);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Set The Application Configuration
-|--------------------------------------------------------------------------
-|
-| Now that we have the configuration array, we can set the values on the
-| application instance using "dot" syntax. This will make the options
-| available to all of the services that will also to be registered.
-|
-*/
-
-foreach ($config as $key => $value)
-{
-	$app[$key] = $value;
-}
+$app['config'] = new ConfigRepository($loader, $app['env']);
 
 /*
 |--------------------------------------------------------------------------
@@ -76,14 +56,9 @@ foreach ($config as $key => $value)
 |
 */
 
-use Illuminate\Support\Facade;
+Illuminate\Support\Facade::setFacadeApplication($app);
 
-if (isset($app['facade']) and $app['facade'])
-{
-	Facade::setFacadeApplication($app);
-
-	require_once __DIR__.'/facades.php';
-}
+require_once __DIR__.'/facades.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -105,28 +80,6 @@ foreach ($app['providers'] as $provider)
 
 /*
 |--------------------------------------------------------------------------
-| Load The Application Translation Messages
-|--------------------------------------------------------------------------
-|
-| Here we'll load all of the language messages for the application, which
-| are all stored in a single language file. The translator service is
-| automatically registered for us via the core services providers.
-|
-*/
-
-$messages = require $appPath.'/lang.php';
-
-$domains = array();
-
-if (isset($app['translator.domains']))
-{
-	$domains = $app['translator.domains'];
-}
-
-$app['translator.domains'] = array_merge($domains, compact('messages'));
-
-/*
-|--------------------------------------------------------------------------
 | Load The Application Start Script
 |--------------------------------------------------------------------------
 |
@@ -136,12 +89,12 @@ $app['translator.domains'] = array_merge($domains, compact('messages'));
 |
 */
 
-if (file_exists($path = $appPath.'/start/production.php'))
+if (file_exists($path = $app['path'].'/start/production.php'))
 {
 	require $path;
 }
 
-if (file_exists($path = $appPath.'/start/'.$app['env'].'.php'))
+if (file_exists($path = $app['path'].'/start/'.$app['env'].'.php'))
 {
 	require $path;
 }
@@ -157,4 +110,4 @@ if (file_exists($path = $appPath.'/start/'.$app['env'].'.php'))
 |
 */
 
-require $appPath.'/routes.php';
+require $app['path'].'/routes.php';
