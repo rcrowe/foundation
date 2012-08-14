@@ -69,7 +69,7 @@ class CacheManager extends Manager {
 	{
 		$servers = $this->app['config']['cache.memcached'];
 
-		$memcached = $this->app['memcached.connector']->connect($config);
+		$memcached = $this->app['memcached.connector']->connect($servers);
 
 		return new MemcachedStore($memcached, $this->app['config']['cache.prefix']);
 	}
