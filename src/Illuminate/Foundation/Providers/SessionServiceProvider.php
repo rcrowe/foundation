@@ -49,7 +49,7 @@ class SessionServiceProvider extends ServiceProvider {
 			$app['session']->start($request);
 		});
 
-		$app->after(function($request, $response) use ($app)
+		$app->close(function($request, $response) use ($app)
 		{
 			$app['session']->finish($response, $app['cookie']);
 		});
