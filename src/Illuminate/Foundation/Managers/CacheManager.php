@@ -81,7 +81,7 @@ class CacheManager extends Manager {
 	 */
 	protected function getDefaultDriver()
 	{
-		return $this->app['cache.driver'];
+		return $this->app['config']['cache.driver'];
 	}
 
 }
