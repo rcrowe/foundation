@@ -164,6 +164,17 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Register a "close" application middleware.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function close(Closure $callback)
+	{
+		$this->globalMiddlewares['close'][] = $callback;
+	}
+
+	/**
 	 * Register a "finish" application middleware.
 	 *
 	 * @param  Closure  $callback
@@ -445,13 +456,15 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Call the "before" global middlware.
+	 * Call the "after" global middlwares.
 	 *
 	 * @return mixed
 	 */
 	public function callAfterMiddleware(Response $response)
 	{
-		return $this->callGlobalMiddleware('after', array($response));
+		$this->callGlobalMiddleware('after', array($response));
+
+		$this->callGlobalMiddleware('close', array($response));
 	}
 
 	/**
