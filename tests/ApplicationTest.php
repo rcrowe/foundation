@@ -98,6 +98,15 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 			'local'   => array('local*')
 		));
 		$this->assertEquals('local', $app['env']);
+
+		$app = new Application;
+		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
+		$app['request']->shouldReceive('getHost')->andReturn('localhost');
+		$host = gethostname();
+		$app->detectEnvironment(array(
+			'local'   => array($host)
+		));
+		$this->assertEquals('local', $app['env']);
 	}
 
 	/**

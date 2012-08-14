@@ -98,7 +98,7 @@ class Application extends Container implements HttpKernelInterface {
 			// host in the requests context, then return that environment.
 			foreach ($hosts as $host)
 			{
-				if (str_is($host, $base))
+				if (str_is($host, $base) or $this->isMachine($host))
 				{
 					return $this['env'] = $environment;
 				}
@@ -106,6 +106,17 @@ class Application extends Container implements HttpKernelInterface {
 		}
 
 		return $this['env'] = 'default';
+	}
+
+	/**
+	 * Determine if the name matches the machine name.
+	 *
+	 * @param  string  $name
+	 * @return bool
+	 */
+	protected function isMachine($name)
+	{
+		return gethostname() == $name;
 	}
 
 	/**
