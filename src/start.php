@@ -71,7 +71,7 @@ require_once __DIR__.'/facades.php';
 |
 */
 
-foreach ($app['config']['providers'] as $provider)
+foreach ($app['config']['app.providers'] as $provider)
 {
 	$provider = '\\'.ltrim($provider, '\\');
 
