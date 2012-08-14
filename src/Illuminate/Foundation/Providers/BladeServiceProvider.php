@@ -30,7 +30,7 @@ class BladeServiceProvider extends ServiceProvider {
 	 */
 	protected function registerLoader($app)
 	{
-		// First we need to setup the paths for the Blade engine. These are simply the
+		// First we need to setup the paths for this Blade engine. These are simply the
 		// storage path for these templates, as well as the path where the compiled
 		// templates are stored for fast rendering. Then we'll create the loader.
 		$app['blade.path'] = $app['path'].'/views';
