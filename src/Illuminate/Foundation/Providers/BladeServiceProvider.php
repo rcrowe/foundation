@@ -39,7 +39,7 @@ class BladeServiceProvider extends ServiceProvider {
 
 		$app['blade.loader'] = $app->share(function($app)
 		{
-			return Loader::newInstance($app['blade.path'], $app['blade.cache']);
+			return Loader::make($app['blade.path'], $app['blade.cache']);
 		});
 	}
 
@@ -60,7 +60,7 @@ class BladeServiceProvider extends ServiceProvider {
 			// convenience. This allows access to the request, input, session, etc.
 			$blade->share('app', $app);
 
-			if (isset($app['session']) and $app['session']->has('errors'))
+			if ($this->hasBoundErrors($app))
 			{
 				$errors = $app['session']->get('errors');
 
@@ -77,6 +77,17 @@ class BladeServiceProvider extends ServiceProvider {
 
 			return $blade;
 		});
+	}
+
+	/**
+	 * Determine if the given application has errors.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return bool
+	 */
+	protected function hasBoundErrors($app)
+	{
+		return isset($app['session']) and $app['session']->has('errors');
 	}
 
 }
