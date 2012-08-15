@@ -42,27 +42,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function input($key = null, $default = null)
 	{
-		$input = $this->request->all();
-
-		// If the key is null, we'll merge the request input with the query string
-		// and return the entire array. This makes it convenient to get all of
-		// the inputs for the entire Request from both of the input sources.
-		if (is_null($key))
-		{
-			return array_merge($input, $this->query());
-		}
-
-		$value = isset($input[$key]) ? $input[$key] : null;
-
-		// If the value is null, we'll try to pull it from the query values then
-		// return the default value if it doesn't exist. This allows query to
-		// fallback in place of the input for the current request instance.
-		if (is_null($value))
-		{
-			return $this->query($key, $default);
-		}
-
-		return $value;
+		return array_get($this->getInputSource()->all(), $key, $default);
 	}
 
 	/**
@@ -145,7 +125,7 @@ class Request extends SymfonyRequest {
 	 * @param  string  $key
 	 * @return bool
 	 */
-	public function has_file($key)
+	public function hasFile($key)
 	{
 		return $this->files->has($key);
 	}
@@ -214,9 +194,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function merge(array $input)
 	{
-		$this->request->add($input);
-
-		$this->query->add($input);
+		$this->getInputSource()->add($input);
 	}
 
 	/**
@@ -227,9 +205,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function replace(array $input)
 	{
-		$this->request->replace($input);
-
-		$this->query->replace($input);
+		$this->getInputSource()->replace($input);
 	}
 
 	/**
@@ -260,6 +236,16 @@ class Request extends SymfonyRequest {
 	public function getRootUrl()
 	{
 		return $this->getScheme().'://'.$this->getHttpHost().$this->getBasePath();
+	}
+
+	/**
+	 * Get the input source for the request.
+	 *
+	 * @return Symfony\Component\HttpFoundation\ParameterBag
+	 */
+	protected function getInputSource()
+	{
+		return $this->getMethod() == 'GET' ? $this->query : $this->request;
 	}
 
 	/**

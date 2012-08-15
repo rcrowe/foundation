@@ -74,10 +74,11 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('Symfony\Component\HttpFoundation\File\UploadedFile', $request->file('foo'));
 	}
 
+
 	public function testHasFileMethod()
 	{
 		$request = Request::create('/', 'GET', array(), array(), array());
-		$this->assertFalse($request->has_file('foo'));
+		$this->assertFalse($request->hasFile('foo'));
 
 		$files = array(
 			'foo' => array(
@@ -89,8 +90,9 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 			),
 		);
 		$request = Request::create('/', 'GET', array(), array(), $files);
-		$this->assertTrue($request->has_file('foo'));
+		$this->assertTrue($request->hasFile('foo'));
 	}
+
 
 	public function testMergeMethod()
 	{
@@ -101,6 +103,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Dayle', $request->input('buddy'));
 	}
 
+
 	public function testReplaceMethod()
 	{
 		$request = Request::create('/', 'GET', array('name' => 'Taylor'));
@@ -109,6 +112,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($request->input('name'));
 		$this->assertEquals('Dayle', $request->input('buddy'));
 	}
+
 
 	public function testHeaderMethod()
 	{

@@ -163,6 +163,19 @@ class Response extends Facade {
 		return static::$app->json($data, $status, $headers);
 	}
 
+	/**
+	 * Return a new streamed response from the application.
+	 *
+	 * @param  Closure  $callback
+	 * @param  int      $status
+	 * @param  array    $headers
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public static function stream($callback, $status = 200, array $headers = array())
+	{
+		return static::$app->stream($callback, $status, $headers);
+	}
+
 }
 
 class Route extends Facade {

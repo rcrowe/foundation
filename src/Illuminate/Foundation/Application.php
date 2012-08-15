@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Foundation\Providers\ServiceProvider;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
@@ -209,6 +210,19 @@ class Application extends Container implements HttpKernelInterface {
 	public function json($data = array(), $status = 200, array $headers = array())
 	{
 		return new JsonResponse($data, $status, $headers);
+	}
+
+	/**
+	 * Return a new streamed response from the application.
+	 *
+	 * @param  Closure  $callback
+	 * @param  int      $status
+	 * @param  array    $headers
+	 * @return Symfony\Component\HttpFoundation\StreamedResponse
+	 */
+	public function stream($callback, $status = 200, array $headers = array())
+	{
+		return new StreamedResponse($callback, $status, $headers);
 	}
 
 	/**
