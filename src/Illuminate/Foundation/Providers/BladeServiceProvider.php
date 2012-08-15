@@ -51,7 +51,9 @@ class BladeServiceProvider extends ServiceProvider {
 	 */
 	protected function registerEnvironment($app)
 	{
-		$app['blade'] = $app->share(function($app)
+		$me = $this;
+
+		$app['blade'] = $app->share(function($app) use ($me)
 		{
 			$blade = new Environment($app['blade.loader']);
 
@@ -60,7 +62,7 @@ class BladeServiceProvider extends ServiceProvider {
 			// convenience. This allows access to the request, input, session, etc.
 			$blade->share('app', $app);
 
-			if ($this->hasBoundErrors($app))
+			if ($me->hasBoundErrors($app))
 			{
 				$errors = $app['session']->get('errors');
 
@@ -85,7 +87,7 @@ class BladeServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return bool
 	 */
-	protected function hasBoundErrors($app)
+	public function hasBoundErrors($app)
 	{
 		return isset($app['session']) and $app['session']->has('errors');
 	}
