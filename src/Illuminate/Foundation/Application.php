@@ -72,9 +72,9 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function __construct()
 	{
-		$this['router'] = new Router;
-
 		$this['request'] = Request::createFromGlobals();
+
+		$this->register(new Providers\RoutingServiceProvider);
 
 		// The exception handler class takes care of determining which of the bound
 		// exception handler Closures should be called for a given exception and

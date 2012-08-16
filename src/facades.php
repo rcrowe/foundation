@@ -124,6 +124,17 @@ class Profiler extends Facade {
 
 }
 
+class Redirect extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'redirect'; }
+
+}
+
 class Request extends Facade {
 
 	/**
@@ -197,6 +208,17 @@ class Session extends Facade {
 	 * @return string
 	 */
 	protected static function getFacadeAccessor() { return 'session'; }
+
+}
+
+class URL extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'url.generator'; }
 
 }
 
