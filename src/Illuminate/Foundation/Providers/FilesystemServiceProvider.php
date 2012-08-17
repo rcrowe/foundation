@@ -11,7 +11,7 @@ class FilesystemServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	abstract public function register(Application $app)
+	public function register(Application $app)
 	{
 		$app->share(function() { return new Filesystem; });
 	}
