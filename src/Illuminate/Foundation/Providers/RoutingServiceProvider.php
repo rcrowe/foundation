@@ -51,7 +51,17 @@ class RoutingServiceProvider extends ServiceProvider {
 	{
 		$app['redirect'] = $app->share(function($app)
 		{
-			return new Redirector($app['url.generator']);
+			$redirector = new Redirector($app['url.generator']);
+
+			// If the session is set on the application instance, we'll inject it into
+			// the redirector instance. This allows the redirect responses to allow
+			// for the quite convenient "with" methods that flash to the session.
+			if (isset($app['session']))
+			{
+				$redirector->setSession($app['session']);
+			}
+
+			return $redirector;
 		});
 	}
 
