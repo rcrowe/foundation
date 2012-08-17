@@ -13,7 +13,7 @@ class FilesystemServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
-		$app->share(function() { return new Filesystem; });
+		$app['files'] = $app->share(function() { return new Filesystem; });
 	}
 
 }
