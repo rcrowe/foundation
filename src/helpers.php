@@ -44,41 +44,14 @@ function csrf_token()
  * Generate a path for the application.
  *
  * @param  string  $path
- * @param  bool    $https
+ * @param  bool    $secure
  * @return string
  */
-function path($path = null, $https = null)
+function path($path = null, $secure = false)
 {
-	$request = app()->request;
+	$app = app();
 
-	// If no scheme is specified we will use the scheme for the current request,
-	// otherwise we will used the scheme the consumer of the function asked
-	// for, either http or https. Then we will add the path to the URLs.
-	if (is_null($https))
-	{
-		$scheme = $request->getScheme().'://';
-	}
-	elseif ($https)
-	{
-		$scheme = 'https://';
-	}
-	else
-	{
-		$scheme = 'http://';
-	}
-
-	return $scheme.$request->getHttpHost().$request->getBasePath().'/'.$path;
-}
-
-/**
- * Generate a HTTP path for the application.
- *
- * @param  string  $path
- * @return string
- */
-function http_path($path)
-{
-	return path($path, false);
+	return $app['url.generator']->to($path, $secure);
 }
 
 /**
@@ -87,7 +60,7 @@ function http_path($path)
  * @param  string  $path
  * @return string
  */
-function https_path($path)
+function secure_path($path)
 {
 	return path($path, true);
 }
@@ -110,9 +83,11 @@ function root_url()
  * @param  bool    $absolute
  * @return string
  */
-function route($route, $parameters = array(), $absolute = false)
+function route($route, $parameters = array(), $absolute = true)
 {
-	return app()->url_generator->generate($route, $parameters, $absolute);
+	$app = app();
+
+	return $app['url.generator']->route($route, $parameters, $absolute);
 }
 
 /**

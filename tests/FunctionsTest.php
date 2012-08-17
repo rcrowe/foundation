@@ -1,7 +1,7 @@
 <?php
 
 use Mockery as m;
-use Illuminate\Foundation\Lightbulb;
+use Illuminate\Foundation\Request;
 use Illuminate\Foundation\Application;
 
 class FunctionsTest extends PHPUnit_Framework_TestCase {
@@ -15,15 +15,19 @@ class FunctionsTest extends PHPUnit_Framework_TestCase {
 	public function testPathHelper()
 	{
 		set_app($app = new Application);
-		$app['request'] = m::mock('Illuminate\Foundation\Request');
-		$app['request']->shouldReceive('getHttpHost')->andReturn('www.foo.com');
-		$app['request']->shouldReceive('getBasePath')->andReturn('/web');
-		$app['request']->shouldReceive('getScheme')->once()->andReturn('https');
-		$this->assertEquals('https://www.foo.com/web/bar', path('bar'));
-		$this->assertEquals('https://www.foo.com/web/bar', path('bar', true));
-		$this->assertEquals('http://www.foo.com/web/bar', path('bar', false));
-		$this->assertEquals('http://www.foo.com/web/bar', http_path('bar'));
-		$this->assertEquals('https://www.foo.com/web/bar', https_path('bar'));
+		$app['request'] = Request::create('http://www.foo.com', 'GET');
+		$this->assertEquals('http://www.foo.com/bar', path('bar'));
+		$this->assertEquals('https://www.foo.com/bar', path('bar', true));
+		$this->assertEquals('https://www.foo.com/bar', secure_path('bar'));
+	}
+
+
+	public function testRouteHelper()
+	{
+		set_app($app = new Application);
+		$app['request'] = Request::create('http://www.foo.com', 'GET');
+		$app['router']->get('foo', array('as' => 'bar', function() {}));
+		$this->assertEquals('http://www.foo.com/foo', route('bar'));
 	}
 
 
