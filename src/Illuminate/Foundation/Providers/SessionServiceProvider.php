@@ -1,8 +1,8 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Session\CookieStore;
 use Illuminate\Foundation\Application;
 use Illuminate\Session\TokenMismatchException;
+use Illuminate\Foundation\Managers\SessionManager;
 
 class SessionServiceProvider extends ServiceProvider {
 
@@ -27,7 +27,9 @@ class SessionServiceProvider extends ServiceProvider {
 	{
 		$app['session'] = $app->share(function($app)
 		{
-			return new CookieStore($app['encrypter'], $app['cookie']);
+			$manager = new SessionManager($app);
+			
+			return $manager->driver();
 		});
 
 		$this->addSessionMiddleware($app);
