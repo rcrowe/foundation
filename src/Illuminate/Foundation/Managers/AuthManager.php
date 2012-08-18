@@ -79,4 +79,14 @@ class AuthManager extends Manager {
 		return new EloquentUserProvider($this->app['hash'], $model);
 	}
 
+	/**
+	 * Get the default authentication driver name.
+	 *
+	 * @return string
+	 */
+	protected function getDefaultDriver()
+	{
+		return $this->app['config']['auth.driver'];
+	}
+
 }
