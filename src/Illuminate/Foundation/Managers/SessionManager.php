@@ -2,6 +2,7 @@
 
 use Illuminate\Session\FileStore;
 use Illuminate\Session\CookieStore;
+use Illuminate\Session\CacheDrivenStore;
 
 class SessionManager extends Manager {
 
@@ -22,7 +23,39 @@ class SessionManager extends Manager {
 	 */
 	protected function createFileDriver()
 	{
-		return new FileStore($this->app['cache']->driver('file'));
+		$path = $this->app['config']['session.path'];
+
+		return new FileStore($this->app['files'], $path);
+	}
+
+	/**
+	 * Create an instance of the APC session driver.
+	 *
+	 * @return Illuminate\Session\CacheDrivenStore
+	 */
+	protected function createApcDriver()
+	{
+		return $this->createCacheBased('apc');
+	}
+
+	/**
+	 * Create an instance of the Memcached session driver.
+	 *
+	 * @return Illuminate\Session\CacheDrivenStore
+	 */
+	protected function createMemcachedDriver()
+	{
+		return $this->createCacheBased('memcached');
+	}
+
+	/**
+	 * Create an instance of a cache driven driver.
+	 *
+	 * @return Illuminate\Session\CacheDrivenStore
+	 */
+	protected function createCacheBased($driver)
+	{
+		return new CacheDrivenStore($this->app['cache']->driver($driver));
 	}
 
 	/**
