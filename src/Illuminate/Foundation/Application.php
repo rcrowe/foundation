@@ -663,23 +663,4 @@ class Application extends Container implements HttpKernelInterface {
 		$this[$key] = $value;
 	}
 
-	/**
-	 * Dynamically handle application method calls.
-	 *
-	 * @param  string  $method
-	 * @param  array   $parameters
-	 * @return mixed
-	 */
-	public function __call($method, $parameters)
-	{
-		if (strpos($method, 'redirectTo') === 0)
-		{
-			array_unshift($parameters, strtolower(substr($method, 10)));
-
-			return call_user_func_array(array($this, 'redirectToRoute'), $parameters);
-		}
-
-		throw new \BadMethodCallException("Call to undefined method {$method}.");
-	}
-
 }

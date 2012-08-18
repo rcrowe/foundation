@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Auth\Guard;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Managers\AuthManager;
 
 class AuthServiceProvider extends ServiceProvider {
 
@@ -44,26 +44,7 @@ class AuthServiceProvider extends ServiceProvider {
 			// know that we need to set any queued cookies in the after event later.
 			$app['auth.loaded'] = true;
 
-			if ( ! isset($app['auth.provider']))
-			{
-				throw new \RuntimeException("Auth service requires provider.");
-			}
-
-			// The user provider is responsible for actually fetching the user information
-			// out of whatever storage mechanism the developer is using and giving the
-			// user back to the guard. This interface abstracts the users retrieval.
-			$provider = $app['auth.provider'];
-
-			$guard = new Guard($provider, $app['session'], $app['request']);
-
-			$guard->setCookieCreator($app['cookie']);
-
-			// When using the remember me functionality of the authentication services we
-			// will need to be set the encryption isntance of the guard, which allows
-			// secure, encrypted cookie values to get generated for those cookies.
-			$guard->setEncrypter($app['encrypter']);
-
-			return $guard;
+			return new AuthManager($app);
 		});
 	}
 
@@ -82,9 +63,12 @@ class AuthServiceProvider extends ServiceProvider {
 			// they are attached onto Response objects at the end of the requests.
 			if (isset($app['auth.loaded']))
 			{
-				foreach ($app['auth']->getQueuedCookies() as $cookie)
+				foreach ($app['auth']->getDrivers() as $driver)
 				{
-					$response->headers->setCookie($cookie);
+					foreach ($driver->getQueuedCookies() as $cookie)
+					{
+						$response->headers->setCookie($cookie);
+					}
 				}
 			}
 		});
@@ -105,7 +89,7 @@ class AuthServiceProvider extends ServiceProvider {
 		{
 			if ($app['auth']->isGuest())
 			{
-				return $app->redirectToRoute('login');
+				return $app['redirect']->route('login');
 			}
 		});
 	}
