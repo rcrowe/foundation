@@ -45,17 +45,6 @@ class SessionServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Get an instance of the session manager.
-	 *
-	 * @param  Illuminate\Foundation\Application  $app
-	 * @return Illuminate\Foundation\Managers\SessionManager
-	 */
-	protected function getSessionManager($app)
-	{
-		return new SessionManager($app);
-	}
-
-	/**
 	 * Register the events needed for session management.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
