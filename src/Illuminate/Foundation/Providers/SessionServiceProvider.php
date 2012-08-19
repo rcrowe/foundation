@@ -28,11 +28,31 @@ class SessionServiceProvider extends ServiceProvider {
 		$app['session'] = $app->share(function($app)
 		{
 			$manager = new SessionManager($app);
-			
-			return $manager->driver();
+
+			$driver = $manager->driver();
+
+			// Once we get an instance of the session driver, we need to set a few of
+			// the session options based on the application configuration, such as
+			// the session lifetime and the sweeper lottery configuration value.
+			$driver->setLifetime($app['config']['session.lifetime']);
+
+			$driver->setSweepLottery($app['config']['session.lottery']);
+
+			return $driver;
 		});
 
 		$this->addSessionMiddleware($app);
+	}
+
+	/**
+	 * Get an instance of the session manager.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return Illuminate\Foundation\Managers\SessionManager
+	 */
+	protected function getSessionManager($app)
+	{
+		return new SessionManager($app);
 	}
 
 	/**
