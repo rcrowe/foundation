@@ -13,6 +13,13 @@ class DatabaseManager {
 	protected $app;
 
 	/**
+	 * The database connection factory instance.
+	 *
+	 * @var Illuminate\Database\Connectors\ConnectionFactory
+	 */
+	protected $factory;
+
+	/**
 	 * Create a new database manager instance.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
