@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation\Managers;
 
+use Illuminate\Database\Connection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Connectors\ConnectionFactory;
 
@@ -47,12 +48,25 @@ class DatabaseManager {
 			// set the "fetch mode" for PDO which determines the query return types.
 			$connection = $this->factory->make($this->getConfig($name));
 
-			$connection->setFetchMode($this->app['config']['database.fetch']);
-
-			$this->connections[$name] = $connection;
+			$this->connections[$name] = $this->prepareConnection($connection);
 		}
 
 		return $this->connections[$name];
+	}
+
+	/**
+	 * Prepare the database connection instance.
+	 *
+	 * @param  Illuminate\Database\Connection  $connection
+	 * @return Illuminate\Database\Connection
+	 */
+	protected function prepareConnection(Connection $connection)
+	{
+		$connection->setFetchMode($this->app['config']['database.fetch']);
+
+		$connection->setEventDispatcher($this->app['events']);
+
+		return $connection;
 	}
 
 	/**
