@@ -200,6 +200,31 @@ class Route extends Facade {
 
 }
 
+class Schema extends Facade {
+
+	/**
+	 * Get a schema builder instance for a connection.
+	 *
+	 * @param  string  $name
+	 * @param  Illuminate\Database\Schema\Builder
+	 */
+	public static function connection($name)
+	{
+		return static::$app['db']->connection($name)->getSchemaBuilder();
+	}
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor()
+	{
+		return static::$app['db']->connection()->getSchemaBuilder();
+	}
+
+}
+
 class Session extends Facade {
 
 	/**
