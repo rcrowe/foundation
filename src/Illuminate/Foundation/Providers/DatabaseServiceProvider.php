@@ -49,7 +49,7 @@ class DatabaseServiceProvider extends ServiceProvider {
 			Model::addConnection($connection, function() use ($app, $name)
 			{
 				return $app['db']->connection($name);
-			})
+			});
 		}
 
 		Model::setDefaultConnectionName($app['config']['database.default']);
