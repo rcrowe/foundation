@@ -46,7 +46,7 @@ class DatabaseServiceProvider extends ServiceProvider {
 		// of the connections using a Closure which gets resolved when executed.
 		foreach ($connections as $name)
 		{
-			Model::addConnection($connection, function() use ($app, $name)
+			Model::addConnection($name, function() use ($app, $name)
 			{
 				return $app['db']->connection($name);
 			});
