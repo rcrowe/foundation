@@ -1,4 +1,4 @@
-<?php namespace Illuminate\Managers;
+<?php namespace Illuminate\Foundation\Managers;
 
 use Illuminate\Auth\Guard;
 use Illuminate\Auth\DatabaseUserProvider;
@@ -74,7 +74,7 @@ class AuthManager extends Manager {
 	 */
 	protected function createEloquentProvider()
 	{
-		$table = $this->app['config']['auth.model'];
+		$model = $this->app['config']['auth.model'];
 
 		return new EloquentUserProvider($this->app['hash'], $model);
 	}
