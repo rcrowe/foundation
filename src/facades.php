@@ -79,6 +79,28 @@ class Event extends Facade {
 
 }
 
+class File extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'files'; }
+
+}
+
+class Hash extends Facade {
+
+	/**
+	 * Get the registered name of the component.
+	 *
+	 * @return string
+	 */
+	protected static function getFacadeAccessor() { return 'hash'; }
+
+}
+
 class Input extends Facade {
 
 	/**
