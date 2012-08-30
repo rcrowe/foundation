@@ -72,7 +72,7 @@ class AuthManager extends Manager {
 	 *
 	 * @return Illuminate\Auth\EloquentUserProvider
 	 */
-	protected function createDatabaseProvider()
+	protected function createEloquentProvider()
 	{
 		$table = $this->app['config']['auth.model'];
 
