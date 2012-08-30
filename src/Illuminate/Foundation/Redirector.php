@@ -90,7 +90,7 @@ class Redirector {
 
 		if (isset($this->session))
 		{
-			$redirect->setSession($session);
+			$redirect->setSession($this->session);
 		}
 
 		return $redirect;
