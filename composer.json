@@ -12,7 +12,6 @@
     "require": {
         "php": ">=5.3.0",
         "illuminate/auth": ">=1.0.0",
-        "illuminate/blade": ">=1.0.0",
         "illuminate/cache": ">=1.0.0",
         "illuminate/config": ">=1.0.0",
         "illuminate/container": ">=1.0.0",
@@ -26,6 +25,7 @@
         "illuminate/session": ">=1.0.0",
         "illuminate/support": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
+        "illuminate/view": ">=1.0.0",
         "symfony/browser-kit": "2.*",
         "symfony/css-selector": "2.*",
         "symfony/dom-crawler": "2.*",
