@@ -1,6 +1,8 @@
 <?php namespace Illuminate\Foundation\Managers;
 
+use Twig_Environment;
 use Illuminate\View\PhpEngine;
+use Illumiante\View\TwigEngine;
 use Illuminate\View\Environment;
 use Illuminate\Validation\MessageBag;
 
@@ -16,7 +18,7 @@ class ViewManager extends Manager {
 	{
 		$driver = parent::createDriver($driver);
 
-		$driver->share('__app', $this->app);
+		$driver->share('app', $this->app);
 
 		// If the current session has an "errors" variable bound to it, we will share
 		// its value with all view instances so the views can easily access errors
@@ -45,6 +47,22 @@ class ViewManager extends Manager {
 		$paths = $this->app['config']['view.paths'];
 
 		$engine = new PhpEngine($this->app['files'], $paths);
+
+		return new Environment($engine);
+	}
+
+	/**
+	 * Create an instance of the Twig view driver.
+	 *
+	 * @return Illuminate\View\Environment
+	 */
+	protected function createTwigDriver()
+	{
+		$paths = $this->app['config']['view.paths'];
+
+		$engine = new TwigEngine(new Twig_Environment, $this->app['files'], $paths);
+
+		$engine->getTwig()->setLoader($engine);
 
 		return new Environment($engine);
 	}
