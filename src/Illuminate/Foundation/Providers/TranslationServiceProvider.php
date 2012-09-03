@@ -23,12 +23,17 @@ class TranslationServiceProvider extends ServiceProvider {
 			// When registering the translator component, we'll need to set the default
 			// locale as well as the fallback locale. So, we'll grab the application
 			// configuration so we can easily get both of these values from there.
+			$locale = $config['locale'];
+
 			$locales = $config['locales'];
 
 			$fallback = $config['fallback_locale'];
 
-			$trans = new Translator($locales, $config['locale'], $fallback);
+			$trans = new Translator($locales, $locale, $fallback);
 
+			// Once we have the translator, we will actually go ahead and hydrate each
+			// locale with its messages in the translator. This will load the array
+			// of messages for each of the locales into this translator instance.
 			$trans->loadTranslations($app['translation.loader']);
 
 			return $trans;
