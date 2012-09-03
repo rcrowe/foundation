@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Managers;
 
 use Illuminate\View\PhpEngine;
-use Illuminate\View\Enviornment;
+use Illuminate\View\Environment;
 use Illuminate\Validation\MessageBag;
 
 class ViewManager extends Manager {
