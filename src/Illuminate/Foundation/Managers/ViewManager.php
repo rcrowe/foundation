@@ -2,7 +2,7 @@
 
 use Twig_Environment;
 use Illuminate\View\PhpEngine;
-use Illumiante\View\TwigEngine;
+use Illuminate\View\TwigEngine;
 use Illuminate\View\Environment;
 use Illuminate\Validation\MessageBag;
 
