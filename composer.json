@@ -24,6 +24,7 @@
         "illuminate/routing": ">=1.0.0",
         "illuminate/session": ">=1.0.0",
         "illuminate/support": ">=1.0.0",
+        "illuminate/translation": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
         "illuminate/view": ">=1.0.0",
         "symfony/browser-kit": "2.*",
