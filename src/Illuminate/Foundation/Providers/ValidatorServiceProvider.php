@@ -2,6 +2,7 @@
 
 use Illuminate\Validation\Factory;
 use Illuminate\Foundation\Application;
+use Illuminate\Validation\DatabasePresenceVerifier;
 
 class ValidatorServiceProvider extends ServiceProvider {
 
@@ -13,6 +14,8 @@ class ValidatorServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
+		$this->registerPresenceVerifier($app);
+
 		$app['validator'] = $app->share(function($app)
 		{
 			$validator = new Factory($app['translator']);
@@ -26,6 +29,20 @@ class ValidatorServiceProvider extends ServiceProvider {
 			}
 
 			return $validator;
+		});
+	}
+
+	/**
+	 * Register the database presence verifier.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerPresenceVerifier($app)
+	{
+		$app['validation.presence'] = $app->share(function($app)
+		{
+			return new DatabasePresenceVerifier($app['db']->connection());
 		});
 	}
 
