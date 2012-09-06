@@ -25,16 +25,9 @@ class TranslationServiceProvider extends ServiceProvider {
 			// configuration so we can easily get both of these values from there.
 			$locale = $app['config']['app.locale'];
 
-			$locales = $app['config']['app.locales'];
-
 			$fallback = $app['config']['app.fallback_locale'];
 
-			$trans = new Translator($loader, $locales, $locale, $fallback);
-
-			// Once we have the translator, we will actually go ahead and hydrate each
-			// locale with its messages in the translator. This will load the array
-			// of messages for each of the locales into this translator instance.
-			$trans->loadTranslations();
+			$trans = new Translator($loader, $locale, $fallback);
 
 			return $trans;
 		});
