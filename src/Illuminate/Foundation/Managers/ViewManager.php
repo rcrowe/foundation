@@ -4,7 +4,9 @@ use Twig_Environment;
 use Illuminate\View\PhpEngine;
 use Illuminate\View\TwigEngine;
 use Illuminate\View\Environment;
+use Illuminate\View\CompilerEngine;
 use Illuminate\Validation\MessageBag;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class ViewManager extends Manager {
 
@@ -44,9 +46,28 @@ class ViewManager extends Manager {
 	 */
 	protected function createPhpDriver()
 	{
-		$paths = $this->app['config']['view.paths'];
+		$engine = new PhpEngine($this->app['files'], $this->getPaths());
 
-		$engine = new PhpEngine($this->app['files'], $paths);
+		return new Environment($engine);
+	}
+
+	/**
+	 * Create an instance of the Blade view driver.
+	 *
+	 * @return Illuminate\View\Environment
+	 */
+	protected function createBladeDriver()
+	{
+		$files = $this->app['files'];
+
+		// The Compiler engine requires an instance of the CompilerInterface, which in
+		// this case will be the Blade compiler, so we'll first create the compiler
+		// instance to pass into the engine so it can compile the views properly.
+		$compiler = new BladeCompiler($files, $this->getCachePath());
+
+		$paths = $this->getPaths();
+
+		$engine = new CompilerEngine($compiler, $files, $paths, '.blade.php');
 
 		return new Environment($engine);
 	}
@@ -58,9 +79,9 @@ class ViewManager extends Manager {
 	 */
 	protected function createTwigDriver()
 	{
-		$paths = $this->app['config']['view.paths'];
+		$files = $this->app['files'];
 
-		$engine = new TwigEngine(new Twig_Environment, $this->app['files'], $paths);
+		$engine = new TwigEngine(new Twig_Environment, $files, $this->getPaths());
 
 		$engine->getTwig()->setLoader($engine);
 
@@ -75,6 +96,26 @@ class ViewManager extends Manager {
 	public function sessionHasErrors()
 	{
 		return isset($this->app['session']) and $this->app['session']->has('errors');
+	}
+
+	/**
+	 * Get the view location paths.
+	 *
+	 * @return array
+	 */
+	protected function getPaths()
+	{
+		return $this->app['config']['view.paths'];
+	}
+
+	/**
+	 * Get the view cache path.
+	 *
+	 * @return string
+	 */
+	protected function getCachePath()
+	{
+		return $this->app['config']['view.cache'];
 	}
 
 	/**
