@@ -34,9 +34,9 @@ class ExceptionHandler {
 				$code = 500;
 			}
 
-			// If the handler returns a non-null response, we will return it so it
-			// may get sent back to the browser. Once a handler returns a valid
-			// response we will stop iterating or calling the other handlers.
+			// If the handler returns a "non-null" response, we will return it so it
+			// will get sent back to the browsers. Once a handler returns a valid
+			// response we will cease iterating and calling the other handlers.
 			$response = $handler($exception, $code);
 
 			if ( ! is_null($response))
