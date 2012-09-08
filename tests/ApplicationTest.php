@@ -41,38 +41,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testRouteBeforeMiddlewareHaltsResponse()
-	{
-		$app = new Application;
-		$route = $app['router']->get('/foo', function() { return 'bar'; });
-		$route->before('filter');
-		$app->addMiddleware('filter', function() { return 'foo'; });
-		$app['request'] = Request::create('/foo');
-		$response = $app->dispatch($app['request']);
-		$this->assertEquals('foo', $response->getContent());
-	}
-
-
-	public function testAllFiltersAreCalled()
-	{
-		$_SERVER['__filter.test'] = 0;
-		$app = new Application;
-		$app->before(function() { $_SERVER['__filter.test']++; });
-		$app->before(function() { $_SERVER['__filter.test']++; });
-		$app->after(function() { $_SERVER['__filter.test']++; });
-		$app->after(function() { $_SERVER['__filter.test']++; });
-		$route = $app['router']->get('/foo', function() { return 'bar'; });
-		$route->before('filter1', 'filter2');
-		$route->after('filter1', 'filter2');
-		$app->addMiddleware('filter1', function() { $_SERVER['__filter.test']++; });
-		$app->addMiddleware('filter2', function() { $_SERVER['__filter.test']++; });
-		$app['request'] = Request::create('/foo');
-		$response = $app->dispatch($app['request']);
-		$this->assertEquals(8, $_SERVER['__filter.test']);
-		unset($_SERVER['__filter.test']);
-	}
-
-
 	public function testCloseMiddlewareCalledAfterAfter()
 	{
 		$_SERVER['__filter.test'] = null;
@@ -150,37 +118,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(true);
 	}
 
-	/*
-	public function testRedirectSetsSession()
-	{
-		$app = new Application;
-		$app['session'] = m::mock('Illuminate\Session\Store');
-		$redirect = $app->redirect('foo');
-		$this->assertInstanceOf('Illuminate\Session\Store', $redirect->getSession());
-	}
-
-
-	public function testRedirectWithSetsSessiosValue()
-	{
-		$app = new Application;
-		$app['session'] = m::mock('Illuminate\Session\Store');
-		$app['session']->shouldReceive('flash')->once()->with('foo', 'bar');
-		$redirect = $app->redirect('boom');
-		$return = $redirect->with('foo', 'bar');
-		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
-	}
-
-
-	public function testRedirectWithInputFlashesToSession()
-	{
-		$app = new Application;
-		$app['session'] = m::mock('Illuminate\Session\Store');
-		$app['session']->shouldReceive('flashInput')->once()->with(array('foo' => 'bar'));
-		$redirect = $app->redirect('boom');
-		$return = $redirect->withInput(array('foo'=> 'bar'));
-		$this->assertInstanceOf('Illuminate\Foundation\RedirectResponse', $return);
-	}
-	*/
 
 	public function testPrepareRequestInjectsSession()
 	{

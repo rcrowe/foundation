@@ -226,47 +226,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register a new middleware with the application.
-	 *
-	 * @param  string   $name
-	 * @param  Closure  $callback
-	 * @return void
-	 */
-	public function addMiddleware($name, Closure $callback)
-	{
-		$this->middlewares[$name] = $callback;
-	}
-
-	/**
-	 * Get a registered middleware callback.
-	 *
-	 * @param  string   $name
-	 * @return Closure
-	 */
-	public function getMiddleware($name)
-	{
-		if (array_key_exists($name, $this->middlewares))
-		{
-			return $this->middlewares[$name];
-		}
-	}
-
-	/**
-	 * Tie a registered middleware to a URI pattern.
-	 *
-	 * @param  string  $pattern
-	 * @param  string|array  $name
-	 * @return void
-	 */
-	public function matchMiddleware($pattern, $names)
-	{
-		foreach ((array) $names as $name)
-		{
-			$this->patternMiddlewares[$pattern][] = $name;
-		}
-	}
-
-	/**
 	 * Execute a callback in a request context.
 	 *
 	 * @param  Illuminate\Foundation\Request  $request
@@ -336,33 +295,10 @@ class Application extends Container implements HttpKernelInterface {
 
 		$route = $this['router']->dispatch($request);
 
-		// Once we have the route and before middlewares, we will iterate through them
-		// and call each one. If a given filter returns a response we will let that
-		// value override the rest of the request cycle and return the Responses.
-		$before = $this->getBeforeMiddlewares($route, $request);
-
-		foreach ($before as $middleware)
-		{
-			$response = $this->callMiddleware($middleware);
-		}
-
-		// If none of the before middlewares returned a response, we will just execute
-		// the route that matched the request, then call the after filters for this
-		// and return the responses back out and they'll get sent to the clients.
-		if ( ! isset($response))
-		{
-			$response = $route->run();
-		}
-
-		$response = $this->prepareResponse($response, $request);
-
-		// Once all of the "after" middlewares are called we should be able to return
-		// the completed response object back to the consumers so it will be given
-		// to the client as a response. The Responses should be final and ready.
-		foreach ($route->getAfterMiddlewares() as $middleware)
-		{
-			$this->callMiddleware($middleware, array($response));
-		}
+		// Once we have the route, we can just run it to get the responses, which will
+		// always be instances of the Response class. Once we have the responses we
+		// will execute the global "after" middlewares to finish off the request.
+		$response = $route->run($request);
 
 		$this->callAfterMiddleware($response);
 
@@ -402,44 +338,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Get the before middlewares for a request and route.
-	 *
-	 * @param  Illuminate\Routing\Route  $route
-	 * @param  Illuminate\Foundation\Request  $request
-	 * @return array
-	 */
-	protected function getBeforeMiddlewares(Route $route, Request $request)
-	{
-		$before = $route->getBeforeMiddlewares();
-
-		return array_merge($before, $this->findPatternMiddlewares($request));
-	}
-
-	/**
-	 * Find the patterned middlewares matching a request.
-	 *
-	 * @param  Illuminate\Foundation\Request  $request
-	 * @return array
-	 */
-	protected function findPatternMiddlewares(Request $request)
-	{
-		$middlewares = array();
-
-		foreach ($this->patternMiddlewares as $pattern => $values)
-		{
-			// To find the pattern middlewares for a request, we just need to check the
-			// registered patterns against the path info for the current request to
-			// the application, and if it matches we'll merge in the middlewares.
-			if (str_is('/'.$pattern, $request->getPathInfo()))
-			{
-				$middlewares = array_merge($middlewares, $values);
-			}
-		}
-
-		return $middlewares;
-	}
-
-	/**
 	 * Prepare the request by injecting any services.
 	 *
 	 * @param  Illuminate\Foundation\Request  $request
@@ -470,6 +368,29 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Register a new middleware with the router.
+	 *
+	 * @param  string   $name
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function addMiddleware($name, Closure $callback)
+	{
+		return $this['router']->addMiddleware($name, $callback);
+	}
+
+	/**
+	 * Get a registered middleware callback.
+	 *
+	 * @param  string   $name
+	 * @return Closure
+	 */
+	public function getMiddleware($name)
+	{
+		return $this['router']->getMiddleware($name);
+	}
+
+	/**
 	 * Call the "after" global middlwares.
 	 *
 	 * @return mixed
@@ -489,23 +410,6 @@ class Application extends Container implements HttpKernelInterface {
 	public function callFinishMiddleware(Response $response)
 	{
 		return $this->callGlobalMiddleware('finish', array($response));
-	}
-
-	/**
-	 * Call a given middleware with the parameters.
-	 *
-	 * @param  string  $name
-	 * @param  array   $parameters
-	 * @return mixed
-	 */
-	protected function callMiddleware($name, array $parameters = array())
-	{
-		array_unshift($parameters, $this['request']);
-
-		if (isset($this->middlewares[$name]))
-		{
-			return call_user_func_array($this->middlewares[$name], $parameters);
-		}
 	}
 
 	/**
