@@ -225,6 +225,30 @@ class Response extends Facade {
 class Route extends Facade {
 
 	/**
+	 * Register a new middleware with the application.
+	 *
+	 * @param  string   $name
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public static function filter($name, Closure $callback)
+	{
+		return static::$app['router']->addMiddleware($name, $callback);
+	}
+
+	/**
+	 * Tie a registered middleware to a URI pattern.
+	 *
+	 * @param  string  $pattern
+	 * @param  string|array  $name
+	 * @return void
+	 */
+	public static function when($pattern, $name)
+	{
+		return static::$app['router']->matchMiddleware($pattern, $name);
+	}
+
+	/**
 	 * Get the registered name of the component.
 	 *
 	 * @return string
