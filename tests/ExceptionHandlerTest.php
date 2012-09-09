@@ -9,16 +9,18 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 		$handler = new ExceptionHandler;
 		$exception = new InvalidArgumentException;
 		$callback = function(RuntimeException $e) {};
-		$this->assertNull($handler->handle($exception, array($callback)));
+		$handler->error($callback);
+		$this->assertNull($handler->handle($exception));
 	}
 
-
+	
 	public function testExceptionHandlerReturnsResponseWhenHandlerFound()
 	{
 		$handler = new ExceptionHandler;
 		$exception = new RuntimeException;
 		$callback = function(RuntimeException $e) { return 'foo'; };
-		$this->assertEquals('foo', $handler->handle($exception, array($callback)));
+		$handler->error($callback);
+		$this->assertEquals('foo', $handler->handle($exception));
 	}
 
 
@@ -26,8 +28,9 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 	{
 		$handler = new ExceptionHandler;
 		$exception = new RuntimeException;
-		$callback = function($e) { return 'foo'; };
-		$this->assertEquals('foo', $handler->handle($exception, array($callback)));
+		$callback = function(Exception $e) { return 'foo'; };
+		$handler->error($callback);
+		$this->assertEquals('foo', $handler->handle($exception));
 	}
 
 
@@ -38,7 +41,9 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 		$exception = new RuntimeException;
 		$callback1 = function($e) { $_SERVER['__exception.handler']++; };
 		$callback2 = function($e) { $_SERVER['__exception.handler']++; };
-		$handler->handle($exception, array($callback1, $callback2));
+		$handler->error($callback1);
+		$handler->error($callback2);
+		$handler->handle($exception);
 		unset($_SERVER['__exception.handler']);
 	}
 
@@ -48,7 +53,8 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 		$handler = new ExceptionHandler;
 		$exception = new RuntimeException;
 		$callback = function($e, $code) { return $code; };
-		$this->assertEquals(500, $handler->handle($exception, array($callback)));	
+		$handler->error($callback);
+		$this->assertEquals(500, $handler->handle($exception));	
 	}
 
 
@@ -57,7 +63,8 @@ class ExceptionHandlerTest extends PHPUnit_Framework_TestCase {
 		$handler = new ExceptionHandler;
 		$exception = new Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 		$callback = function($e, $code) { return $code; };
-		$this->assertEquals(404, $handler->handle($exception, array($callback)));	
+		$handler->error($callback);
+		$this->assertEquals(404, $handler->handle($exception));
 	}
 
 }

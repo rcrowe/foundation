@@ -7,15 +7,21 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class ExceptionHandler {
 
 	/**
+	 * All of the register exception handlers.
+	 *
+	 * @var array
+	 */
+	protected $handlers = array();
+
+	/**
 	 * Handle the given exception.
 	 *
 	 * @param  Exception  $exception
-	 * @param  array  $handlers
 	 * @return void
 	 */
-	public function handle($exception, array $handlers)
+	public function handle($exception)
 	{
-		foreach ($handlers as $handler)
+		foreach ($this->handlers as $handler)
 		{
 			// If this exception handler does not handle the given exception, we will
 			// just go the next one. A Handler may type-hint the exception that it
@@ -29,16 +35,20 @@ class ExceptionHandler {
 			{
 				$code = $exception->getStatusCode();
 			}
+
+			// If the exception doesn't implement the HttpExceptionInterface we will
+			// just use the generic 500 error code for a server side error. If it
+			// implements the Http interface we'll grab the error code from it.
 			else
 			{
 				$code = 500;
 			}
 
+			$response = $handler($exception, $code);
+
 			// If the handler returns a "non-null" response, we will return it so it
 			// will get sent back to the browsers. Once a handler returns a valid
 			// response we will cease iterating and calling the other handlers.
-			$response = $handler($exception, $code);
-
 			if ( ! is_null($response))
 			{
 				return $response;
@@ -74,6 +84,17 @@ class ExceptionHandler {
 		$expected = $parameters[0];
 
 		return ! $expected->getClass() or $expected->getClass()->isInstance($exception);
+	}
+
+	/**
+	 * Register an application error handler.
+	 *
+	 * @param  Closure  $callback
+	 * @return void
+	 */
+	public function error(Closure $callback)
+	{
+		$this->handlers[] = $callback;
 	}
 
 }

@@ -116,36 +116,38 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
 	public function testExceptionHandlingSendsResponseFromCustomHandler()
 	{
-		$app = new ApplicationCustomExceptionHandlerStub;
+		$app = $this->getMock('Illuminate\Foundation\Application', array('prepareResponse'));
+		$response = m::mock('stdClass');
+		$response->shouldReceive('send')->once();
+		$app['request'] = Request::create('/foo', 'GET');
+		$app->expects($this->once())->method('prepareResponse')->with($this->equalTo('foo'), $this->equalTo($app['request']))->will($this->returnValue($response));
 		$exception = new Exception;
 		$errorHandler = m::mock('stdClass');
-		$errorHandler->shouldReceive('register')->once()->with(-1);
 		$exceptionHandler = m::mock('stdClass');
-		$exceptionHandler->shouldReceive('handle')->once()->with($exception, array())->andReturn('foo');
+		$exceptionHandler->shouldReceive('handle')->once()->with($exception)->andReturn('foo');
 		$kernelHandler = m::mock('stdClass');
 		$kernelHandler->shouldReceive('handle')->never();
 		$app['kernel.exception'] = $kernelHandler;
 		$app['kernel.error'] = $errorHandler;
 		$app['exception'] = $exceptionHandler;
-		$handler = $app->startExceptionHandling();
+		$handler = $app['exception.function'];
 		$handler($exception);
 	}
 
 
 	public function testNoResponseFromCustomHandlerCallsKernelExceptionHandler()
 	{
-		$app = new ApplicationKernelExceptionHandlerStub;
+		$app = new Application;
 		$exception = new Exception;
 		$errorHandler = m::mock('stdClass');
-		$errorHandler->shouldReceive('register')->once()->with(-1);
 		$exceptionHandler = m::mock('stdClass');
-		$exceptionHandler->shouldReceive('handle')->once()->with($exception, array())->andReturn(null);
+		$exceptionHandler->shouldReceive('handle')->once()->with($exception)->andReturn(null);
 		$kernelHandler = m::mock('stdClass');
 		$kernelHandler->shouldReceive('handle')->once()->with($exception);
 		$app['kernel.exception'] = $kernelHandler;
 		$app['kernel.error'] = $errorHandler;
 		$app['exception'] = $exceptionHandler;
-		$handler = $app->startExceptionHandling();
+		$handler = $app['exception.function'];
 		$handler($exception);
 	}
 

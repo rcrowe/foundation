@@ -22,7 +22,7 @@ use Illuminate\Config\Repository as ConfigRepository;
 |
 | We will go ahead and register the application exception handling here
 | which will provide a nice output of exception details and a stack
-// trace in the event of exceptions during application execution.
+| trace in the event of exceptions during application execution.
 |
 */
 

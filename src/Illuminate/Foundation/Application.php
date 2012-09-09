@@ -7,12 +7,10 @@ use Illuminate\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Foundation\Providers\ServiceProvider;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
 
 class Application extends Container implements HttpKernelInterface {
 
@@ -58,7 +56,22 @@ class Application extends Container implements HttpKernelInterface {
 		// The exception handler class takes care of determining which of the bound
 		// exception handler Closures should be called for a given exception and
 		// gets the response from them. We'll bind it here to allow overrides.
-		$this->registerExceptionHandlers();
+		$this->register(new Providers\ExceptionServiceProvider);
+	}
+
+	/**
+	 * Start the exception handling for the request.
+	 *
+	 * @return void
+	 */
+	public function startExceptionHandling()
+	{
+		$provider = array_first($this->providers, function($provider)
+		{
+			return $provider instanceof Providers\ExceptionServiceProvider;
+		});
+
+		$provider->startHandling($this);
 	}
 
 	/**
@@ -356,69 +369,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register the exception handler instances.
-	 *
-	 * @return void
-	 */
-	protected function registerExceptionHandlers()
-	{
-		$this['exception'] = function() { return new ExceptionHandler; };
-
-		$this['kernel.error'] = function() { return new ErrorHandler; };
-
-		$this['kernel.exception'] = function() { return new KernelHandler; };
-	}
-
-	/**
-	 * Register exception handling for the application.
-	 *
-	 * @return mixed
-	 */
-	public function startExceptionHandling()
-	{
-		// By registering the error handler with a level of -1, we state that we want
-		// all PHP errors converted to ErrorExceptions and thrown, which provides
-		// a quite strict development environment, but prevents unseen errors.
-		$this['kernel.error']->register(-1);
-
-		$me = $this;
-
-		return $this->setExceptionHandler(function($exception) use ($me)
-		{
-			$handlers = $me->getErrorHandlers();
-
-			$response = $me['exception']->handle($exception, $handlers);
-
-			// If one of the custom error handlers returned a response, we will send that
-			// response back to the client after preparing it. This allows a specific
-			// type of exceptions to handled by a Closure giving great flexibility.
-			if ( ! is_null($response))
-			{
-				$response = $me->prepareResponse($response, $me['request']);
-
-				$response->send();
-			}
-			else
-			{
-				$me['kernel.exception']->handle($exception);
-			}
-		});
-	}
-
-	/**
-	 * Set the given Closure as the exception handler.
-	 *
-	 * This function is mainly needed for mocking purposes.
-	 *
-	 * @param  Closure  $handler
-	 * @return mixed
-	 */
-	protected function setExceptionHandler(Closure $handler)
-	{
-		return set_exception_handler($handler);
-	}
-
-	/**
 	 * Register an application error handler.
 	 *
 	 * @param  Closure  $callback
@@ -426,7 +376,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function error(Closure $callback)
 	{
-		$this->errorHandlers[] = $callback;
+		$this['exception']->error($callback);
 	}
 
 	/**
