@@ -213,9 +213,6 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function using(Request $request, Closure $callback)
 	{
-		// When making a request to a route, we'll push the current request object
-		// onto the request stack and set the given request as the new request
-		// that is active. This allows for true HMVC requests within routes.
 		$this->requestStack[] = $this['request'];
 
 		$this['request'] = $request;
