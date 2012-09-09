@@ -31,27 +31,6 @@ class Application extends Container implements HttpKernelInterface {
 	protected $requestStack = array();
 
 	/**
-	 * The application middlewares.
-	 *
-	 * @var array
-	 */
-	protected $middlewares = array();
-
-	/**
-	 * The pattern to middleware bindings.
-	 *
-	 * @var array
-	 */
-	protected $patternMiddlewares = array();
-
-	/**
-	 * The global middlewares for the application.
-	 *
-	 * @var array
-	 */
-	protected $globalMiddlewares = array();
-
-	/**
 	 * All of the registered service providers.
 	 *
 	 * @var array
@@ -150,7 +129,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function before(Closure $callback)
 	{
-		$this->globalMiddlewares['before'][] = $callback;
+		return $this['router']->before($callback);
 	}
 
 	/**
@@ -161,7 +140,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function after(Closure $callback)
 	{
-		$this->globalMiddlewares['after'][] = $callback;
+		return $this['router']->after($callback);
 	}
 
 	/**
@@ -172,7 +151,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function close(Closure $callback)
 	{
-		$this->globalMiddlewares['close'][] = $callback;
+		return $this['router']->close($callback);
 	}
 
 	/**
@@ -183,7 +162,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function finish(Closure $callback)
 	{
-		$this->globalMiddlewares['finish'][] = $callback;
+		$this['router']->finish($callback);
 	}
 
 	/**
@@ -262,7 +241,7 @@ class Application extends Container implements HttpKernelInterface {
 
 		$response->send();
 
-		$this->callFinishMiddleware($response);
+		$this['router']->callFinishMiddleware($this['request'], $response);
 	}
 
 	/**
@@ -276,33 +255,9 @@ class Application extends Container implements HttpKernelInterface {
 		// Before we handle the requests we need to make sure the application has been
 		// booted up. The boot process will call the "boot" method on each service
 		// provider giving them all a chance to register any application events.
-		if ( ! $this->booted)
-		{
-			$this->boot();
-		}
+		if ( ! $this->booted) $this->boot();
 
-		$this->prepareRequest($request);
-
-		// First we will call the "before" global middlware, which we'll give a chance
-		// to override the normal requests process when a response is returned by a
-		// middlewares. Otherwise we'll call the route just like a normal reuqest.
-		$response =  $this->callGlobalMiddleware('before');
-
-		if ( ! is_null($response))
-		{
-			return $this->prepareResponse($response, $request);
-		}
-
-		$route = $this['router']->dispatch($request);
-
-		// Once we have the route, we can just run it to get the responses, which will
-		// always be instances of the Response class. Once we have the responses we
-		// will execute the global "after" middlewares to finish off the request.
-		$response = $route->run($request);
-
-		$this->callAfterMiddleware($response);
-
-		return $response;
+		return $this['router']->dispatch($this->prepareRequest($request));
 	}
 
 	/**
@@ -388,53 +343,6 @@ class Application extends Container implements HttpKernelInterface {
 	public function getMiddleware($name)
 	{
 		return $this['router']->getMiddleware($name);
-	}
-
-	/**
-	 * Call the "after" global middlwares.
-	 *
-	 * @return mixed
-	 */
-	public function callAfterMiddleware(Response $response)
-	{
-		$this->callGlobalMiddleware('after', array($response));
-
-		$this->callGlobalMiddleware('close', array($response));
-	}
-
-	/**
-	 * Call the "finish" global middlware.
-	 *
-	 * @return mixed
-	 */
-	public function callFinishMiddleware(Response $response)
-	{
-		return $this->callGlobalMiddleware('finish', array($response));
-	}
-
-	/**
-	 * Call a given global middleware with the parameters.
-	 *
-	 * @param  string  $name
-	 * @param  array   $parameters
-	 * @return mixed
-	 */
-	protected function callGlobalMiddleware($name, array $parameters = array())
-	{
-		array_unshift($parameters, $this['request']);
-
-		if (isset($this->globalMiddlewares[$name]))
-		{
-			// There may be multiple handlers registered for a global middleware so we
-			// will need to spin through each one and execute each of them and will
-			// return back first non-null responses we come across from a filter.
-			foreach ($this->globalMiddlewares[$name] as $middleware)
-			{
-				$response = call_user_func_array($middleware, $parameters);
-
-				if ( ! is_null($response)) return $response;
-			}
-		}
 	}
 
 	/**

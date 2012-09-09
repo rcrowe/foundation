@@ -30,31 +30,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testBeforeFilterHaltsResponse()
-	{
-		$app = new Application;
-		$app->before(function() { return 'foo'; });
-		$app['router']->get('/foo', function() { return 'bar'; });
-		$app['request'] = Request::create('/foo');
-		$response = $app->dispatch($app['request']);
-		$this->assertEquals('foo', $response->getContent());
-	}
-
-
-	public function testCloseMiddlewareCalledAfterAfter()
-	{
-		$_SERVER['__filter.test'] = null;
-		$app = new Application;
-		$app->after(function() { $_SERVER['__filter.test'] = 'after'; });
-		$app->close(function() { $_SERVER['__filter.test'] = 'close'; });
-		$route = $app['router']->get('/foo', function() { return 'bar'; });
-		$app['request'] = Request::create('/foo');
-		$response = $app->dispatch($app['request']);
-		$this->assertEquals('close', $_SERVER['__filter.test']);
-		unset($_SERVER['__filter.test']);
-	}
-
-
 	public function testEnvironmenetDetection()
 	{
 		$app = new Application;
