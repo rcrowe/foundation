@@ -76,7 +76,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'bar'));
-		$middleware = $app->getMiddleware('csrf');
+		$middleware = $app->getFilter('csrf');
 		$middleware();
 	}
 
@@ -88,7 +88,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'foo'));
-		$middleware = $app->getMiddleware('csrf');
+		$middleware = $app->getFilter('csrf');
 		$middleware();
 		$this->assertTrue(true);
 	}

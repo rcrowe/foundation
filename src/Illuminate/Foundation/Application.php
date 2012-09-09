@@ -122,7 +122,7 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register a "before" application middleware.
+	 * Register a "before" application filter.
 	 *
 	 * @param  Closure  $callback
 	 * @return void
@@ -133,7 +133,7 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register an "after" application middleware.
+	 * Register an "after" application filter.
 	 *
 	 * @param  Closure  $callback
 	 * @return void
@@ -144,7 +144,7 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register a "close" application middleware.
+	 * Register a "close" application filter.
 	 *
 	 * @param  Closure  $callback
 	 * @return void
@@ -155,7 +155,7 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register a "finish" application middleware.
+	 * Register a "finish" application filter.
 	 *
 	 * @param  Closure  $callback
 	 * @return void
@@ -241,7 +241,7 @@ class Application extends Container implements HttpKernelInterface {
 
 		$response->send();
 
-		$this['router']->callFinishMiddleware($this['request'], $response);
+		$this['router']->callFinishFilter($this['request'], $response);
 	}
 
 	/**
@@ -323,26 +323,26 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register a new middleware with the router.
+	 * Register a new filter with the router.
 	 *
 	 * @param  string   $name
 	 * @param  Closure  $callback
 	 * @return void
 	 */
-	public function addMiddleware($name, Closure $callback)
+	public function addFilter($name, Closure $callback)
 	{
-		return $this['router']->addMiddleware($name, $callback);
+		return $this['router']->addFilter($name, $callback);
 	}
 
 	/**
-	 * Get a registered middleware callback.
+	 * Get a registered filter callback.
 	 *
 	 * @param  string   $name
 	 * @return Closure
 	 */
-	public function getMiddleware($name)
+	public function getFilter($name)
 	{
-		return $this['router']->getMiddleware($name);
+		return $this['router']->getFilter($name);
 	}
 
 	/**

@@ -233,7 +233,7 @@ class Route extends Facade {
 	 */
 	public static function filter($name, Closure $callback)
 	{
-		return static::$app['router']->addMiddleware($name, $callback);
+		return static::$app['router']->addFilter($name, $callback);
 	}
 
 	/**
@@ -245,7 +245,7 @@ class Route extends Facade {
 	 */
 	public static function when($pattern, $name)
 	{
-		return static::$app['router']->matchMiddleware($pattern, $name);
+		return static::$app['router']->matchFilter($pattern, $name);
 	}
 
 	/**

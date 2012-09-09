@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider {
 	{
 		$this->registerAuthProvider($app);
 
-		$this->registerAuthMiddleware($app);
+		$this->registerAuthFilter($app);
 	}
 
 	/**
@@ -75,17 +75,17 @@ class AuthServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Register the middleware for the auth library.
+	 * Register the filter for the auth library.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerAuthMiddleware($app)
+	protected function registerAuthFilter($app)
 	{
 		// The "auth" middleware provides a convenient way to verify that a given
 		// user is logged into the application. If they are not, we will just
 		// redirect the users to the "login" named route as a convenience.
-		$app->addMiddleware('auth', function() use ($app)
+		$app->addFilter('auth', function() use ($app)
 		{
 			if ($app['auth']->isGuest())
 			{

@@ -41,7 +41,7 @@ class SessionServiceProvider extends ServiceProvider {
 			return $driver;
 		});
 
-		$this->addSessionMiddleware($app);
+		$this->addSessionFilter($app);
 	}
 
 	/**
@@ -67,14 +67,14 @@ class SessionServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Register the CSRF middleware for the application.
+	 * Register the CSRF filter for the application.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function addSessionMiddleware($app)
+	protected function addSessionFilter($app)
 	{
-		$app->addMiddleware('csrf', function() use ($app)
+		$app->addFilter('csrf', function() use ($app)
 		{
 			// The "csrf" middleware provides a simple middleware for checking that a
 			// CSRF token in the request inputs matches the CSRF token stored for
