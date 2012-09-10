@@ -1,11 +1,11 @@
 <?php namespace Illuminate\Foundation\Managers;
 
 use Twig_Environment;
-use Illuminate\View\PhpEngine;
-use Illuminate\View\TwigEngine;
 use Illuminate\View\Environment;
-use Illuminate\View\CompilerEngine;
 use Illuminate\Validation\MessageBag;
+use Illuminate\View\Engines\PhpEngine;
+use Illuminate\View\Engines\TwigEngine;
+use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Compilers\BladeCompiler;
 
 class ViewManager extends Manager {
