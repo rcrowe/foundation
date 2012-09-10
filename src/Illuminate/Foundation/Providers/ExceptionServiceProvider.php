@@ -55,9 +55,9 @@ class ExceptionServiceProvider extends ServiceProvider {
 			return new ErrorHandler;
 		};
 
-		$app['kernel.exception'] = function()
+		$app['kernel.exception'] = function() use ($app)
 		{
-			return new KernelHandler;
+			return new KernelHandler($app['config']['app.debug']);
 		};
 	}
 
