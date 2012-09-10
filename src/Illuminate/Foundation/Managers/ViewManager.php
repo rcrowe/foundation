@@ -39,7 +39,7 @@ class ViewManager extends Manager {
 		// We set the error handler functionon the view environment since PHP has bad
 		// handling (none) of exceptions that occur in a __toString cast. This can
 		// let us provide better error reporting if an exception occurs on cast.
-		$driver->setErrorHandler($app['exception.function']);
+		$driver->setErrorHandler($this->app['exception.function']);
 
 		return $driver;
 	}
