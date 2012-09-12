@@ -15,7 +15,10 @@ class RoutingServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
-		$app['router'] = $app->share(function() { return new Router; });
+		$app['router'] = $app->share(function($app)
+		{
+			return new Router($app);
+		});
 
 		$this->registerUrlGenerator($app);
 
