@@ -77,6 +77,22 @@ class Redirector {
 	}
 
 	/**
+	 * Create a new redirect response to a controller action.
+	 *
+	 * @param  string  $action
+	 * @param  array   $parameters
+	 * @param  int     $status
+	 * @param  array   $headers
+	 * @return Illuminate\Foundation\RedirectResponse
+	 */
+	public function action($action, $parameters = array(), $status = 302, $headers = array())
+	{
+		$path = $this->generator->action($action, $parameters);
+
+		return $this->to($path, $status, $headers);
+	}
+
+	/**
 	 * Create a new redirect response.
 	 *
 	 * @param  string  $path
