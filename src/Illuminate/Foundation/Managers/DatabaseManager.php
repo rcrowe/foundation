@@ -48,7 +48,7 @@ class DatabaseManager {
 			// set the "fetch mode" for PDO which determines the query return types.
 			$connection = $this->factory->make($this->getConfig($name));
 
-			$this->connections[$name] = $this->prepareConnection($connection);
+			$this->connections[$name] = $this->prepConnection($connection);
 		}
 
 		return $this->connections[$name];
@@ -60,11 +60,21 @@ class DatabaseManager {
 	 * @param  Illuminate\Database\Connection  $connection
 	 * @return Illuminate\Database\Connection
 	 */
-	protected function prepareConnection(Connection $connection)
+	protected function prepConnection(Connection $connection)
 	{
 		$connection->setFetchMode($this->app['config']['database.fetch']);
 
 		$connection->setEventDispatcher($this->app['events']);
+
+		// We will setup a Closure to resolve the paginator instance on the connection
+		// since the Paginator isn't sued on every request and needs quite a few of
+		// our dependencies. It'll be more efficient to lazily resolve instances.
+		$app = $this->app;
+
+		$connection->setPaginator(function() use ($app)
+		{
+			return $app['paginator'];
+		});
 
 		return $connection;
 	}
