@@ -15,7 +15,9 @@ class PaginationServiceProvider extends ServiceProvider {
 	{
 		$app['paginator'] = $app->share(function($app)
 		{
-			$paginator = new Environment($app['request'], $app['view'], $app['translator']);
+			$view = $app['view']->driver();
+
+			$paginator = new Environment($app['request'], $view, $app['translator']);
 
 			$paginator->setViewName($app['config']['view.pagination']);
 
