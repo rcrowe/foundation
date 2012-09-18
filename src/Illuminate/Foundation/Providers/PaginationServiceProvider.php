@@ -13,7 +13,7 @@ class PaginationServiceProvider extends ServiceProvider {
 	 */
 	public function register(Application $app)
 	{
-		$app['pagination'] = $app->share(function($app)
+		$app['paginator'] = $app->share(function($app)
 		{
 			$paginator = new Environment($app['request'], $app['view'], $app['translator']);
 
