@@ -21,6 +21,13 @@ class DatabaseManager {
 	protected $factory;
 
 	/**
+	 * The active connection instances.
+	 *
+	 * @var array
+	 */
+	protected $connections = array();
+
+	/**
 	 * Create a new database manager instance.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
