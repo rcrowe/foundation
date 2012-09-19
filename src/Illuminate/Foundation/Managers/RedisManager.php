@@ -93,7 +93,7 @@ class RedisManager {
 	 */
 	protected function getDefaultConnection()
 	{
-		return $this->app['config']['database.redis.default'];
+		return 'default';
 	}
 
 	/**
