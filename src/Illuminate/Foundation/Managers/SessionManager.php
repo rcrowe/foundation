@@ -49,6 +49,16 @@ class SessionManager extends Manager {
 	}
 
 	/**
+	 * Create an instance of the Redis session driver.
+	 *
+	 * @return Illuminate\Session\CacheDrivenStore
+	 */
+	protected function createRedisDriver()
+	{
+		return $this->createCacheBased('redis');
+	}
+
+	/**
 	 * Create an instance of a cache driven driver.
 	 *
 	 * @return Illuminate\Session\CacheDrivenStore

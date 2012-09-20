@@ -4,6 +4,7 @@ use Illuminate\Cache\ApcStore;
 use Illuminate\Cache\FileStore;
 use Illuminate\Cache\ApcWrapper;
 use Illuminate\Cache\ArrayStore;
+use Illuminate\Cache\RedisStore;
 
 class CacheManager extends Manager {
 
@@ -28,9 +29,9 @@ class CacheManager extends Manager {
 	}
 
 	/**
-	 * Create an instance of the array cache driver.
+	 * Create an instance of the file cache driver.
 	 *
-	 * @return Illuminate\Cache\ArrayStore
+	 * @return Illuminate\Cache\FileStore
 	 */
 	protected function createFileDriver()
 	{
@@ -40,9 +41,9 @@ class CacheManager extends Manager {
 	}
 
 	/**
-	 * Create an instance of the array cache driver.
+	 * Create an instance of the Memcached cache driver.
 	 *
-	 * @return Illuminate\Cache\ArrayStore
+	 * @return Illuminate\Cache\MemcachedStore
 	 */
 	protected function createMemcachedDriver()
 	{
@@ -51,6 +52,18 @@ class CacheManager extends Manager {
 		$memcached = $this->app['memcached.connector']->connect($servers);
 
 		return new MemcachedStore($memcached, $this->app['config']['cache.prefix']);
+	}
+
+	/**
+	 * Create an instance of the Redis cache driver.
+	 *
+	 * @return Illuminate\Cache\RedisStore
+	 */
+	protected function createRedisDriver()
+	{
+		$redis = $this->app['redis']->connection();
+
+		return new RedisStore($redis, $this->app['config']['cache.prefix']);
 	}
 
 	/**
