@@ -36,6 +36,20 @@ class Application extends Container implements HttpKernelInterface {
 	protected $serviceProviders = array();
 
 	/**
+	 * All of the loaded service providers.
+	 *
+	 * @var array
+	 */
+	protected $loadedProviders = array();
+
+	/**
+	 * All of the lazily loaded services.
+	 *
+	 * @var array
+	 */
+	protected $deferredServices = array();
+
+	/**
 	 * All of the registered error handlers.
 	 *
 	 * @var array
@@ -131,6 +145,8 @@ class Application extends Container implements HttpKernelInterface {
 			$this[$key] = $value;
 		}
 
+		$this->loadedProviders[get_class($provider)] = true;
+
 		$this->serviceProviders[] = $provider;
 	}
 
@@ -148,6 +164,26 @@ class Application extends Container implements HttpKernelInterface {
 		{
 			$this->deferredServices[$service] = compact('provider', 'options');
 		}
+	}
+
+	/**
+	 * Load the service provider for a deferred service.
+	 *
+	 * @param  string  $service
+	 * @return void
+	 */
+	public function loadDeferred($service)
+	{
+		$provider = $this->deferredServices[$service];
+
+		if (isset($this->loadedProviders[$provider['provider']])) return;
+
+		// We'll just grab the service provider's name and register the provider with
+		// the application instance. By deferring the loading of services until it
+		// is actually need we can drastically speed up this request lifecycles.
+		$providerName = $provider['provider'];
+
+		return $this->register(new $providerName, $provider['options']);
 	}
 
 	/**
@@ -436,6 +472,19 @@ class Application extends Container implements HttpKernelInterface {
 	public function __set($key, $value)
 	{
 		$this[$key] = $value;
+	}
+
+	/**
+	 * Resolve a service from the application.
+	 *
+	 * @param  string  $key
+	 * @return mixed
+	 */
+	public function offsetGet($key)
+	{
+		if (isset($this->deferredServices[$key])) $this->loadDeferred($key);
+
+		return parent::offsetGet($key);
 	}
 
 }

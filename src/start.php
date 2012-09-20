@@ -71,11 +71,18 @@ require_once __DIR__.'/facades.php';
 |
 */
 
-foreach ($app['config']['app.providers'] as $provider)
+foreach ($app['config']['app.providers'] as $provider => $options)
 {
 	$provider = '\\'.ltrim($provider, '\\');
 
-	$app->register(new $provider);
+	if (isset($options['defer']) and $options['defer'])
+	{
+		$app->deferredRegister($provider, $options['provides']);
+	}
+	else
+	{
+		$app->register(new $provider);
+	}
 }
 
 /*
