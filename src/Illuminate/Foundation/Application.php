@@ -135,6 +135,22 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Register a service provider to be lazily loaded.
+	 *
+	 * @param  string  $provider
+	 * @param  array   $provides
+	 * @param  array   $options
+	 * @return void
+	 */
+	public function deferredRegister($provider, array $provides, array $options = array())
+	{
+		foreach ($provides as $service)
+		{
+			$this->deferredServices[$service] = compact('provider', 'options');
+		}
+	}
+
+	/**
 	 * Register a "before" application filter.
 	 *
 	 * @param  Closure  $callback
