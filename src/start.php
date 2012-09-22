@@ -79,7 +79,7 @@ foreach ($app['config']['app.providers'] as $key => $value)
 	}
 	else
 	{
-		$app->register(new $key);
+		$app->register(new $value);
 	}
 }
 
