@@ -50,13 +50,6 @@ class Application extends Container implements HttpKernelInterface {
 	protected $deferredServices = array();
 
 	/**
-	 * All of the registered error handlers.
-	 *
-	 * @var array
-	 */
-	protected $errorHandlers = array();
-
-	/**
 	 * Create a new Illuminate application instance.
 	 *
 	 * @return void
@@ -439,16 +432,6 @@ class Application extends Container implements HttpKernelInterface {
 	public function getRequestStack()
 	{
 		return $this->requestStack;
-	}
-
-	/**
-	 * Get the array of error handlers.
-	 *
-	 * @return array
-	 */
-	public function getErrorHandlers()
-	{
-		return $this->errorHandlers;
 	}
 
 	/**
