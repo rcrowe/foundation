@@ -235,12 +235,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function getRootUrl()
 	{
-		if (strpos($pathInfo = $this->getPathInfo(), '?') === 0)
-		{
-			$pathInfo = '';
-		}
-
-		return $this->getSchemeAndHttpHost().$this->getBaseUrl().$pathInfo;
+		return $this->getSchemeAndHttpHost().$this->getBaseUrl();
 	}
 
 	/**

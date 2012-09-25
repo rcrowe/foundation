@@ -211,22 +211,22 @@ class Response extends Facade {
 	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public static function make($content = '', $status = 200, array $headers = array())
+	public function make($content = '', $status = 200, array $headers = array())
 	{
-		return static::$app->respond($content, $status, $headers);
+		return new Symfony\Component\HttpFoundation\Response($content, $status, $headers);
 	}
 
 	/**
-	 * Convert some data into a JSON response.
+	 * Return a new JSON response from the application.
 	 *
-	 * @param  mixed  $data
-	 * @param  int    $status
-	 * @param  array  $headers
+	 * @param  string  $content
+	 * @param  int     $status
+	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	public static function json($data = array(), $status = 200, array $headers = array())
+	public function json($data = array(), $status = 200, array $headers = array())
 	{
-		return static::$app->json($data, $status, $headers);
+		return new Symfony\Component\HttpFoundation\JsonResponse($data, $status, $headers);
 	}
 
 	/**
@@ -235,11 +235,11 @@ class Response extends Facade {
 	 * @param  Closure  $callback
 	 * @param  int      $status
 	 * @param  array    $headers
-	 * @return Symfony\Component\HttpFoundation\Response
+	 * @return Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public static function stream($callback, $status = 200, array $headers = array())
+	public function stream($callback, $status = 200, array $headers = array())
 	{
-		return static::$app->stream($callback, $status, $headers);
+		return new Symfony\Component\HttpFoundation\StreamedResponse($callback, $status, $headers);
 	}
 
 }

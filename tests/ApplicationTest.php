@@ -104,16 +104,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testRespondMethodReturnsResponse()
-	{
-		$app = new Application;
-		$response = $app->respond('foo', 404, array('foo' => 'bar'));
-		$this->assertEquals('foo', $response->getContent());
-		$this->assertEquals(404, $response->getStatusCode());
-		$this->assertEquals('bar', $response->headers->get('foo'));
-	}
-
-
 	public function testExceptionHandlingSendsResponseFromCustomHandler()
 	{
 		$app = $this->getMock('Illuminate\Foundation\Application', array('prepareResponse'));

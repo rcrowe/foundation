@@ -224,45 +224,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Return a new response from the application.
-	 *
-	 * @param  string  $content
-	 * @param  int     $status
-	 * @param  array   $headers
-	 * @return Symfony\Component\HttpFoundation\Response
-	 */
-	public function respond($content = '', $status = 200, array $headers = array())
-	{
-		return new Response($content, $status, $headers);
-	}
-
-	/**
-	 * Return a new JSON response from the application.
-	 *
-	 * @param  string  $content
-	 * @param  int     $status
-	 * @param  array   $headers
-	 * @return Symfony\Component\HttpFoundation\JsonResponse
-	 */
-	public function json($data = array(), $status = 200, array $headers = array())
-	{
-		return new JsonResponse($data, $status, $headers);
-	}
-
-	/**
-	 * Return a new streamed response from the application.
-	 *
-	 * @param  Closure  $callback
-	 * @param  int      $status
-	 * @param  array    $headers
-	 * @return Symfony\Component\HttpFoundation\StreamedResponse
-	 */
-	public function stream($callback, $status = 200, array $headers = array())
-	{
-		return new StreamedResponse($callback, $status, $headers);
-	}
-
-	/**
 	 * Execute a callback in a request context.
 	 *
 	 * @param  Illuminate\Foundation\Request  $request
