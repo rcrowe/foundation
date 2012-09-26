@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Managers\RedisManager;
 
 class RedisServiceProvider extends ServiceProvider {
@@ -11,7 +11,7 @@ class RedisServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['redis'] = $app->share(function($app)
 		{

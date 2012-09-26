@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\View\PhpEngine;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Managers\ViewManager;
 
 class ViewServiceProvider extends ServiceProvider {
@@ -12,7 +12,7 @@ class ViewServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['view'] = $app->share(function($app)
 		{

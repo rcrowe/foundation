@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
 class EventsServiceProvider extends ServiceProvider {
 
@@ -10,7 +10,7 @@ class EventsServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['events'] = $app->share(function($app)
 		{

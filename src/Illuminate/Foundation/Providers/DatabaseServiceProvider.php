@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Managers\DatabaseManager;
 use Illuminate\Database\Connectors\ConnectionFactory;
 
@@ -13,7 +13,7 @@ class DatabaseServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$this->registerEloquent($app);
 
@@ -37,7 +37,7 @@ class DatabaseServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerEloquent(Application $app)
+	protected function registerEloquent($app)
 	{
 		$connections = array_keys($app['config']['database.connections']);
 

@@ -1,8 +1,8 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
+use Illuminate\Support\ServiceProvider;
 
 class TranslationServiceProvider extends ServiceProvider {
 
@@ -12,7 +12,7 @@ class TranslationServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$this->registerLoader($app);
 

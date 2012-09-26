@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\MemcachedConnector;
 use Illuminate\Foundation\Managers\CacheManager;
 
@@ -12,7 +12,7 @@ class CacheServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['cache'] = $app->share(function($app)
 		{

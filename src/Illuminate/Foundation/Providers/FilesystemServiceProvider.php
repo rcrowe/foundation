@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Filesystem;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
 class FilesystemServiceProvider extends ServiceProvider {
 
@@ -11,7 +11,7 @@ class FilesystemServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['files'] = $app->share(function() { return new Filesystem; });
 	}

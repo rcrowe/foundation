@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Foundation\Managers\SessionManager;
 
@@ -12,7 +12,7 @@ class SessionServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function boot(Application $app)
+	public function boot($app)
 	{
 		$this->registerSessionEvents($app);
 	}
@@ -23,7 +23,7 @@ class SessionServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['session'] = $app->share(function($app)
 		{

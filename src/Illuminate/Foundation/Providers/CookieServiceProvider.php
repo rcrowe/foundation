@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\CookieJar;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
 class CookieServiceProvider extends ServiceProvider {
 
@@ -11,7 +11,7 @@ class CookieServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['cookie.defaults'] = $this->cookieDefaults();
 

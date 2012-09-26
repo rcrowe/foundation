@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Closure;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\ExceptionHandler;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
@@ -14,7 +14,7 @@ class ExceptionServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function startHandling(Application $app)
+	public function startHandling($app)
 	{
 		// By registering the error handler with a level of -1, we state that we want
 		// all PHP errors converted to ErrorExceptions and thrown, which provides
@@ -30,7 +30,7 @@ class ExceptionServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$this->registerKernelHandlers($app);
 

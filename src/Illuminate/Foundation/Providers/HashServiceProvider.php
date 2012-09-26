@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Hashing\BcryptHasher;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
 class HashServiceProvider extends ServiceProvider {
 
@@ -11,7 +11,7 @@ class HashServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['hash'] = $app->share(function() { return new BcryptHasher; });
 	}

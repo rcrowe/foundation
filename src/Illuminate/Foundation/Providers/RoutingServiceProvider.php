@@ -3,7 +3,7 @@
 use Illuminate\Routing\Router;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Foundation\Redirector;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
 class RoutingServiceProvider extends ServiceProvider {
 
@@ -13,7 +13,7 @@ class RoutingServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$app['router'] = $app->share(function($app)
 		{

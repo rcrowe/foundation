@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Managers\AuthManager;
 
 class AuthServiceProvider extends ServiceProvider {
@@ -11,7 +11,7 @@ class AuthServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function boot(Application $app)
+	public function boot($app)
 	{
 		$this->registerAuthEvents($app);
 	}
@@ -22,7 +22,7 @@ class AuthServiceProvider extends ServiceProvider {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register(Application $app)
+	public function register($app)
 	{
 		$this->registerAuthProvider($app);
 
