@@ -19,6 +19,7 @@
         "illuminate/database": ">=1.0.0",
         "illuminate/encryption": ">=1.0.0",
         "illuminate/events": ">=1.0.0",
+        "illuminate/exception": ">=1.0.0",
         "illuminate/filesystem": ">=1.0.0",
         "illuminate/http": ">=1.0.0",
         "illuminate/pagination": ">=1.0.0",

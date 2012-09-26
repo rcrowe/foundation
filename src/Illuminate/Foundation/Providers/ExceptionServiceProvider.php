@@ -1,8 +1,8 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Closure;
+use Illuminate\Exception\Handler;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\ExceptionHandler;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler as KernelHandler;
 
@@ -36,7 +36,7 @@ class ExceptionServiceProvider extends ServiceProvider {
 
 		$app['exception'] = function()
 		{
-			return new ExceptionHandler;
+			return new Handler;
 		};
 
 		$this->registerExceptionHandler($app);
