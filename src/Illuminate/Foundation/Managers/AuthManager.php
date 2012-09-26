@@ -21,7 +21,7 @@ class AuthManager extends Manager {
 		// secure, encrypted cookie values to get generated for those cookies.
 		$guard->setEncrypter($this->app['encrypter']);
 
-		$guard->setCookieCreator($this->app['cookie']);
+		$guard->setCookieJar($this->app['cookie']);
 
 		return $guard;
 	}
@@ -35,7 +35,7 @@ class AuthManager extends Manager {
 	{
 		$provider = $this->createDatabaseProvider();
 
-		return new Guard($provider, $this->app['session'], $this->app['request']);
+		return new Guard($provider, $this->app['session']);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class AuthManager extends Manager {
 	{
 		$provider = $this->createEloquentProvider();
 
-		return new Guard($provider, $this->app['session'], $this->app['request']);
+		return new Guard($provider, $this->app['session']);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Providers;
 
-use Illuminate\CookieCreator;
+use Illuminate\CookieJar;
 use Illuminate\Foundation\Application;
 
 class CookieServiceProvider extends ServiceProvider {
@@ -22,9 +22,9 @@ class CookieServiceProvider extends ServiceProvider {
 		{
 			$options = $app['cookie.defaults'];
 
-			extract($options);
+			$key = $app['config']['app.key'];
 
-			return new CookieCreator($path, $domain, $secure, $httpOnly);
+			return new CookieJar($app['request'], $key, $options);
 		});
 	}
 

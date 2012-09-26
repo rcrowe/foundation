@@ -57,7 +57,7 @@ class SessionServiceProvider extends ServiceProvider {
 		// the session payloads as well as writing them after each request.
 		$app->before(function($request) use ($app)
 		{
-			$app['session']->start($request);
+			$app['session']->start($app['cookie']);
 		});
 
 		$app->close(function($request, $response) use ($app)
