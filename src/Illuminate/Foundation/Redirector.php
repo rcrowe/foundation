@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Foundation;
 
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Session\Store as SessionStore;
 
 class Redirector {
@@ -37,7 +38,7 @@ class Redirector {
 	 * @param  int     $status
 	 * @param  array   $headers
 	 * @param  bool    $secure
-	 * @return Illuminate\Foundation\RedirectResponse
+	 * @return Illuminate\Http\RedirectResponse
 	 */
 	public function to($path, $status = 302, $headers = array(), $secure = false)
 	{
@@ -53,7 +54,7 @@ class Redirector {
 	 * @param  int     $status
 	 * @param  array   $headers
 	 * @param  bool    $secure
-	 * @return Illuminate\Foundation\RedirectResponse
+	 * @return Illuminate\Http\RedirectResponse
 	 */
 	public function secure($path, $status = 302, $headers = array())
 	{
@@ -67,7 +68,7 @@ class Redirector {
 	 * @param  array   $parameters
 	 * @param  int     $status
 	 * @param  array   $headers
-	 * @return Illuminate\Foundation\RedirectResponse
+	 * @return Illuminate\Http\RedirectResponse
 	 */
 	public function route($route, $parameters = array(), $status = 302, $headers = array())
 	{
@@ -83,7 +84,7 @@ class Redirector {
 	 * @param  array   $parameters
 	 * @param  int     $status
 	 * @param  array   $headers
-	 * @return Illuminate\Foundation\RedirectResponse
+	 * @return Illuminate\Http\RedirectResponse
 	 */
 	public function action($action, $parameters = array(), $status = 302, $headers = array())
 	{
@@ -98,7 +99,7 @@ class Redirector {
 	 * @param  string  $path
 	 * @param  int     $status
 	 * @param  array   $headers
-	 * @return Illuminate\Foundation\RedirectResponse
+	 * @return Illuminate\Http\RedirectResponse
 	 */
 	protected function createRedirect($path, $status, $headers)
 	{

@@ -1,7 +1,7 @@
 <?php
 
 use Mockery as m;
-use Illuminate\Foundation\Request;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Lightbulb;
 use Illuminate\Foundation\Application;
 
@@ -97,7 +97,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testPrepareRequestInjectsSession()
 	{
 		$app = new Application;
-		$request = Illuminate\Foundation\Request::create('/', 'GET');
+		$request = Illuminate\Http\Request::create('/', 'GET');
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app->prepareRequest($request);
 		$this->assertEquals($app['session'], $request->getSessionStore());

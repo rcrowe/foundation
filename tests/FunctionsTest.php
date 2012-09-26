@@ -1,7 +1,7 @@
 <?php
 
 use Mockery as m;
-use Illuminate\Foundation\Request;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 
 class FunctionsTest extends PHPUnit_Framework_TestCase {
