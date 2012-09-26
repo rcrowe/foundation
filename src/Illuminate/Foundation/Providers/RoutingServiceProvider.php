@@ -1,8 +1,8 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Routing\Router;
+use Illuminate\Http\Redirector;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Foundation\Redirector;
 use Illuminate\Support\ServiceProvider;
 
 class RoutingServiceProvider extends ServiceProvider {
