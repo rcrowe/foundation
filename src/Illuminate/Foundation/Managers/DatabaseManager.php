@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation\Managers;
 
+use Illuminate\Support\Manager;
 use Illuminate\Database\Connection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Connectors\ConnectionFactory;

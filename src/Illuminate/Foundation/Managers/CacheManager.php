@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Foundation\Managers;
 
 use Illuminate\Cache\ApcStore;
+use Illuminate\Support\Manager;
 use Illuminate\Cache\FileStore;
 use Illuminate\Cache\ApcWrapper;
 use Illuminate\Cache\ArrayStore;

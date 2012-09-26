@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation\Managers;
 
+use Illuminate\Support\Manager;
 use Illuminate\Redis\Database;
 use Illuminate\Foundation\Application;
 

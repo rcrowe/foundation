@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Foundation\Managers;
 
 use Illuminate\Auth\Guard;
+use Illuminate\Support\Manager;
 use Illuminate\Auth\DatabaseUserProvider;
 use Illuminate\Auth\EloquentUserProvider;
 

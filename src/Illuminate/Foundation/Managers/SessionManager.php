@@ -1,5 +1,6 @@
 <?php namespace Illuminate\Foundation\Managers;
 
+use Illuminate\Support\Manager;
 use Illuminate\Session\FileStore;
 use Illuminate\Session\CookieStore;
 use Illuminate\Session\CacheDrivenStore;

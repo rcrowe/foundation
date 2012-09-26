@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Foundation\Managers;
 
 use Twig_Environment;
+use Illuminate\Support\Manager;
 use Illuminate\View\Environment;
 use Illuminate\Validation\MessageBag;
 use Illuminate\View\Engines\PhpEngine;
