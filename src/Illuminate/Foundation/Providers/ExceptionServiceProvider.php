@@ -34,10 +34,10 @@ class ExceptionServiceProvider extends ServiceProvider {
 	{
 		$this->registerKernelHandlers($app);
 
-		$app['exception'] = function()
+		$app['exception'] = $app->share(function()
 		{
 			return new Handler;
-		};
+		});
 
 		$this->registerExceptionHandler($app);
 	}
