@@ -12,7 +12,6 @@
 */
 
 use Illuminate\Filesystem;
-use Illuminate\Config\FileLoader as ConfigLoader;
 use Illuminate\Config\Repository as ConfigRepository;
 
 /*
@@ -39,11 +38,10 @@ $app->startExceptionHandling();
 |
 */
 
-$path = $app['path'].'/config';
-
-$loader = new ConfigLoader(new Filesystem, $path);
-
-$app['config'] = new ConfigRepository($loader, $app['env']);
+$app['config'] = $app->share(function($app)
+{
+	return new ConfigRepository($app['config.loader'], $app['env']);
+});
 
 /*
 |--------------------------------------------------------------------------
