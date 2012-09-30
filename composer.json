@@ -14,6 +14,7 @@
         "illuminate/auth": ">=1.0.0",
         "illuminate/cache": ">=1.0.0",
         "illuminate/config": ">=1.0.0",
+        "illuminate/console": ">=1.0.0",
         "illuminate/container": ">=1.0.0",
         "illuminate/cookie": ">=1.0.0",
         "illuminate/database": ">=1.0.0",
