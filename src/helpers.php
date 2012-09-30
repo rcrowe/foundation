@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Define the Laravel version number.
+ */
+define('LARAVEL_VERSION', '4.0.0');
+
+/**
  * Get the globally available request instance.
  *
  * @return Illuminate\Foundation\Application
