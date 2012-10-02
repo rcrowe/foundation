@@ -23,13 +23,6 @@ class Application extends Container implements HttpKernelInterface {
 	protected $booted = false;
 
 	/**
-	 * The current requests being executed.
-	 *
-	 * @var array
-	 */
-	protected $requestStack = array();
-
-	/**
 	 * All of the registered service providers.
 	 *
 	 * @var array
@@ -225,29 +218,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Execute a callback in a request context.
-	 *
-	 * @param  Illuminate\Foundation\Request  $request
-	 * @param  Closure  $callback
-	 * @return mixed
-	 */
-	public function using(Request $request, Closure $callback)
-	{
-		$this->requestStack[] = $this['request'];
-
-		$this['request'] = $request;
-
-		$result = $callback();
-
-		// Once the route has been run we'll want to pop the old request back into
-		// the active position so any request prior to an HMVC call can run as
-		// expected without worrying about the HMVC request waxing its data.
-		$this['request'] = array_pop($this->requestStack);
-
-		return $result;
-	}
-
-	/**
 	 * Handles the given request and delivers the response.
 	 *
 	 * @return void
@@ -384,16 +354,6 @@ class Application extends Container implements HttpKernelInterface {
 	public function error(Closure $callback)
 	{
 		$this['exception']->error($callback);
-	}
-
-	/**
-	 * Get the current application request stack.
-	 *
-	 * @return array
-	 */
-	public function getRequestStack()
-	{
-		return $this->requestStack;
 	}
 
 	/**
