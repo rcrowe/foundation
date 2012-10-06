@@ -1,6 +1,7 @@
 <?php namespace Illuminate\Foundation\Providers;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Console\Migrations\Migrator;
 use Illuminate\Database\Console\Migrations\ResetCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
