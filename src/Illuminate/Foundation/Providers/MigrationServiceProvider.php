@@ -71,7 +71,12 @@ class MigrationServiceProvider extends ServiceProvider {
 	 */
 	protected function registerCommands($app)
 	{
-		foreach (array('Migrate', 'Rollback', 'Reset') as $command)
+		$commands = array('Migrate', 'Rollback', 'Reset', 'Install', 'Make');
+
+		// We'll simply spin through the list of commands that are migration related
+		// and register each one of them with an application container. They will
+		// be resolved in the Artisan start file and registered on the console.
+		foreach ($commands as $command)
 		{
 			$this->{'register'.$command.'Command'}($app);
 		}
@@ -118,6 +123,44 @@ class MigrationServiceProvider extends ServiceProvider {
 		$app['command.migrate.reset'] = $app->share(function($app)
 		{
 			return new ResetCommand($app['migrator']);
+		});
+	}
+
+	/**
+	 * Register the "install" migration command.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerInstallCommand($app)
+	{
+		$app['command.migrate.install'] = $app->share(function($app)
+		{
+			return new InstallCommand($app['migration.repository']);
+		});
+	}
+
+	/**
+	 * Register the "install" migration command.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerMakeCommand($app)
+	{
+		$app['migration.creator'] = $app->share(function($app)
+		{
+			return new MigrationCreator($app['files']);
+		});
+
+		// Once we have the migration creator registered, we will create the command
+		// and inject the creator. The creator is responsible for the actual file
+		// creation of the migrations, and may be extended by these developers.
+		$app['command.migrate.make'] = $app->share(function($app)
+		{
+			$path = $app['config']['db.migration.path'];
+
+			return new MakeCommand($app['migration.creator'], $path);
 		});
 	}
 
