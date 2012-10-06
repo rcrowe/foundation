@@ -38,7 +38,10 @@ class MigrationServiceProvider extends ServiceProvider {
 			// The migration repository implementation is responsible for reading the
 			// migrations that have already run from the data store and of helping
 			// track each newly run migrations, as well as a rollback operation.
-			$connection = $app['db']->connection();
+			$connection = function() use ($app)
+			{
+				return $app['db']->connection();
+			};
 
 			$table = $app['config']['database.migration.table'];
 
