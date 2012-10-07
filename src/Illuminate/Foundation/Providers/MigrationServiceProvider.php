@@ -95,9 +95,9 @@ class MigrationServiceProvider extends ServiceProvider {
 	{
 		$app['command.migrate'] = $app->share(function($app)
 		{
-			$path = $app['config']['database.migration.path'];
+			$paths = $app['config']['database.migration.paths'];
 
-			return new MigrateCommand($app['migrator'], $path, $app['path'].'/vendor');
+			return new MigrateCommand($app['migrator'], $paths, $app['path'].'/vendor');
 		});
 	}
 
@@ -161,9 +161,9 @@ class MigrationServiceProvider extends ServiceProvider {
 		// creation of the migrations, and may be extended by these developers.
 		$app['command.migrate.make'] = $app->share(function($app)
 		{
-			$path = $app['config']['database.migration.path'];
+			$paths = $app['config']['database.migration.paths'];
 
-			return new MakeCommand($app['migration.creator'], $path);
+			return new MakeCommand($app['migration.creator'], $paths);
 		});
 	}
 
