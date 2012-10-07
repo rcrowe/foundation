@@ -2,14 +2,14 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Console\Migrations\Migrator;
+use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Console\Migrations\MakeCommand;
 use Illuminate\Database\Console\Migrations\ResetCommand;
 use Illuminate\Database\Console\Migrations\InstallCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Console\Migrations\RollbackCommand;
-use Illuminate\Database\Console\Migrations\MigrationCreator;
-use Illuminate\Database\Console\Migrations\DatabaseMigrationRepository;
+use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 
 class MigrationServiceProvider extends ServiceProvider {
 
@@ -156,11 +156,11 @@ class MigrationServiceProvider extends ServiceProvider {
 			return new MigrationCreator($app['files']);
 		});
 
-		// Once we have the migration creator registered, we will create the command
-		// and inject the creator. The creator is responsible for the actual file
-		// creation of the migrations, and may be extended by these developers.
 		$app['command.migrate.make'] = $app->share(function($app)
 		{
+			// Once we have the migration creator registered, we will create the command
+			// and inject the creator. The creator is responsible for the actual file
+			// creation of the migrations, and may be extended by these developers.
 			$creator = $app['migration.creator'];
 
 			$paths = $app['config']['database.migration.paths'];
