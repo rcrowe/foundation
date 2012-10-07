@@ -161,7 +161,7 @@ class MigrationServiceProvider extends ServiceProvider {
 		// creation of the migrations, and may be extended by these developers.
 		$app['command.migrate.make'] = $app->share(function($app)
 		{
-			$path = $app['config']['db.migration.path'];
+			$path = $app['config']['database.migration.path'];
 
 			return new MakeCommand($app['migration.creator'], $path);
 		});
