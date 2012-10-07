@@ -8,6 +8,7 @@ use Illuminate\Database\Console\Migrations\ResetCommand;
 use Illuminate\Database\Console\Migrations\InstallCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Console\Migrations\RollbackCommand;
+use Illuminate\Database\Console\Migrations\MigrationCreator;
 use Illuminate\Database\Console\Migrations\DatabaseMigrationRepository;
 
 class MigrationServiceProvider extends ServiceProvider {
