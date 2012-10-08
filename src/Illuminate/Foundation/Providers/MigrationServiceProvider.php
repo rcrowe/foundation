@@ -38,9 +38,9 @@ class MigrationServiceProvider extends ServiceProvider {
 	{
 		$app['migration.repository'] = $app->share(function($app)
 		{
-			// The migration repository implementation is responsible for reading the
-			// migrations that have already run from the data store and of helping
-			// track each newly run migrations, as well as a rollback operation.
+			// The migration repository implementation is responsible for reading out the
+			// migrations that have already run from the data stores and also helps to
+			// track even the newly run migrations, as well as a rollback operation.
 			$connection = function() use ($app)
 			{
 				return $app['db']->connection();
@@ -62,7 +62,22 @@ class MigrationServiceProvider extends ServiceProvider {
 	{
 		$app['migrator'] = $app->share(function($app)
 		{
-			return new Migrator($app['migration.repository'], $app['files']);
+			$migrator = new Migrator($app['migration.repository'], $app['files']);
+
+			$connections = array_keys($app['config']['database.connections']);
+
+			// Once we have the migrator instance, we will add add the database connections
+			// to the migrator's connection pool. The connections pool lets us defer the
+			// establishment of the connections until the migration commands are used.
+			foreach ($connections as $name)
+			{
+				$migrator->addConnection($name, function() use ($app, $name)
+				{
+					return $app['db']->connection($name);
+				});
+			}
+
+			return $migrator;
 		});
 	}
 
