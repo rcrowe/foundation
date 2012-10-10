@@ -25,7 +25,12 @@ class MigrationServiceProvider extends ServiceProvider {
 
 		$this->registerMigrator($app);
 
+		// Once we have registered the migrator instance we will go ahead and register
+		// all of the migration related commands that are used by the "Artisan" CLI
+		// so that they may be easily accessed for registering with the consoles.
 		$this->registerCommands($app);
+
+		$this->registerPostCreationHook($app);
 	}
 
 	/**
@@ -183,6 +188,28 @@ class MigrationServiceProvider extends ServiceProvider {
 			$packagePath = $app['path'].'/vendor';
 
 			return new MakeCommand($creator, $paths, $packagePath);
+		});
+	}
+
+	/**
+	 * Register the migration post create hook.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerPostCreationHook($app)
+	{
+		$app->extend('migration.creator', function($creator, $app)
+		{
+			// After a new migration is created, we will tell the Composer manager to
+			// regenerate the auto-load files for the framework. This simply makes
+			// sure that a migration will get immediately available for loading.
+			$creator->afterCreate(function() use ($app)
+			{
+				$app['composer']->dumpAutoloads();
+			});
+
+			return $creator;
 		});
 	}
 
