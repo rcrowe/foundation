@@ -72,6 +72,9 @@ class MigrationServiceProvider extends ServiceProvider {
 	 */
 	protected function registerMigrator($app)
 	{
+		// The migrator is responsible for actually running and rollback the migration
+		// files in the application. We will register all of the available database
+		// connections as Closures with the migrator so it can fire each of them.
 		$app['migrator'] = $app->share(function($app)
 		{
 			$repository = $app['migration.repository'];
