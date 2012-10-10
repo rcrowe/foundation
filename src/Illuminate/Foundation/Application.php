@@ -140,7 +140,7 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		if ( ! $files->exists($path))
 		{
-			return $this->buildManifest($files, $path, $providers);
+			return $this->compileManifest($files, $path, $providers);
 		}
 
 		// We'll get the manifest and compare it to the array of current services and
@@ -150,7 +150,7 @@ class Application extends Container implements HttpKernelInterface {
 
 		if ($providers != $manifest['providers'])
 		{
-			return $this->buildManifest($files, $path, $providers);
+			return $this->compileManifest($files, $path, $providers);
 		}
 
 		return $manifest;
@@ -164,7 +164,7 @@ class Application extends Container implements HttpKernelInterface {
 	 * @param  array   $providers
 	 * @return array
 	 */
-	public function buildManifest(Filesystem $files, $path, $providers)
+	public function compileManifest(Filesystem $files, $path, $providers)
 	{
 		$manifest = compact('providers');
 
