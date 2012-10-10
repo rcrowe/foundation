@@ -74,20 +74,29 @@ class MigrationServiceProvider extends ServiceProvider {
 	{
 		$app['migrator'] = $app->share(function($app)
 		{
-			$migrator = new Migrator($app['migration.repository'], $app['files']);
+			$repository = $app['migration.repository'];
 
-			$connections = array_keys($app['config']['database.connections']);
+			$migrator = new Migrator($repository, $app['files']);
 
 			// Once we have the migrator instance, we will add add the database connections
 			// to the migrator's connection pool. The connections pool lets us defer the
 			// establishment of the connections until the migration commands are used.
-			foreach ($connections as $name)
+			$connections = $app['config']['database.connections'];
+
+			foreach (array_keys($connections) as $name)
 			{
 				$migrator->addConnection($name, function() use ($app, $name)
 				{
 					return $app['db']->connection($name);
 				});
 			}
+
+			// Once the migrator has been registered and the connection pool has been built
+			// we will set the default connection values on the migrator; otherwise, the
+			// first connection will be assumed to be the default database connection.
+			$default = $app['config']['database.default'];
+
+			$migrator->setDefaultConnection($default);
 
 			return $migrator;
 		});

@@ -49,6 +49,8 @@ class DatabaseManager {
 	 */
 	public function connection($name = null)
 	{
+		$name = $name ?: $this->getDefaultConnection();
+
 		if ( ! isset($this->connections[$name]))
 		{
 			// If we haven't created this connection, we'll create it based on the config

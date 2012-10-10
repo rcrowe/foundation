@@ -20,8 +20,8 @@ use Illuminate\Config\Repository as ConfigRepository;
 |--------------------------------------------------------------------------
 |
 | We will go ahead and register the application exception handling here
-| which will provide a nice output of exception details and a stack
-| trace in the event of exceptions during application execution.
+| which will provide a great output of exception details and a stack
+| trace in the case of exceptions while an application is running.
 |
 */
 
@@ -42,6 +42,19 @@ $app['config'] = $app->share(function($app)
 {
 	return new ConfigRepository($app['config.loader'], $app['env']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Set The Default Timezone
+|--------------------------------------------------------------------------
+|
+| Here we will set the default timezone for PHP. PHP is notoriously mean
+| if the timezone is not explicitly set. This will be used by each of
+| the PHP date and date-time functions throoughout the application.
+|
+*/
+
+date_default_timezone_set($app['config']['app.timezone']);
 
 /*
 |--------------------------------------------------------------------------
