@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Container;
+use Illuminate\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -114,6 +115,114 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
+	 * Register the configured services for the application.
+	 *
+	 * @param  Illuminate\Filesystem  $files
+	 * @param  string  $path
+	 * @return void
+	 */
+	public function registerServices(Filesystem $files, $path)
+	{
+		$providers = $this['config']['app.providers'];
+
+		$this->registerFromManifest($this->getManifest($files, $path, $providers));
+	}
+
+	/**
+	 * Get the service manifest for the application.
+	 *
+	 * @param  Illuminate\Filesystem  $files
+	 * @param  string  $path
+	 * @param  array   $providers
+	 * @return array
+	 */
+	protected function getManifest(Filesystem $files, $path, $providers)
+	{
+		if ( ! $files->exists($path))
+		{
+			return $this->buildManifest($files, $path, $providers);
+		}
+
+		// We'll get the manifest and compare it to the array of current services and
+		// if they do not match we will recompile the manifest, which allows us to
+		// automatically keep this manifest up to date without developers input.
+		$manifest = unserialize($files->get($path));
+
+		if ($providers != $manifest['providers'])
+		{
+			return $this->buildManifest($files, $path, $providers);
+		}
+
+		return $manifest;
+	}
+
+	/**
+	 * Build the service provider manifest.
+	 *
+	 * @param  Illuminate\Filesystem  $files
+	 * @param  string  $path
+	 * @param  array   $providers
+	 * @return array
+	 */
+	public function buildManifest(Filesystem $files, $path, $providers)
+	{
+		$manifest = compact('providers');
+
+		// Once we have an instance of the service provider, we can determine if it
+		// is deferring the registration of its services or not. This will allow
+		// us to skip loading the service on most of the application requests.
+		foreach ($providers as $provider)
+		{
+			$manifest['manifest'][$provider] = $this->getManifestData($provider);
+		}
+
+		$files->put($path, serialize($manifest));
+
+		return $manifest;
+	}
+
+	/**
+	 * Get the manifest related data for a provider.
+	 *
+	 * @param  string  $provider
+	 * @return array
+	 */
+	protected function getManifestData($provider)
+	{
+		$instance = $this[$provider];
+
+		return array(
+			'defer'    => $instance->isDeferred(), 
+
+			'provides' => $instance->getProvidedServices()
+		);
+	}
+
+	/**
+	 * Register the service providers from a manifest.
+	 *
+	 * @param  array  $manifest
+	 * @return void
+	 */
+	public function registerFromManifest($manifest)
+	{
+		foreach ($manifest['manifest'] as $provider => $data)
+		{
+			// If the service provider is marked as deferring the registration of its
+			// services, we will pass the provided services into the methods which
+			// will handle the deferred registration of them for an application.
+			if ($data['defer'])
+			{
+				$this->deferredRegister($provider, $data['provides']);
+			}
+			else
+			{
+				$this->register(new $provider);
+			}
+		}
+	}
+
+	/**
 	 * Register a service provider with the application.
 	 *
 	 * @param  Illuminate\Foundation\Providers\ServiceProvider  $provider
@@ -124,7 +233,7 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		$provider->register($this);
 
-		// Once we have registered the service, we will iterate through the options
+		// Once we have registered the service we will iterate through the options
 		// and set each of them on the application so they will be available on
 		// the actual loading of the service objects and for developer usage.
 		foreach ($options as $key => $value)

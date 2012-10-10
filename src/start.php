@@ -69,17 +69,11 @@ require_once __DIR__.'/facades.php';
 |
 */
 
-foreach ($app['config']['app.providers'] as $key => $value)
-{
-	if (is_array($value))
-	{
-		$app->deferredRegister($key, $value);
-	}
-	else
-	{
-		$app->register(new $value);
-	}
-}
+$files = new Illuminate\Filesystem;
+
+$manifestPath = $app['path'].'/storage/services.manifest';
+
+$app->registerServices($files, $manifestPath);
 
 /*
 |--------------------------------------------------------------------------
