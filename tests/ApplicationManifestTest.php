@@ -50,4 +50,52 @@ class ApplicationManifestTest extends PHPUnit_Framework_TestCase {
 		$app->registerServices($files, 'foo');
 	}
 
+
+	public function testManifestIsCompiledCorrectly()
+	{
+		$app = new Illuminate\Foundation\Application;
+		$manifest = array('providers' => array('ApplicationManifestTestProviderStub'), 'manifest' => array('ApplicationManifestTestProviderStub' => array('defer' => true, 'provides' => array('provides.list'))));
+		$files = m::mock('Illuminate\Filesystem');
+		$files->shouldReceive('put')->once()->with('foo', serialize($manifest));
+
+		$this->assertEquals($manifest, $app->compileManifest($files, 'foo', array('ApplicationManifestTestProviderStub')));
+	}
+
+
+	public function testServicesCanBeRegisteredFromManifest()
+	{
+		$app = m::mock('Illuminate\Foundation\Application[register,deferredRegister]');
+		$manifest = array('manifest' => array('provider' => array('defer' => true, 'provides' => array('deferred.provide')), 'ApplicationManifestTestProviderStub' => array('defer' => false, 'provides' => array())));
+		$app->shouldReceive('deferredRegister')->once()->with('provider', array('deferred.provide'));
+		$app->shouldReceive('register')->once()->with(m::type('ApplicationManifestTestProviderStub'));
+		$app->registerFromManifest($manifest);
+	}
+
+}
+
+class ApplicationManifestTestProviderStub extends Illuminate\Support\ServiceProvider {
+	/**
+	 * Indicates if the service provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
+	 * Register the service provider.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	public function register($app) {}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function getProvidedServices()
+	{
+		return array('provides.list');
+	}
 }

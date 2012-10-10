@@ -173,9 +173,14 @@ class Application extends Container implements HttpKernelInterface {
 		// us to skip loading the service on most of the application requests.
 		foreach ($providers as $provider)
 		{
-			$manifest['manifest'][$provider] = $this->getManifestData($provider);
+			$data = $this->getManifestData($provider);
+
+			$manifest['manifest'][$provider] = $data;
 		}
 
+		// Once we have compiled the manifests we will serialize it onto disk so we
+		// can quickly read it back on subsequent request then register services
+		// either "deferred" or not based on information inside this manifest.
 		$files->put($path, serialize($manifest));
 
 		return $manifest;
@@ -189,12 +194,12 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	protected function getManifestData($provider)
 	{
-		$instance = $this[$provider];
+		$instance = new $provider;
 
 		return array(
 			'defer'    => $instance->isDeferred(), 
 
-			'provides' => $instance->getProvidedServices()
+			'provides' => $instance->getProvidedServices(),
 		);
 	}
 
@@ -204,7 +209,7 @@ class Application extends Container implements HttpKernelInterface {
 	 * @param  array  $manifest
 	 * @return void
 	 */
-	public function registerFromManifest($manifest)
+	public function registerFromManifest(array $manifest)
 	{
 		foreach ($manifest['manifest'] as $provider => $data)
 		{
