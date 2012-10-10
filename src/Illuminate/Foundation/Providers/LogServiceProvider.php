@@ -6,6 +6,13 @@ use Illuminate\Support\ServiceProvider;
 class LogServiceProvider extends ServiceProvider {
 
 	/**
+	 * Indicates if the service provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -17,6 +24,16 @@ class LogServiceProvider extends ServiceProvider {
 		{
 			return new Writer(new \Monolog\Logger('log'));
 		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function getProvidedServices()
+	{
+		return array('log');
 	}
 
 }

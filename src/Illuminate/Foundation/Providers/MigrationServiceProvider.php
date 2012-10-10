@@ -14,6 +14,13 @@ use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 class MigrationServiceProvider extends ServiceProvider {
 
 	/**
+	 * Indicates if the service provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -211,6 +218,24 @@ class MigrationServiceProvider extends ServiceProvider {
 
 			return $creator;
 		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function getProvidedServices()
+	{
+		return array(
+			'migration.repository',
+			'migrator',
+			'command.migrate',
+			'command.rollback',
+			'command.reset',
+			'command.install',
+			'command.make'
+		);
 	}
 
 }

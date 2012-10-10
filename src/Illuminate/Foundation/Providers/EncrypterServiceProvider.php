@@ -5,6 +5,13 @@ use Illuminate\Support\ServiceProvider;
 class EncrypterServiceProvider extends ServiceProvider {
 
 	/**
+	 * Indicates if the service provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -16,6 +23,16 @@ class EncrypterServiceProvider extends ServiceProvider {
 		{
 			return new \Illuminate\Encrypter($app['config']['app.key']);
 		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function getProvidedServices()
+	{
+		return array('encrypter');
 	}
 
 }
