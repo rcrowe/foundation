@@ -56,7 +56,9 @@ class DatabaseManager {
 			// If we haven't created this connection, we'll create it based on the config
 			// provided in the application. Once we've created the connections we will
 			// set the "fetch mode" for PDO which determines the query return types.
-			$connection = $this->factory->make($this->getConfig($name));
+			$config = $this->getConfig($name);
+
+			$connection = $this->factory->make($config);
 
 			$this->connections[$name] = $this->prepConnection($connection);
 		}
