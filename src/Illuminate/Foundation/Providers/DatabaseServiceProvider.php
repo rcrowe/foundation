@@ -8,13 +8,6 @@ use Illuminate\Database\Connectors\ConnectionFactory;
 class DatabaseServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -60,16 +53,6 @@ class DatabaseServiceProvider extends ServiceProvider {
 		}
 
 		Model::setDefaultConnectionName($app['config']['database.default']);
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('db', 'db.factory');
 	}
 
 }
