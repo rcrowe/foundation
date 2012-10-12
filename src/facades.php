@@ -224,7 +224,7 @@ class Response extends Facade {
 	 */
 	public function make($content = '', $status = 200, array $headers = array())
 	{
-		return new Symfony\Component\HttpFoundation\Response($content, $status, $headers);
+		return new Illuminate\Http\Response($content, $status, $headers);
 	}
 
 	/**
