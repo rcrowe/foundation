@@ -86,17 +86,51 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		$base = $this['request']->getHost();
 
+		// First we will check to see if we have any command-line arguments and if
+		// if we do we will set this environment based on those arguments as we
+		// need to set it before each configurations are actually loaded out.
+		$arguments = $this['request']->server->get('argv');
+
+		if (count($arguments) > 0)
+		{
+			return $this->detectConsoleEnvironment($arguments);
+		}
+
 		foreach ($environments as $environment => $hosts)
 		{
-			// To determine the current environment, we'll simply iterate through
-			// the possible environments and look for a host that matches our
-			// host in the requests context, then return that environment.
+			// To determine the current environment, we'll simply iterate through the
+			// possible environments and look for a host that matches this host in
+			// the request's context, then return back that environment's names.
 			foreach ($hosts as $host)
 			{
 				if (str_is($host, $base) or $this->isMachine($host))
 				{
 					return $this['env'] = $environment;
 				}
+			}
+		}
+
+		return $this['env'] = 'default';
+	}
+
+	/**
+	 * Set the application environment from command-line arguments.
+	 *
+	 * @param  array   $arguments
+	 * @return string
+	 */
+	protected function detectConsoleEnvironment(array $arguments)
+	{
+		foreach ($arguments as $key => $value)
+		{
+			// For the console environmnet, we'll just look for an argument that starts
+			// with "--env" then assume that it is setting the environment for every
+			// operation being performed, and we'll use that environment's config.
+			if (starts_with($value, '--env='))
+			{
+				$segments = array_slice(explode('=', $value), 1);
+
+				return $this['env'] = $segments[0];
 			}
 		}
 

@@ -35,6 +35,8 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('foo');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
@@ -43,6 +45,8 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
@@ -51,6 +55,8 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
 		$app->detectEnvironment(array(
 			'local'   => array('local*')
 		));
@@ -59,12 +65,29 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app = new Application;
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
 		$host = gethostname();
 		$app->detectEnvironment(array(
 			'local'   => array($host)
 		));
 		$this->assertEquals('local', $app['env']);
 	}
+
+
+	public function testConsoleEnvironmentDetection()
+	{
+		$app = new Application;
+		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
+		$app['request']->shouldReceive('getHost')->andReturn('foo');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array('--env=local'));
+		$app->detectEnvironment(array(
+			'local'   => array('foobar')
+		));
+		$this->assertEquals('local', $app['env']);
+	}
+
 
 	/**
 	 * @expectedException Illuminate\Session\TokenMismatchException
