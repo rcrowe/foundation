@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Application extends Container implements HttpKernelInterface {
 
@@ -452,7 +453,7 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function prepareResponse($value, Request $request)
 	{
-		if ( ! $value instanceof Response) $value = new Response($value);
+		if ( ! $value instanceof SymfonyResponse) $value = new Response($value);
 
 		return $value->prepare($request);
 	}
