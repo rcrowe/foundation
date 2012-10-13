@@ -14,7 +14,7 @@ class SessionManager extends Manager {
 	 */
 	protected function createCookieDriver()
 	{
-		return new CookieStore($this->app['encrypter'], $this->app['cookie']);
+		return new CookieStore($this->app['cookie']);
 	}
 
 	/**
