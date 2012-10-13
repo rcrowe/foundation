@@ -20,8 +20,6 @@ class AuthManager extends Manager {
 		// When using the remember me functionality of the authentication services we
 		// will need to be set the encryption isntance of the guard, which allows
 		// secure, encrypted cookie values to get generated for those cookies.
-		$guard->setEncrypter($this->app['encrypter']);
-
 		$guard->setCookieJar($this->app['cookie']);
 
 		return $guard;
