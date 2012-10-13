@@ -60,6 +60,16 @@ class SessionManager extends Manager {
 	}
 
 	/**
+	 * Create an instance of the "array" session driver.
+	 *
+	 * @return Illuminate\Session\CacheDrivenStore
+	 */
+	protected function createArrayDriver()
+	{
+		return $this->createCacheBased('array');
+	}
+
+	/**
 	 * Create an instance of a cache driven driver.
 	 *
 	 * @return Illuminate\Session\CacheDrivenStore
