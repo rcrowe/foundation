@@ -22,9 +22,7 @@ class CookieServiceProvider extends ServiceProvider {
 		{
 			$options = $app['cookie.defaults'];
 
-			$key = $app['config']['app.key'];
-
-			return new CookieJar($app['request'], $key, $options);
+			return new CookieJar($app['request'], $app['encrypter'], $options);
 		});
 	}
 
