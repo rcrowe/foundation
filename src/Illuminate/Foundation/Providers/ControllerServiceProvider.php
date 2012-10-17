@@ -23,6 +23,19 @@ class ControllerServiceProvider extends ServiceProvider {
 	{
 		$this->registerReader($app);
 
+		$this->registerParser($app);
+
+		$this->requireAnnotations();
+	}
+
+	/**
+	 * Register the filter parser instance.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerParser($app)
+	{
 		$app['filter.parser'] = $app->share(function($app)
 		{
 			$path = $app['path'].'/storage/meta';
@@ -47,6 +60,18 @@ class ControllerServiceProvider extends ServiceProvider {
 
 			return $reader;
 		});
+	}
+
+	/**
+	 * Manually require the controller annotation definitions.
+	 *
+	 * @return void
+	 */
+	protected function requireAnnotations()
+	{
+		spl_autoload_call('Illuminate\Routing\Controllers\Before');
+
+		spl_autoload_call('Illuminate\Routing\Controllers\After');
 	}
 
 	/**
