@@ -3,6 +3,7 @@
 use Illuminate\Support\Manager;
 use Illuminate\Session\FileStore;
 use Illuminate\Session\CookieStore;
+use Illuminate\Session\DatabaseStore;
 use Illuminate\Session\CacheDrivenStore;
 
 class SessionManager extends Manager {
