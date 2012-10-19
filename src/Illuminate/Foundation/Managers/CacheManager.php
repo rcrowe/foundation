@@ -6,6 +6,7 @@ use Illuminate\Cache\FileStore;
 use Illuminate\Cache\ApcWrapper;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\RedisStore;
+use Illuminate\Cache\DatabaseStore;
 
 class CacheManager extends Manager {
 
@@ -65,6 +66,39 @@ class CacheManager extends Manager {
 		$redis = $this->app['redis']->connection();
 
 		return new RedisStore($redis, $this->app['config']['cache.prefix']);
+	}
+
+	/**
+	 * Create an instance of the database cache driver.
+	 *
+	 * @return Illuminate\Cache\DatabaseStore
+	 */
+	protected function createDatabaseDriver()
+	{
+		$connection = $this->getDatabaseConnection();
+
+		$encrypter = $this->app['encrypter'];
+
+		// We allow the developer to specify which connection and table should be used
+		// to store the cached items. We also need to grab a prefix in case a table
+		// is being used by multiple applications although this is very unlikely.
+		$table = $this->app['config']['cache.table'];
+
+		$prefix = $this->app['config']['cache.prefix'];
+
+		return new DatabaseStore($connection, $encrypter, $table, $prefix);
+	}
+
+	/**
+	 * Get the database connection for the database driver.
+	 *
+	 * @return Illuminate\Database\Connection
+	 */
+	protected function getDatabaseConnection()
+	{
+		$connection = $this->app['config']['cache.connection'];
+
+		return $this->app['db']->connection($connection);
 	}
 
 	/**

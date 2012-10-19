@@ -70,6 +70,32 @@ class SessionManager extends Manager {
 	}
 
 	/**
+	 * Create an instance of the database session driver.
+	 *
+	 * @return Illuminate\Session\DatabaseStore
+	 */
+	protected function createDatabaseDriver()
+	{
+		$connection = $this->getDatabaseConnection();
+
+		$table = $this->app['config']['session.table'];
+
+		return new DatabaseStore($connection, $this->app['encrypter'], $table);
+	}
+
+	/**
+	 * Get the database connection for the database driver.
+	 *
+	 * @return Illuminate\Database\Connection
+	 */
+	protected function getDatabaseConnection()
+	{
+		$connection = $this->app['config']['session.connection'];
+
+		return $this->app['db']->connection($connection);
+	}
+
+	/**
 	 * Create an instance of a cache driven driver.
 	 *
 	 * @return Illuminate\Session\CacheDrivenStore
