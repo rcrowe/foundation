@@ -21,8 +21,6 @@ class ViewManager extends Manager {
 	{
 		$driver = parent::createDriver($driver);
 
-		$driver->share('app', $this->app);
-
 		// If the current session has an "errors" variable bound to it, we will share
 		// its value with all view instances so the views can easily access errors
 		// without having to bind. An empty bag is set when there aren't errors.
@@ -42,6 +40,13 @@ class ViewManager extends Manager {
 		}
 
 		$driver->setErrorHandler($this->app['exception.function']);
+
+		// We will also set the container instance on this view environment since the
+		// view composers may be classes registered in the container, which allows
+		// for great testable, flexible composers for the application developer.
+		$driver->setContainer($this->app);
+
+		$driver->share('app', $this->app);
 
 		return $driver;
 	}
