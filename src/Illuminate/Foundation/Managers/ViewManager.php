@@ -32,14 +32,15 @@ class ViewManager extends Manager {
 
 			$driver->share('errors', $errors);
 		}
+
+		// Putting the errors in the view for every view allows the developer to just
+		// assume that some errors are always available, which is convenient since
+		// they don't have to continually run checks for the presence of errors.
 		else
 		{
 			$driver->share('errors', new MessageBag);
 		}
 
-		// We set the error handler functionon the view environment since PHP has bad
-		// handling (none) of exceptions that occur in a __toString cast. This can
-		// let us provide better error reporting if an exception occurs on cast.
 		$driver->setErrorHandler($this->app['exception.function']);
 
 		return $driver;
@@ -54,7 +55,7 @@ class ViewManager extends Manager {
 	{
 		$engine = new PhpEngine($this->app['files'], $this->getPaths());
 
-		return new Environment($engine);
+		return new Environment($engine, $this->app['events']);
 	}
 
 	/**
@@ -75,23 +76,7 @@ class ViewManager extends Manager {
 
 		$engine = new CompilerEngine($compiler, $files, $paths, '.blade.php');
 
-		return new Environment($engine);
-	}
-
-	/**
-	 * Create an instance of the Twig view driver.
-	 *
-	 * @return Illuminate\View\Environment
-	 */
-	protected function createTwigDriver()
-	{
-		$files = $this->app['files'];
-
-		$engine = new TwigEngine(new Twig_Environment, $files, $this->getPaths());
-
-		$engine->getTwig()->setLoader($engine);
-
-		return new Environment($engine);
+		return new Environment($engine, $this->app['events']);
 	}
 
 	/**
