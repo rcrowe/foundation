@@ -82,9 +82,9 @@ require_once __DIR__.'/facades.php';
 |
 */
 
-foreach ($app['config']['app.services'] as $service)
+foreach ($app['config']['app.providers'] as $provider)
 {
-	$app->register(new $service);
+	$app->register(new $provider);
 }
 
 /*
