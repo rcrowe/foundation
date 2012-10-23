@@ -32,20 +32,6 @@ class Application extends Container implements HttpKernelInterface {
 	protected $serviceProviders = array();
 
 	/**
-	 * All of the loaded service providers.
-	 *
-	 * @var array
-	 */
-	protected $loadedProviders = array();
-
-	/**
-	 * All of the lazily loaded services.
-	 *
-	 * @var array
-	 */
-	protected $deferredServices = array();
-
-	/**
 	 * Create a new Illuminate application instance.
 	 *
 	 * @return void
@@ -150,119 +136,6 @@ class Application extends Container implements HttpKernelInterface {
 	}
 
 	/**
-	 * Register the configured services for the application.
-	 *
-	 * @param  Illuminate\Filesystem  $files
-	 * @param  string  $path
-	 * @return void
-	 */
-	public function registerServices(Filesystem $files, $path)
-	{
-		$providers = $this['config']['app.providers'];
-
-		$this->registerFromManifest($this->getManifest($files, $path, $providers));
-	}
-
-	/**
-	 * Get the service manifest for the application.
-	 *
-	 * @param  Illuminate\Filesystem  $files
-	 * @param  string  $path
-	 * @param  array   $providers
-	 * @return array
-	 */
-	protected function getManifest(Filesystem $files, $path, $providers)
-	{
-		if ( ! $files->exists($path))
-		{
-			return $this->compileManifest($files, $path, $providers);
-		}
-
-		// We'll get the manifest and compare it to the array of current services and
-		// if they do not match we will recompile the manifest, which allows us to
-		// automatically keep this manifest up to date without developers input.
-		$manifest = unserialize($files->get($path));
-
-		if ($providers != $manifest['providers'])
-		{
-			return $this->compileManifest($files, $path, $providers);
-		}
-
-		return $manifest;
-	}
-
-	/**
-	 * Build the service provider manifest.
-	 *
-	 * @param  Illuminate\Filesystem  $files
-	 * @param  string  $path
-	 * @param  array   $providers
-	 * @return array
-	 */
-	public function compileManifest(Filesystem $files, $path, $providers)
-	{
-		$manifest = compact('providers');
-
-		// Once we have an instance of the service provider, we can determine if it
-		// is deferring the registration of its services or not. This will allow
-		// us to skip loading the service on most of the application requests.
-		foreach ($providers as $provider)
-		{
-			$data = $this->getManifestData($provider);
-
-			$manifest['manifest'][$provider] = $data;
-		}
-
-		// Once we have compiled the manifests we will serialize it onto disk so we
-		// can quickly read it back on subsequent request then register services
-		// either "deferred" or not based on information inside this manifest.
-		$files->put($path, serialize($manifest));
-
-		return $manifest;
-	}
-
-	/**
-	 * Get the manifest related data for a provider.
-	 *
-	 * @param  string  $provider
-	 * @return array
-	 */
-	protected function getManifestData($provider)
-	{
-		$instance = new $provider;
-
-		return array(
-			'defer'    => $instance->isDeferred(), 
-
-			'provides' => $instance->getProvidedServices(),
-		);
-	}
-
-	/**
-	 * Register the service providers from a manifest.
-	 *
-	 * @param  array  $manifest
-	 * @return void
-	 */
-	public function registerFromManifest(array $manifest)
-	{
-		foreach ($manifest['manifest'] as $provider => $data)
-		{
-			// If the service provider is marked as deferring the registration of its
-			// services, we will pass the provided services into the methods which
-			// will handle the deferred registration of them for an application.
-			if ($data['defer'])
-			{
-				$this->deferredRegister($provider, $data['provides']);
-			}
-			else
-			{
-				$this->register(new $provider);
-			}
-		}
-	}
-
-	/**
 	 * Register a service provider with the application.
 	 *
 	 * @param  Illuminate\Foundation\Providers\ServiceProvider  $provider
@@ -281,45 +154,7 @@ class Application extends Container implements HttpKernelInterface {
 			$this[$key] = $value;
 		}
 
-		$this->loadedProviders[get_class($provider)] = true;
-
 		$this->serviceProviders[] = $provider;
-	}
-
-	/**
-	 * Register a service provider to be lazily loaded.
-	 *
-	 * @param  string  $provider
-	 * @param  array   $provides
-	 * @param  array   $options
-	 * @return void
-	 */
-	public function deferredRegister($provider, array $provides, array $options = array())
-	{
-		foreach ($provides as $service)
-		{
-			$this->deferredServices[$service] = compact('provider', 'options');
-		}
-	}
-
-	/**
-	 * Load the service provider for a deferred service.
-	 *
-	 * @param  string  $service
-	 * @return void
-	 */
-	public function loadDeferred($service)
-	{
-		$provider = $this->deferredServices[$service];
-
-		if (isset($this->loadedProviders[$provider['provider']])) return;
-
-		// We'll just grab the service provider's name and register the provider with
-		// the application instance. By deferring the loading of services until it
-		// is actually need we can drastically speed up this request lifecycles.
-		$providerName = $provider['provider'];
-
-		return $this->register(new $providerName, $provider['options']);
 	}
 
 	/**
@@ -526,33 +361,6 @@ class Application extends Container implements HttpKernelInterface {
 	public function __set($key, $value)
 	{
 		$this[$key] = $value;
-	}
-
-	/**
-	 * Resolve a service from the application.
-	 *
-	 * @param  string  $key
-	 * @return mixed
-	 */
-	public function offsetGet($key)
-	{
-		if (isset($this->deferredServices[$key])) $this->loadDeferred($key);
-
-		return parent::offsetGet($key);
-	}
-
-	/**
-	 * Set a service on the application.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
-	 * @return mixed
-	 */
-	public function offsetSet($key, $value)
-	{
-		unset($this->deferredServices[$key]);
-
-		return parent::offsetSet($key, $value);
 	}
 
 }
