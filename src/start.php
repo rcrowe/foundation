@@ -82,11 +82,10 @@ require_once __DIR__.'/facades.php';
 |
 */
 
-$files = new Illuminate\Filesystem;
-
-$manifestPath = $app['path'].'/storage/services.manifest';
-
-$app->registerServices($files, $manifestPath);
+foreach ($app['config']['app.services'] as $service)
+{
+	$app->register(new $service);
+}
 
 /*
 |--------------------------------------------------------------------------
