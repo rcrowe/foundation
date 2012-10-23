@@ -33,6 +33,16 @@ class MailServiceProvider extends ServiceProvider {
 
 			$mailer->setContainer($app);
 
+			$from = $app['config']['mail.from'];
+
+			// If a "from" address is set, we will set it on the mailer so that all mail
+			// messages sent by the applications will utilize the same "from" address
+			// on each one, which makes the developer's life a lot more convenient.
+			if (is_array($from) and isset($from['address']))
+			{
+				$mailer->alwaysFrom($from['address'], $from['name']);
+			}
+
 			return $mailer;
 		});
 	}
