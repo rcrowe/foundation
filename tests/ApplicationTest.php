@@ -164,6 +164,16 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$handler($exception);
 	}
 
+
+	public function testDeferredServicesMayBeOverriden()
+	{
+		$app = new Application;
+		$app->deferredRegister('ApplicationTestDeferredProvider', array('deferred.test'));
+		$app['deferred.test'] = $app->share(function() { return 'bar'; });
+
+		$this->assertEquals('bar', $app['deferred.test']);
+	}
+
 }
 
 class ApplicationCustomExceptionHandlerStub extends Illuminate\Foundation\Application {
@@ -183,4 +193,11 @@ class ApplicationKernelExceptionHandlerStub extends Illuminate\Foundation\Applic
 
 	protected function setExceptionHandler(Closure $handler) { return $handler; }
 
+}
+
+class ApplicationTestDeferredProvider extends Illuminate\Support\ServiceProvider {
+	public function register($app)
+	{
+		$app['deferred.test'] = $app->share(function() { return 'foo'; });
+	}
 }

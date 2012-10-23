@@ -541,4 +541,18 @@ class Application extends Container implements HttpKernelInterface {
 		return parent::offsetGet($key);
 	}
 
+	/**
+	 * Set a service on the application.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return mixed
+	 */
+	public function offsetSet($key, $value)
+	{
+		unset($this->deferredServices[$key]);
+
+		return parent::offsetSet($key, $value);
+	}
+
 }

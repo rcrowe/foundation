@@ -24,6 +24,7 @@
         "illuminate/filesystem": ">=1.0.0",
         "illuminate/http": ">=1.0.0",
         "illuminate/log": ">=1.0.0",
+        "illuminate/mail": ">=1.0.0",
         "illuminate/pagination": ">=1.0.0",
         "illuminate/profiler": ">=1.0.0",
         "illuminate/redis": ">=1.0.0",
