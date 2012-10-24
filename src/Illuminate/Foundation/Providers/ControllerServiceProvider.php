@@ -96,9 +96,9 @@ class ControllerServiceProvider extends ServiceProvider {
 			// and register this command instances in this container for registration.
 			$path = $app['path'].'/controllers';
 
-			$generator = new ControllerGenerator($app['files'], $path);
+			$generator = new ControllerGenerator($app['files']);
 
-			return new MakeControllerCommand($generator);
+			return new MakeControllerCommand($generator, $path);
 		});
 	}
 
