@@ -23,9 +23,14 @@ class ControllerServiceProvider extends ServiceProvider {
 	{
 		$this->registerReader($app);
 
+		// Controller may use annotations to specify filters, which uses the Doctrine
+		// annotations component to parse those annotations out then apply them to
+		// the route being executed, so we need to register the parser instance.
 		$this->registerParser($app);
 
 		$this->requireAnnotations();
+
+		$this->registerGenerator($app);
 	}
 
 	/**
@@ -72,6 +77,27 @@ class ControllerServiceProvider extends ServiceProvider {
 		spl_autoload_call('Illuminate\Routing\Controllers\Before');
 
 		spl_autoload_call('Illuminate\Routing\Controllers\After');
+	}
+
+	/**
+	 * Register the controller generator command.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerGenerator($app)
+	{
+		$app['command.controller.make'] = $app->share(function($app)
+		{
+			// The controller generator is responsible for building resourceful controllers
+			// quickly and easily for the developers via the Artisan CLI. We'll go ahead
+			// and register this command instances in this container for registration.
+			$path = $app['path'].'/controllers';
+
+			$generator = new ControllerGenerator($app['files'], $path);
+
+			return new MakeControllerCommand($generator);
+		});
 	}
 
 	/**
