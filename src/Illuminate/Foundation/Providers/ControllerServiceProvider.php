@@ -2,6 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Controllers\FilterParser;
+use Illuminate\Routing\Console\MakeControllerCommand;
+use Illuminate\Routing\Generators\ControllerGenerator;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
 class ControllerServiceProvider extends ServiceProvider {
