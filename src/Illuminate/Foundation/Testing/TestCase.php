@@ -1,5 +1,7 @@
 <?php namespace Illuminate\Foundation\Testing;
 
+use Illuminate\Auth\UserInterface;
+
 class TestCase extends \PHPUnit_Framework_TestCase {
 
 	/**
@@ -26,6 +28,18 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 		$this->app = $this->createApplication();
 
 		$this->client = $this->createClient();
+	}
+
+	/**
+	 * Set the currently logged in user for the application.
+	 *
+	 * @param  Illuminate\Auth\UserInterface  $user
+	 * @param  string  $driver
+	 * @return void
+	 */
+	public function be(UserInterface $user, $driver = null)
+	{
+		$this->app['auth']->driver($driver)->setUser($user);
 	}
 
 	/**
