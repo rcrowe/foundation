@@ -15,8 +15,6 @@ class DatabaseServiceProvider extends ServiceProvider {
 	 */
 	public function register($app)
 	{
-		$this->registerEloquent($app);
-
 		// The connection factory is used to create the actual connection instances on
 		// the database. We will inject the factory into the manager so that it may
 		// make the connections while they are actually needed and not of before.
@@ -29,6 +27,8 @@ class DatabaseServiceProvider extends ServiceProvider {
 		{
 			return new DatabaseManager($app, $app['db.factory']);
 		});
+
+		$this->registerEloquent($app);
 	}
 
 	/**
