@@ -3,9 +3,10 @@
 use Illuminate\Support\Manager;
 use Illuminate\Database\Connection;
 use Illuminate\Foundation\Application;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Connectors\ConnectionFactory;
 
-class DatabaseManager {
+class DatabaseManager implements ConnectionResolverInterface {
 
 	/**
 	 * The application instance.
@@ -51,16 +52,14 @@ class DatabaseManager {
 	{
 		$name = $name ?: $this->getDefaultConnection();
 
+		// If we haven't created this connection, we'll create it based on the config
+		// provided in the application. Once we've created the connections we will
+		// set the "fetch mode" for PDO which determines the query return types.
 		if ( ! isset($this->connections[$name]))
 		{
-			// If we haven't created this connection, we'll create it based on the config
-			// provided in the application. Once we've created the connections we will
-			// set the "fetch mode" for PDO which determines the query return types.
-			$config = $this->getConfig($name);
+			$connection = $this->factory->make($this->getConfig($name));
 
-			$connection = $this->factory->make($config);
-
-			$this->connections[$name] = $this->prepConnection($connection);
+			$this->connections[$name] = $this->prepare($connection);
 		}
 
 		return $this->connections[$name];
@@ -72,7 +71,7 @@ class DatabaseManager {
 	 * @param  Illuminate\Database\Connection  $connection
 	 * @return Illuminate\Database\Connection
 	 */
-	protected function prepConnection(Connection $connection)
+	protected function prepare(Connection $connection)
 	{
 		$connection->setFetchMode($this->app['config']['database.fetch']);
 
@@ -119,9 +118,20 @@ class DatabaseManager {
 	 *
 	 * @return string
 	 */
-	protected function getDefaultConnection()
+	public function getDefaultConnection()
 	{
 		return $this->app['config']['database.default'];
+	}
+
+	/**
+	 * Set the default connection name.
+	 *
+	 * @param  string  $name
+	 * @return void
+	 */
+	public function setDefaultConnection($name)
+	{
+		$this->app['config']['database.default'] = $name;
 	}
 
 	/**

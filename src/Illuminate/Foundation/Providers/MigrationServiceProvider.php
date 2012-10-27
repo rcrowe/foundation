@@ -50,17 +50,9 @@ class MigrationServiceProvider extends ServiceProvider {
 	{
 		$app['migration.repository'] = $app->share(function($app)
 		{
-			// The migration repository implementation is responsible for reading out the
-			// migrations that have already run from the data stores and also helps to
-			// track even the newly run migrations, as well as a rollback operation.
-			$connection = function() use ($app)
-			{
-				return $app['db']->connection();
-			};
-
 			$table = $app['config']['database.migration.table'];
 
-			return new DatabaseMigrationRepository($connection, $table);
+			return new DatabaseMigrationRepository($app['db'], $table);
 		});
 	}
 
@@ -73,35 +65,13 @@ class MigrationServiceProvider extends ServiceProvider {
 	protected function registerMigrator($app)
 	{
 		// The migrator is responsible for actually running and rollback the migration
-		// files in the application. We will register all of the available database
-		// connections as Closures with the migrator so it can fire each of them.
+		// files in the application. We'll pass in our database connection resolver
+		// so the migrator can resolve any of these connections when it needs to.
 		$app['migrator'] = $app->share(function($app)
 		{
 			$repository = $app['migration.repository'];
 
-			$migrator = new Migrator($repository, $app['files']);
-
-			// Once we have the migrator instance, we will add add the database connections
-			// to the migrator's connection pool. The connections pool lets us defer the
-			// establishment of the connections until the migration commands are used.
-			$connections = $app['config']['database.connections'];
-
-			foreach (array_keys($connections) as $name)
-			{
-				$migrator->addConnection($name, function() use ($app, $name)
-				{
-					return $app['db']->connection($name);
-				});
-			}
-
-			// Once the migrator has been registered and the connection pool has been built
-			// we will set the default connection values on the migrator; otherwise, the
-			// first connection will be assumed to be the default database connection.
-			$default = $app['config']['database.default'];
-
-			$migrator->setDefaultConnection($default);
-
-			return $migrator;
+			return new Migrator($repository, $app['db'], $app['files']);
 		});
 	}
 
