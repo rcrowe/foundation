@@ -39,20 +39,7 @@ class DatabaseServiceProvider extends ServiceProvider {
 	 */
 	protected function registerEloquent($app)
 	{
-		$connections = array_keys($app['config']['database.connections']);
-
-		// To setup the Eloquent ORM, we will register a resolver for each connection
-		// that is configured for the application. We'll defer the creation of any
-		// of the connections using a Closure which gets resolved when executed.
-		foreach ($connections as $name)
-		{
-			Model::addConnection($name, function() use ($app, $name)
-			{
-				return $app['db']->connection($name);
-			});
-		}
-
-		Model::setDefaultConnectionName($app['config']['database.default']);
+		Model::setConnectionResolver($app['db']);
 	}
 
 }
