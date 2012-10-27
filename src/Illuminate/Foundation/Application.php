@@ -324,9 +324,11 @@ class Application extends Container implements HttpKernelInterface {
 	 */
 	public function setLocale($locale)
 	{
-		$this['config']['app.locale'] = $locale;
+		$this['config']->set('app.locale', $locale);
 
 		$this['translator']->setLocale($locale);
+
+		$this['events']->fire('locale.changed', array($locale));
 	}
 
 	/**

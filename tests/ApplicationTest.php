@@ -164,6 +164,20 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$handler($exception);
 	}
 
+
+	public function testSetLocaleSetsLocaleAndFiresLocaleChangedEvent()
+	{
+		$app = new Application;
+		$app['config'] = $config = m::mock('StdClass');
+		$config->shouldReceive('set')->once()->with('app.locale', 'foo');
+		$app['translator'] = $trans = m::mock('StdClass');
+		$trans->shouldReceive('setLocale')->once()->with('foo');
+		$app['events'] = $events = m::mock('StdClass');
+		$events->shouldReceive('fire')->once()->with('locale.changed', array('foo'));
+
+		$app->setLocale('foo');
+	}
+
 }
 
 class ApplicationCustomExceptionHandlerStub extends Illuminate\Foundation\Application {
