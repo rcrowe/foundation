@@ -43,6 +43,19 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Seed a given database connection.
+	 *
+	 * @param  string  $connection
+	 * @return void
+	 */
+	public function seed($connection = null)
+	{
+		$connection = $this->app['db']->connection($connection);
+
+		$this->app['seeder']->seed($connection, $this->app['path'].'/database/seeds');
+	}
+
+	/**
 	 * Create a new HttpKernel client instance.
 	 *
 	 * @param  array  $server
