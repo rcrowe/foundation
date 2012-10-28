@@ -44,9 +44,16 @@ class Artisan {
 	{
 		$artisan = $this->getArtisan();
 
+		$parameters['command'] = $command;
+
+		// Unless an output interface implementation was specifically passed to us we
+		// will use the "NullOutput" implementation by default to keep any writing
+		// suppressed so it doesn't leak out to the browser or any other source.
 		$output = $output ?: new NullOutput;
 
-		return $artisan->find($command)->run(new ArrayInput($parameters), $output);
+		$input = new ArrayInput($parameters);
+
+		return $artisan->find($command)->run($input, $output);
 	}
 
 	/**
