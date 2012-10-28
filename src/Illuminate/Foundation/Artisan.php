@@ -40,7 +40,7 @@ class Artisan {
 	 * @param  Symfony\Component\Console\Output\OutputInterface  $output
 	 * @return void
 	 */
-	public function run($command, array $parameters = array(), OutputInterface $output = null)
+	public function call($command, array $parameters = array(), OutputInterface $output = null)
 	{
 		$artisan = $this->getArtisan();
 

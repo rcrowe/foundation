@@ -20,7 +20,7 @@ class ArtisanTest extends PHPUnit_Framework_TestCase {
 			return $input;
 		});
 
-		$input = $artisan->run('foo', array('--bar' => 'baz'));
+		$input = $artisan->call('foo', array('--bar' => 'baz'));
 		$this->assertEquals('baz', $input->getParameterOption('--bar'));
 	}
 
