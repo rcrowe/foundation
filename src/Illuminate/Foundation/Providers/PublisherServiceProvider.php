@@ -18,7 +18,7 @@ class PublisherServiceProvider extends ServiceProvider {
 
 		$app['asset.publisher'] = $app->share(function($app)
 		{
-			$publisher = new AssetPublisher($app['files'], $app['path.base'].'/public/packages');
+			$publisher = new AssetPublisher($app['files'], $app['path.base'].'/public');
 
 			$publisher->setPackagePath($app['path.base'].'/vendor');
 
