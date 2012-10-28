@@ -18,7 +18,7 @@ class PackagePublishCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = "Publish a package assets to the public directory";
+	protected $description = "Publish a package's assets to the public directory";
 
 	/**
 	 * The asset publisher instance.
