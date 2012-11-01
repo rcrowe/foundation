@@ -280,13 +280,13 @@ class Response extends Facade {
 class Route extends Facade {
 
 	/**
-	 * Register a new middleware with the application.
+	 * Register a new filter with the application.
 	 *
 	 * @param  string   $name
-	 * @param  Closure  $callback
+	 * @param  Closure|string  $callback
 	 * @return void
 	 */
-	public static function filter($name, Closure $callback)
+	public static function filter($name, $callback)
 	{
 		return static::$app['router']->addFilter($name, $callback);
 	}
