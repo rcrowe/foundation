@@ -31,6 +31,19 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Call the given URI and return the Response.
+	 *
+	 * @param  dynamic
+	 * @return Illuminate\Http\Response
+	 */
+	public function call()
+	{
+		call_user_func_array(array($this->client, 'request'), func_get_args());
+
+		return $this->client->response;
+	}
+
+	/**
 	 * Set the currently logged in user for the application.
 	 *
 	 * @param  Illuminate\Auth\UserInterface  $user
