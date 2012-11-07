@@ -40,7 +40,7 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	{
 		call_user_func_array(array($this->client, 'request'), func_get_args());
 
-		return $this->client->response;
+		return $this->client->getResponse();
 	}
 
 	/**
