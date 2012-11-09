@@ -174,7 +174,7 @@ class MigrationServiceProvider extends ServiceProvider {
 
 			$paths = $app['config']['database.migration.paths'];
 
-			$packagePath = $app['path'].'/vendor';
+			$packagePath = $app['path.base'].'/vendor';
 
 			return new MakeCommand($creator, $paths, $packagePath);
 		});
