@@ -98,7 +98,7 @@ foreach ($app['config']['app.providers'] as $provider)
 |
 */
 
-if (file_exists($path = $app['path'].'/start/production.php'))
+if (file_exists($path = $app['path'].'/start/global.php'))
 {
 	require $path;
 }

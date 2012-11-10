@@ -190,14 +190,14 @@ class Mail extends Facade {
 
 }
 
-class Profiler extends Facade {
+class Paginator extends Facade {
 
 	/**
 	 * Get the registered name of the component.
 	 *
 	 * @return string
 	 */
-	protected static function getFacadeAccessor() { return 'profiler'; }
+	protected static function getFacadeAccessor() { return 'paginator'; }
 
 }
 
