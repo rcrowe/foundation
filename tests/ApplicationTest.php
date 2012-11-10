@@ -32,41 +32,45 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
 	public function testEnvironmenetDetection()
 	{
-		$app = new Application;
+		$app = m::mock('Illuminate\Foundation\Application[runningInConsole]');
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('foo');
 		$app['request']->server = m::mock('StdClass');
 		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
+		$app->shouldReceive('runningInConsole')->once()->andReturn(false);
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('default', $app['env']);
 
-		$app = new Application;
+		$app = m::mock('Illuminate\Foundation\Application[runningInConsole]');
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
 		$app['request']->server = m::mock('StdClass');
 		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
+		$app->shouldReceive('runningInConsole')->once()->andReturn(false);
 		$app->detectEnvironment(array(
 			'local'   => array('localhost')
 		));
 		$this->assertEquals('local', $app['env']);
 
-		$app = new Application;
+		$app = m::mock('Illuminate\Foundation\Application[runningInConsole]');
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
 		$app['request']->server = m::mock('StdClass');
 		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
+		$app->shouldReceive('runningInConsole')->once()->andReturn(false);
 		$app->detectEnvironment(array(
 			'local'   => array('local*')
 		));
 		$this->assertEquals('local', $app['env']);
 
-		$app = new Application;
+		$app = m::mock('Illuminate\Foundation\Application[runningInConsole]');
 		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
 		$app['request']->shouldReceive('getHost')->andReturn('localhost');
 		$app['request']->server = m::mock('StdClass');
 		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
+		$app->shouldReceive('runningInConsole')->once()->andReturn(false);
 		$host = gethostname();
 		$app->detectEnvironment(array(
 			'local'   => array($host)

@@ -78,7 +78,7 @@ class Application extends Container implements HttpKernelInterface {
 		// need to set it before each configurations are actually loaded out.
 		$arguments = $this['request']->server->get('argv');
 
-		if (count($arguments) > 0)
+		if ($this->runningInConsole())
 		{
 			return $this->detectConsoleEnvironment($arguments);
 		}
@@ -98,6 +98,16 @@ class Application extends Container implements HttpKernelInterface {
 		}
 
 		return $this['env'] = 'default';
+	}
+
+	/**
+	 * Determine if we are running in the console.
+	 *
+	 * @return bool
+	 */
+	public function runningInConsole()
+	{
+		return php_sapi_name() == 'cli';
 	}
 
 	/**
