@@ -99,7 +99,9 @@ class MigrationServiceProvider extends ServiceProvider {
 		{
 			$paths = $app['config']['database.migration.paths'];
 
-			return new MigrateCommand($app['migrator'], $paths, $app['path'].'/vendor');
+			$packagePath = $app['path.base'].'/vendor';
+
+			return new MigrateCommand($app['migrator'], $paths, $packagePath);
 		});
 	}
 
