@@ -6,13 +6,6 @@ use Illuminate\Support\ServiceProvider;
 class PaginationServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -49,16 +42,6 @@ class PaginationServiceProvider extends ServiceProvider {
 
 			return $paginator;
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('paginator', 'pagination.driver');
 	}
 
 }

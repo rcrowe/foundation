@@ -9,13 +9,6 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 class ControllerServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -100,16 +93,6 @@ class ControllerServiceProvider extends ServiceProvider {
 
 			return new MakeControllerCommand($generator, $path);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('filter.parser');
 	}
 
 }

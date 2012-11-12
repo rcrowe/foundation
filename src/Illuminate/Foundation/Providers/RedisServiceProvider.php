@@ -6,13 +6,6 @@ use Illuminate\Foundation\Managers\RedisManager;
 class RedisServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -24,16 +17,6 @@ class RedisServiceProvider extends ServiceProvider {
 		{
 			return new RedisManager($app);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('redis');
 	}
 
 }

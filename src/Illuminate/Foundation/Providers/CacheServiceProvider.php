@@ -7,13 +7,6 @@ use Illuminate\Foundation\Managers\CacheManager;
 class CacheServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -30,16 +23,6 @@ class CacheServiceProvider extends ServiceProvider {
 		{
 			return new MemcachedConnector;
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('cache', 'memcached.connector');
 	}
 
 }

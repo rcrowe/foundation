@@ -8,13 +8,6 @@ use Swift_SmtpTransport as SmtpTransport;
 class MailServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -105,16 +98,6 @@ class MailServiceProvider extends ServiceProvider {
 
 			return $transport;
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('mailer', 'swift.mailer', 'swift.transport');
 	}
 
 }

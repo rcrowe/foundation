@@ -7,13 +7,6 @@ use Illuminate\Validation\DatabasePresenceVerifier;
 class ValidatorServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -51,16 +44,6 @@ class ValidatorServiceProvider extends ServiceProvider {
 		{
 			return new DatabasePresenceVerifier($app['db']);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('validator', 'validation.presence');
 	}
 
 }

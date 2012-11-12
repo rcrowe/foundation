@@ -6,13 +6,6 @@ use Illuminate\Support\ServiceProvider;
 class ComposerServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -24,16 +17,6 @@ class ComposerServiceProvider extends ServiceProvider {
 		{
 			return new Composer($app['files'], $app['path.base']);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('composer');
 	}
 
 }

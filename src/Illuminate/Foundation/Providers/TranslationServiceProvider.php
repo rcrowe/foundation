@@ -7,13 +7,6 @@ use Illuminate\Support\ServiceProvider;
 class TranslationServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if the service provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
@@ -52,16 +45,6 @@ class TranslationServiceProvider extends ServiceProvider {
 		{
 			return new FileLoader($app['files'], $app['config']['app.locale_path']);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function getProvidedServices()
-	{
-		return array('translator', 'translation.loader');
 	}
 
 }
