@@ -304,6 +304,17 @@ class Route extends Facade {
 	}
 
 	/**
+	 * Determine if the current route matches a given name.
+	 *
+	 * @param  string  $name
+	 * @return bool
+	 */
+	public static function is($name)
+	{
+		return static::$app['router']->currentRouteNamed($name);
+	}
+
+	/**
 	 * Get the registered name of the component.
 	 *
 	 * @return string
