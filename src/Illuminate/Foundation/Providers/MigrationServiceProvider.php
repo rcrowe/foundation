@@ -6,6 +6,7 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Console\Migrations\MakeCommand;
 use Illuminate\Database\Console\Migrations\ResetCommand;
+use Illuminate\Database\Console\Migrations\RefreshCommand;
 use Illuminate\Database\Console\Migrations\InstallCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Console\Migrations\RollbackCommand;
@@ -76,7 +77,7 @@ class MigrationServiceProvider extends ServiceProvider {
 	 */
 	protected function registerCommands($app)
 	{
-		$commands = array('Migrate', 'Rollback', 'Reset', 'Install', 'Make');
+		$commands = array('Migrate', 'Rollback', 'Reset', 'Refresh', 'Install', 'Make');
 
 		// We'll simply spin through the list of commands that are migration related
 		// and register each one of them with an application container. They will
@@ -130,6 +131,20 @@ class MigrationServiceProvider extends ServiceProvider {
 		$app['command.migrate.reset'] = $app->share(function($app)
 		{
 			return new ResetCommand($app['migrator']);
+		});
+	}
+
+	/**
+	 * Register the "refresh" migration command.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return void
+	 */
+	protected function registerRefreshCommand($app)
+	{
+		$app['command.migrate.refresh'] = $app->share(function($app)
+		{
+			return new RefreshCommand;
 		});
 	}
 
