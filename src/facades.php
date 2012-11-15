@@ -315,6 +315,17 @@ class Route extends Facade {
 	}
 
 	/**
+	 * Determine if the current route uses a given controller action.
+	 *
+	 * @param  string  $action
+	 * @return bool
+	 */
+	public static function uses($action)
+	{
+		return static::$app['router']->currentRouteUses($action);
+	}
+
+	/**
 	 * Get the registered name of the component.
 	 *
 	 * @return string
