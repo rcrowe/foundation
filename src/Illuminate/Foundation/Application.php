@@ -59,7 +59,7 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		$provider = array_first($this->serviceProviders, function($key, $provider)
 		{
-			return $provider instanceof Providers\ExceptionServiceProvider;
+			return $provider instanceof ExceptionServiceProvider;
 		});
 
 		$provider->startHandling($this);
