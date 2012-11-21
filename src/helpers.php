@@ -56,7 +56,7 @@ function path($path = null, $secure = false)
 {
 	$app = app();
 
-	return $app['url.generator']->to($path, $secure);
+	return $app['url']->to($path, $secure);
 }
 
 /**
@@ -92,7 +92,22 @@ function route($route, $parameters = array(), $absolute = true)
 {
 	$app = app();
 
-	return $app['url.generator']->route($route, $parameters, $absolute);
+	return $app['url']->route($route, $parameters, $absolute);
+}
+
+/**
+ * Generate a URL to a controller action.
+ *
+ * @param  string  $name
+ * @param  string  $parameters
+ * @param  bool    $absolute
+ * @return string
+ */
+function action($name, $parameters = array(), $absolute = true)
+{
+	$app = app();
+
+	return $app['url']->action($name, $parameters, $absolute);
 }
 
 /**

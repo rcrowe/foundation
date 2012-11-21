@@ -33,7 +33,7 @@ class RoutingServiceProvider extends ServiceProvider {
 	 */
 	protected function registerUrlGenerator($app)
 	{
-		$app['url.generator'] = $app->share(function($app)
+		$app['url'] = $app->share(function($app)
 		{
 			// The URL generator needs the route collection that exists on the router.
 			// Keep in mind this is an object, so we're passing by references here
@@ -54,7 +54,7 @@ class RoutingServiceProvider extends ServiceProvider {
 	{
 		$app['redirect'] = $app->share(function($app)
 		{
-			$redirector = new Redirector($app['url.generator']);
+			$redirector = new Redirector($app['url']);
 
 			// If the session is set on the application instance, we'll inject it into
 			// the redirector instance. This allows the redirect responses to allow
