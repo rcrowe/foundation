@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\RoutingServiceProvider;
+use Illuminate\Exception\ExceptionServiceProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -40,12 +42,12 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		$this['request'] = Request::createFromGlobals();
 
-		$this->register(new Providers\RoutingServiceProvider);
+		$this->register(new RoutingServiceProvider);
 
 		// The exception handler class takes care of determining which of the bound
 		// exception handler Closures should be called for a given exception and
 		// gets the response from them. We'll bind it here to allow overrides.
-		$this->register(new Providers\ExceptionServiceProvider);
+		$this->register(new ExceptionServiceProvider);
 	}
 
 	/**
@@ -148,7 +150,7 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register a service provider with the application.
 	 *
-	 * @param  Illuminate\Foundation\Providers\ServiceProvider  $provider
+	 * @param  Illuminate\Support\ServiceProvider  $provider
 	 * @param  array  $options
 	 * @return void
 	 */
