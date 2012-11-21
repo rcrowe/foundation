@@ -186,7 +186,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
 class ApplicationCustomExceptionHandlerStub extends Illuminate\Foundation\Application {
 
-	public function prepareResponse($value, Illuminate\Foundation\Request $request)
+	public function prepareResponse($value, Illuminate\Http\Request $request)
 	{
 		$response = m::mock('Symfony\Component\HttpFoundation\Response');
 		$response->shouldReceive('send')->once();
