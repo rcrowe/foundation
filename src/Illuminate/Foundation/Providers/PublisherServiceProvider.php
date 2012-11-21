@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AssetPublisher;
-use Illuminate\Foundation\Console\PackagePublishCommand;
+use Illuminate\Foundation\Console\AssetPublishCommand;
 
 class PublisherServiceProvider extends ServiceProvider {
 
@@ -14,7 +14,7 @@ class PublisherServiceProvider extends ServiceProvider {
 	 */
 	public function register($app)
 	{
-		$this->registerPackagePublishCommand($app);
+		$this->registerAssetPublishCommand($app);
 
 		$app['asset.publisher'] = $app->share(function($app)
 		{
@@ -27,16 +27,16 @@ class PublisherServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Register the package publish console command.
+	 * Register the asset publish console command.
 	 *
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerPackagePublishCommand($app)
+	protected function registerAssetPublishCommand($app)
 	{
-		$app['command.package.publish'] = $app->share(function($app)
+		$app['command.asset.publish'] = $app->share(function($app)
 		{
-			return new PackagePublishCommand($app['asset.publisher']);
+			return new AssetPublishCommand($app['asset.publisher']);
 		});
 	}
 

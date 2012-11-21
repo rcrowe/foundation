@@ -4,14 +4,14 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\AssetPublisher;
 use Symfony\Component\Console\Input\InputArgument;
 
-class PackagePublishCommand extends Command {
+class AssetPublishCommand extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'package:publish';
+	protected $name = 'asset:publish';
 
 	/**
 	 * The console command description.
