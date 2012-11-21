@@ -77,7 +77,7 @@ function secure_path($path)
  */
 function root_url()
 {
-	return app()->request->getRootUrl();
+	return app()->request->root();
 }
 
 /**
