@@ -141,6 +141,7 @@ class Input extends Facade {
 
 	/**
 	 * Get all of the input data for the request, including files.
+	 *
 	 * @return array
 	 */
 	public static function all()
@@ -340,7 +341,7 @@ class Schema extends Facade {
 	 * Get a schema builder instance for a connection.
 	 *
 	 * @param  string  $name
-	 * @param  Illuminate\Database\Schema\Builder
+	 * @return Illuminate\Database\Schema\Builder
 	 */
 	public static function connection($name)
 	{
