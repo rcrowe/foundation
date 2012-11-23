@@ -234,7 +234,7 @@ class Request extends Facade {
 
 }
 
-class Response extends Facade {
+class Response {
 
 	/**
 	 * Return a new response from the application.
@@ -244,7 +244,7 @@ class Response extends Facade {
 	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	public function make($content = '', $status = 200, array $headers = array())
+	public static function make($content = '', $status = 200, array $headers = array())
 	{
 		return new Illuminate\Http\Response($content, $status, $headers);
 	}
@@ -257,7 +257,7 @@ class Response extends Facade {
 	 * @param  array   $headers
 	 * @return Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	public function json($data = array(), $status = 200, array $headers = array())
+	public static function json($data = array(), $status = 200, array $headers = array())
 	{
 		return new Symfony\Component\HttpFoundation\JsonResponse($data, $status, $headers);
 	}
@@ -270,7 +270,7 @@ class Response extends Facade {
 	 * @param  array    $headers
 	 * @return Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function stream($callback, $status = 200, array $headers = array())
+	public static function stream($callback, $status = 200, array $headers = array())
 	{
 		return new Symfony\Component\HttpFoundation\StreamedResponse($callback, $status, $headers);
 	}
