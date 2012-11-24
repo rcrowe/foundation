@@ -4,7 +4,7 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\ConfigPublisher;
 use Symfony\Component\Console\Input\InputArgument;
 
-class AssetPublishCommand extends Command {
+class ConfigPublishCommand extends Command {
 
 	/**
 	 * The console command name.
