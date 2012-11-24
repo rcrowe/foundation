@@ -2,7 +2,9 @@
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AssetPublisher;
+use Illuminate\Foundation\ConfigPublisher;
 use Illuminate\Foundation\Console\AssetPublishCommand;
+use Illuminate\Foundation\Console\ConfigPublishCommand;
 
 class PublisherServiceProvider extends ServiceProvider {
 
