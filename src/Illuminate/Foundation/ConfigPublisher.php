@@ -2,7 +2,7 @@
 
 use Illuminate\Filesystem;
 
-class AssetPublisher {
+class ConfigPublisher {
 
 	/**
 	 * The filesystem instance.
@@ -12,21 +12,21 @@ class AssetPublisher {
 	protected $files;
 
 	/**
-	 * The path where assets should be published.
+	 * The destination of the config files.
 	 *
 	 * @var string
 	 */
 	protected $publishPath;
 
 	/**
-	 * The path where packages are located.
+	 * The path to the application's packages.
 	 *
 	 * @var string
 	 */
 	protected $packagePath;
 
 	/**
-	 * Create a new asset publisher instance.
+	 * Create a new configuration publisher instance.
 	 *
 	 * @param  Illuminate\Filesystem  $files
 	 * @param  string  $publishPath
@@ -39,36 +39,24 @@ class AssetPublisher {
 	}
 
 	/**
-	 * Copy all assets from a given path to the publish path.
-	 *
-	 * @param  string  $source
-	 * @param  string  $name
-	 * @return bool
-	 */
-	public function publish($source, $name)
-	{
-		$destination = $this->publishPath."/packages/{$name}";
-
-		return $this->files->copyDirectory($source, $destination);
-	}
-
-	/**
-	 * Publish a given package's assets to the publish path.
+	 * Publish the configuration files for a package.
 	 *
 	 * @param  string  $package
 	 * @param  string  $packagePath
-	 * @return bool
+	 * @return void
 	 */
 	public function publishPackage($package, $packagePath = null)
 	{
 		$packagePath = $packagePath ?: $this->packagePath;
 
-		// Once we have the package path we can just create the source and destination
-		// path and copy the directory from one to the other. The directory copy is
-		// recursive so all nested files and directories will get copied as well.
-		$source = $packagePath."/{$package}/public";
+		// First we will figure out the source of the package's configuration location
+		// which we do by convention. Once we have that we will move the files over
+		// to the "main" configuration directory for this particular application.
+		$source = $packagePath."/{$package}/src/config";
 
-		return $this->publish($source, $package);
+		$destination = $this->publishPath."/packages/{$package}";
+
+		return $this->files->copyDirectory($source, $destination);
 	}
 
 	/**

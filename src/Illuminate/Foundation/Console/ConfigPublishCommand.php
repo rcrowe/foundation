@@ -1,7 +1,7 @@
 <?php namespace Illuminate\Foundation\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Foundation\AssetPublisher;
+use Illuminate\Foundation\ConfigPublisher;
 use Symfony\Component\Console\Input\InputArgument;
 
 class AssetPublishCommand extends Command {
@@ -11,33 +11,33 @@ class AssetPublishCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'asset:publish';
+	protected $name = 'config:publish';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = "Publish a package's assets to the public directory";
+	protected $description = "Publish a package's configuration to the application";
 
 	/**
 	 * The asset publisher instance.
 	 *
 	 * @var Illuminate\Foundation\AssetPublisher
 	 */
-	protected $assets;
+	protected $config;
 
 	/**
-	 * Create a new asset publish command instance.
+	 * Create a new configuration publish command instance.
 	 *
-	 * @param  Illuminate\Foundation\AssetPublisher  $assets
+	 * @param  Illuminate\Foundation\ConfigPublisher  $config
 	 * @return void
 	 */
-	public function __construct(AssetPublisher $assets)
+	public function __construct(ConfigPublisher $config)
 	{
 		parent::__construct();
 
-		$this->assets = $assets;
+		$this->config = $config;
 	}
 
 	/**
@@ -49,9 +49,9 @@ class AssetPublishCommand extends Command {
 	{
 		$package = $this->input->getArgument('package');
 
-		$this->assets->publishPackage($package);
+		$this->config->publishPackage($package);
 
-		$this->output->writeln('<info>Assets published for package:</info> '.$package);
+		$this->output->writeln('<info>Configuration published for package:</info> '.$package);
 	}
 
 	/**
