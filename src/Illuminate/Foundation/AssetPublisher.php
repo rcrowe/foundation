@@ -49,7 +49,17 @@ class AssetPublisher {
 	{
 		$destination = $this->publishPath."/packages/{$name}";
 
-		return $this->files->copyDirectory($source, $destination);
+		$success = $this->files->copyDirectory($source, $destination);
+
+		// If were unable to publish the assets, it coule mean that the source folder
+		// does not exists. So, the developer should probably check that the given
+		// source location is valid, otherwise, verify the target's permissions.
+		if ( ! $success)
+		{
+			throw new \RuntimeException("Unable to publish assets.");
+		}
+
+		return $success;
 	}
 
 	/**

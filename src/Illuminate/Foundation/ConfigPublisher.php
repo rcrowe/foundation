@@ -47,16 +47,38 @@ class ConfigPublisher {
 	 */
 	public function publishPackage($package, $packagePath = null)
 	{
-		$packagePath = $packagePath ?: $this->packagePath;
+		list($vendor, $name) = explode('/', $package);
+
+		$path = $packagePath ?: $this->packagePath;
 
 		// First we will figure out the source of the package's configuration location
 		// which we do by convention. Once we have that we will move the files over
 		// to the "main" configuration directory for this particular application.
-		$source = $packagePath."/{$package}/src/config";
+		$source = $this->getSource($package, $name, $path);
 
-		$destination = $this->publishPath."/packages/{$package}";
+		$destination = $this->publishPath."/packages/{$package}.php";
 
-		return $this->files->copyDirectory($source, $destination);
+		return $this->files->copy($source, $destination);
+	}
+
+	/**
+	 * Get the source configuration file to publish.
+	 *
+	 * @param  string  $package
+	 * @param  string  $name
+	 * @param  string  $packagePath
+	 * @return string
+	 */
+	protected function getSource($package, $name, $packagePath)
+	{
+		$source = $packagePath."/{$package}/src/config/{$name}.php";
+
+		if ( ! $this->files->exists($source))
+		{
+			throw new \InvalidArgumentException("Configuration not found.");
+		}
+
+		return $source;
 	}
 
 	/**
