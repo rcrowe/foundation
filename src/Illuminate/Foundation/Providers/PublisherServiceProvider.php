@@ -11,27 +11,25 @@ class PublisherServiceProvider extends ServiceProvider {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register($app)
+	public function register()
 	{
-		$this->registerAssetPublisher($app);
+		$this->registerAssetPublisher();
 
-		$this->registerConfigPublisher($app);
+		$this->registerConfigPublisher();
 	}
 
 	/**
 	 * Register the asset publisher service and command.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerAssetPublisher($app)
+	protected function registerAssetPublisher()
 	{
-		$this->registerAssetPublishCommand($app);
+		$this->registerAssetPublishCommand();
 
-		$app['asset.publisher'] = $app->share(function($app)
+		$this->app['asset.publisher'] = $this->app->share(function($app)
 		{
 			$publicPath = $app['path.base'].'/public';
 
@@ -49,12 +47,11 @@ class PublisherServiceProvider extends ServiceProvider {
 	/**
 	 * Register the asset publish console command.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerAssetPublishCommand($app)
+	protected function registerAssetPublishCommand()
 	{
-		$app['command.asset.publish'] = $app->share(function($app)
+		$this->app['command.asset.publish'] = $this->app->share(function($app)
 		{
 			return new AssetPublishCommand($app['asset.publisher']);
 		});
@@ -63,14 +60,13 @@ class PublisherServiceProvider extends ServiceProvider {
 	/**
 	 * Register the configuration publisher class and command.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerConfigPublisher($app)
+	protected function registerConfigPublisher()
 	{
-		$this->registerConfigPublishCommand($app);
+		$this->registerConfigPublishCommand();
 
-		$app['config.publisher'] = $app->share(function($app)
+		$this->app['config.publisher'] = $this->app->share(function($app)
 		{
 			$configPath = $app['path'].'/config';
 
@@ -88,12 +84,11 @@ class PublisherServiceProvider extends ServiceProvider {
 	/**
 	 * Register the configuration publish console command.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	protected function registerConfigPublishCommand($app)
+	protected function registerConfigPublishCommand()
 	{
-		$app['command.config.publish'] = $app->share(function($app)
+		$this->app['command.config.publish'] = $this->app->share(function($app)
 		{
 			return new ConfigPublishCommand($app['config.publisher']);
 		});

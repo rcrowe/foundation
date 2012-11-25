@@ -8,14 +8,13 @@ class AliasServiceProvider extends ServiceProvider {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register($app)
+	public function register()
 	{
-		$app['alias'] = AliasLoader::getInstance($app['config']['app.aliases']);
+		$this->app['alias'] = AliasLoader::getInstance($this->app['config']['app.aliases']);
 
-		$app['alias']->register();
+		$this->app['alias']->register();
 	}
 
 }

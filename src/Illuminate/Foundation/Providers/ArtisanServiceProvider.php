@@ -8,12 +8,11 @@ class ArtisanServiceProvider extends ServiceProvider {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register($app)
+	public function register()
 	{
-		$app['artisan'] = $app->share(function($app)
+		$this->app['artisan'] = $this->app->share(function($app)
 		{
 			return new Artisan($app);
 		});

@@ -8,12 +8,11 @@ class ComposerServiceProvider extends ServiceProvider {
 	/**
 	 * Register the service provider.
 	 *
-	 * @param  Illuminate\Foundation\Application  $app
 	 * @return void
 	 */
-	public function register($app)
+	public function register()
 	{
-		$app['composer'] = $app->share(function($app)
+		$this->app['composer'] = $this->app->share(function($app)
 		{
 			return new Composer($app['files'], $app['path.base']);
 		});
