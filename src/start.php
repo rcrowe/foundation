@@ -83,7 +83,7 @@ require_once __DIR__.'/facades.php';
 
 foreach ($app['config']['app.providers'] as $provider)
 {
-	$app->register(new $provider);
+	$app->register(new $provider($app));
 }
 
 /*
