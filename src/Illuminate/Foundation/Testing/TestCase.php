@@ -23,7 +23,17 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp()
+	public static function setUpBeforeClass()
+	{
+		$this->refreshApplication();
+	}
+
+	/**
+	 * Refresh the application instance.
+	 *
+	 * @return void
+	 */
+	protected function refreshApplication()
 	{
 		$this->app = $this->createApplication();
 
