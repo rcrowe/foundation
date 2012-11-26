@@ -12,7 +12,7 @@ class Response {
 	 */
 	public static function make($content = '', $status = 200, array $headers = array())
 	{
-		return new Illuminate\Http\Response($content, $status, $headers);
+		return new \Illuminate\Http\Response($content, $status, $headers);
 	}
 
 	/**
@@ -25,7 +25,7 @@ class Response {
 	 */
 	public static function json($data = array(), $status = 200, array $headers = array())
 	{
-		return new Symfony\Component\HttpFoundation\JsonResponse($data, $status, $headers);
+		return new \Symfony\Component\HttpFoundation\JsonResponse($data, $status, $headers);
 	}
 
 	/**
@@ -38,7 +38,7 @@ class Response {
 	 */
 	public static function stream($callback, $status = 200, array $headers = array())
 	{
-		return new Symfony\Component\HttpFoundation\StreamedResponse($callback, $status, $headers);
+		return new \Symfony\Component\HttpFoundation\StreamedResponse($callback, $status, $headers);
 	}
 
 }
