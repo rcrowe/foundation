@@ -140,16 +140,6 @@ class Input extends Facade {
 	}
 
 	/**
-	 * Get all of the input data for the request, including files.
-	 *
-	 * @return array
-	 */
-	public static function all()
-	{
-		return static::$app['request']->everything();
-	}
-
-	/**
 	 * Get the registered name of the component.
 	 *
 	 * @return string
