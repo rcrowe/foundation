@@ -99,11 +99,11 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testCsrfMiddlewareThrowsException()
 	{
 		$app = new Application;
-		$app->register(new Illuminate\Session\SessionServiceProvider);
+		$app->register(new Illuminate\Session\SessionServiceProvider($app));
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'bar'));
-		$middleware = $app->getFilter('csrf');
+		$middleware = $app['router']->getFilter('csrf');
 		$middleware();
 	}
 
@@ -111,11 +111,11 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	public function testCsrfMiddlewareDoesntThrowWhenMatch()
 	{
 		$app = new Application;
-		$app->register(new Illuminate\Session\SessionServiceProvider);
+		$app->register(new Illuminate\Session\SessionServiceProvider($app));
 		$app['session'] = m::mock('Illuminate\Session\Store');
 		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
 		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'foo'));
-		$middleware = $app->getFilter('csrf');
+		$middleware = $app['router']->getFilter('csrf');
 		$middleware();
 		$this->assertTrue(true);
 	}

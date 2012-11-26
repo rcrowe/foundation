@@ -172,10 +172,10 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register a "before" application filter.
 	 *
-	 * @param  Closure  $callback
+	 * @param  Closure|string  $callback
 	 * @return void
 	 */
-	public function before(Closure $callback)
+	public function before($callback)
 	{
 		return $this['router']->before($callback);
 	}
@@ -183,10 +183,10 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register an "after" application filter.
 	 *
-	 * @param  Closure  $callback
+	 * @param  Closure|string  $callback
 	 * @return void
 	 */
-	public function after(Closure $callback)
+	public function after($callback)
 	{
 		return $this['router']->after($callback);
 	}
@@ -194,10 +194,10 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register a "close" application filter.
 	 *
-	 * @param  Closure  $callback
+	 * @param  Closure|string  $callback
 	 * @return void
 	 */
-	public function close(Closure $callback)
+	public function close($callback)
 	{
 		return $this['router']->close($callback);
 	}
@@ -205,10 +205,10 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register a "finish" application filter.
 	 *
-	 * @param  Closure  $callback
+	 * @param  Closure|string  $callback
 	 * @return void
 	 */
-	public function finish(Closure $callback)
+	public function finish($callback)
 	{
 		$this['router']->finish($callback);
 	}
@@ -303,29 +303,6 @@ class Application extends Container implements HttpKernelInterface {
 		if ( ! $value instanceof SymfonyResponse) $value = new Response($value);
 
 		return $value->prepare($request);
-	}
-
-	/**
-	 * Register a new filter with the router.
-	 *
-	 * @param  string   $name
-	 * @param  Closure  $callback
-	 * @return void
-	 */
-	public function addFilter($name, Closure $callback)
-	{
-		return $this['router']->addFilter($name, $callback);
-	}
-
-	/**
-	 * Get a registered filter callback.
-	 *
-	 * @param  string   $name
-	 * @return Closure
-	 */
-	public function getFilter($name)
-	{
-		return $this['router']->getFilter($name);
 	}
 
 	/**
