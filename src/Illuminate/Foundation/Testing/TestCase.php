@@ -23,7 +23,7 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @return void
 	 */
-	public static function setUpBeforeClass()
+	public function setUp()
 	{
 		$this->refreshApplication();
 	}
