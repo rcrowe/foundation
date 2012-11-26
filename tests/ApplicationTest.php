@@ -93,34 +93,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	/**
-	 * @expectedException Illuminate\Session\TokenMismatchException
-	 */
-	public function testCsrfMiddlewareThrowsException()
-	{
-		$app = new Application;
-		$app->register(new Illuminate\Session\SessionServiceProvider($app));
-		$app['session'] = m::mock('Illuminate\Session\Store');
-		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
-		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'bar'));
-		$middleware = $app['router']->getFilter('csrf');
-		$middleware();
-	}
-
-
-	public function testCsrfMiddlewareDoesntThrowWhenMatch()
-	{
-		$app = new Application;
-		$app->register(new Illuminate\Session\SessionServiceProvider($app));
-		$app['session'] = m::mock('Illuminate\Session\Store');
-		$app['session']->shouldReceive('getToken')->once()->andReturn('foo');
-		$app['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', array('csrf_token' => 'foo'));
-		$middleware = $app['router']->getFilter('csrf');
-		$middleware();
-		$this->assertTrue(true);
-	}
-
-
 	public function testPrepareRequestInjectsSession()
 	{
 		$app = new Application;
