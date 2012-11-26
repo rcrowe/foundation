@@ -7,7 +7,7 @@
 |
 | Here we will just import a few classes that we need during the booting
 | of the framework. These are mainly classes that involve loading the
-| configuration files for the application, such as the config repository.
+| config files for this application, such as the config repository.
 |
 */
 
@@ -67,8 +67,6 @@ date_default_timezone_set($app['config']['app.timezone']);
 */
 
 Illuminate\Support\Facade::setFacadeApplication($app);
-
-require_once __DIR__.'/facades.php';
 
 /*
 |--------------------------------------------------------------------------
