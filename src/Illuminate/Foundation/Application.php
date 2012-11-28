@@ -68,10 +68,10 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Detect the application's current environment.
 	 *
-	 * @param  array   $environments
+	 * @param  array|string  $environments
 	 * @return string
 	 */
-	public function detectEnvironment(array $environments)
+	public function detectEnvironment($environments)
 	{
 		$base = $this['request']->getHost();
 
@@ -83,6 +83,26 @@ class Application extends Container implements HttpKernelInterface {
 		if ($this->runningInConsole())
 		{
 			return $this->detectConsoleEnvironment($arguments);
+		}
+
+		return $this->detectWebEnvironment($base, $environments);
+	}
+
+	/**
+	 * Set the application environment for a web request.
+	 *
+	 * @param  string  $base
+	 * @param  array|string  $environments
+	 * @return string
+	 */
+	protected function detectWebEnvironment($base, $environments)
+	{
+		// If the given environment is just a Closure, we will defer the environment
+		// detection to the Closure the developer has provided, which allows them
+		// to totally control the web environment detection if they require to.
+		if ($environments instanceof Closure)
+		{
+			return $this['env'] = call_user_func($environments);
 		}
 
 		foreach ($environments as $environment => $hosts)
@@ -100,16 +120,6 @@ class Application extends Container implements HttpKernelInterface {
 		}
 
 		return $this['env'] = 'production';
-	}
-
-	/**
-	 * Determine if we are running in the console.
-	 *
-	 * @return bool
-	 */
-	public function runningInConsole()
-	{
-		return php_sapi_name() == 'cli';
 	}
 
 	/**
@@ -145,6 +155,16 @@ class Application extends Container implements HttpKernelInterface {
 	protected function isMachine($name)
 	{
 		return gethostname() == $name;
+	}
+
+	/**
+	 * Determine if we are running in the console.
+	 *
+	 * @return bool
+	 */
+	public function runningInConsole()
+	{
+		return php_sapi_name() == 'cli';
 	}
 
 	/**

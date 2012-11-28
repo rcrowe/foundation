@@ -79,6 +79,19 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testClosureCanBeUsedForCustomEnvironmentDetection()
+	{
+		$app = m::mock('Illuminate\Foundation\Application[runningInConsole]');
+		$app['request'] = m::mock('Symfony\Component\HttpFoundation\Request');
+		$app['request']->shouldReceive('getHost')->andReturn('foo');
+		$app['request']->server = m::mock('StdClass');
+		$app['request']->server->shouldReceive('get')->once()->with('argv')->andReturn(array());
+		$app->shouldReceive('runningInConsole')->once()->andReturn(false);
+		$app->detectEnvironment(function() { return 'foobar'; });
+		$this->assertEquals('foobar', $app['env']);
+	}
+
+
 	public function testConsoleEnvironmentDetection()
 	{
 		$app = new Application;
