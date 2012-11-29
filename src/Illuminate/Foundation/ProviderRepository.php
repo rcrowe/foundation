@@ -125,7 +125,7 @@ class ProviderRepository {
 	 */
 	public function loadManifest(Application $app)
 	{
-		$path = $app['path'].'/storage/meta/services.json';
+		$path = $this->manifestPath($app);
 
 		// The service manifest is a file containing a JSON representation of every
 		// service provided by the application and whether its provider is using
@@ -145,11 +145,20 @@ class ProviderRepository {
 	 */
 	public function writeManifest(Application $app, $manifest)
 	{
-		$path = $app['path'].'/storage/meta/services.json';
-
-		$this->files->put($path, json_encode($manifest));
+		$this->files->put($this->manifestPath($app), json_encode($manifest));
 
 		return $manifest;
+	}
+
+	/**
+	 * Get the manifest file path.
+	 *
+	 * @param  Illuminate\Foundation\Application  $app
+	 * @return string
+	 */
+	protected function manifestPath($app)
+	{
+		return $app['path'].'/storage/meta/services.json';
 	}
 
 	/**
