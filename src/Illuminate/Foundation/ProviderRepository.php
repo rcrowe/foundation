@@ -64,9 +64,7 @@ class ProviderRepository {
 		// The service manifest should contain a list of all of the providers for
 		// the application so we can compare it on each request to the service
 		// and determine if the manifest should be recompiled or is current.
-		$manifest = compact('providers');
-
-		$manifest['eager'] = array();
+		$manifest = $this->freshManifest($providers);
 
 		foreach ($providers as $provider)
 		{
@@ -152,6 +150,19 @@ class ProviderRepository {
 		$this->files->put($path, json_encode($manifest));
 
 		return $manifest;
+	}
+
+	/**
+	 * Create a fresh manifest array.
+	 *
+	 * @param  array  $providers
+	 * @return array
+	 */
+	protected function freshManifest(array $providers)
+	{
+		list($eager, $deferred) = array(array(), array());
+
+		return compact('providers', 'eager', 'deferred');
 	}
 
 	/**
