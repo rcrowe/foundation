@@ -102,7 +102,7 @@ class ProviderRepository {
 	 * @param  string  $provider
 	 * @return Illuminate\Support\ServiceProvider
 	 */
-	public function createProvider($app, $provider)
+	public function createProvider(Application $app, $provider)
 	{
 		return new $provider($app);
 	}
@@ -125,7 +125,7 @@ class ProviderRepository {
 	 * @param  Illuminate\Foundation\Application  $app
 	 * @return array
 	 */
-	public function loadManifest($app)
+	public function loadManifest(Application $app)
 	{
 		$path = $app['path'].'/storage/meta/services.json';
 
@@ -145,7 +145,7 @@ class ProviderRepository {
 	 * @param  array  $manifest
 	 * @return array
 	 */
-	public function writeManifest($app, $manifest)
+	public function writeManifest(Application $app, $manifest)
 	{
 		$path = $app['path'].'/storage/meta/services.json';
 

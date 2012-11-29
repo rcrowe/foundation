@@ -53,4 +53,38 @@ class ProviderRepositoryTest extends PHPUnit_Framework_TestCase {
 		$manifest = $repo->load($app, array('foo', 'bar'));
 	}
 
+
+	public function testShouldRecompileReturnsCorrectValue()
+	{
+		$repo = new Illuminate\Foundation\ProviderRepository(new Illuminate\Filesystem);
+		$this->assertTrue($repo->shouldRecompile(null, array()));
+		$this->assertTrue($repo->shouldRecompile(array('providers' => array('foo')), array('foo', 'bar')));
+		$this->assertFalse($repo->shouldRecompile(array('providers' => array('foo')), array('foo')));
+	}
+
+
+	public function testLoadManifestReturnsParsedJSON()
+	{
+		$repo = new Illuminate\Foundation\ProviderRepository($files = m::mock('Illuminate\Filesystem'));
+		$files->shouldReceive('exists')->once()->with(__DIR__.'/storage/meta/services.json')->andReturn(true);
+		$files->shouldReceive('get')->once()->with(__DIR__.'/storage/meta/services.json')->andReturn(json_encode($array = array('users' => array('dayle' => true))));
+		$app = new Illuminate\Foundation\Application;
+		$app['path'] = __DIR__;
+
+		$this->assertEquals($array, $repo->loadManifest($app));
+	}
+
+
+	public function testWriteManifestStoresToProperLocation()
+	{
+		$repo = new Illuminate\Foundation\ProviderRepository($files = m::mock('Illuminate\Filesystem'));
+		$files->shouldReceive('put')->once()->with(__DIR__.'/storage/meta/services.json', json_encode(array('foo')));
+		$app = new Illuminate\Foundation\Application;
+		$app['path'] = __DIR__;
+
+		$result = $repo->writeManifest($app, array('foo'));
+
+		$this->assertEquals(array('foo'), $result);
+	}
+
 }
