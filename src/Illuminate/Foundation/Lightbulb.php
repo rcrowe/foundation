@@ -9,14 +9,10 @@ class Lightbulb {
 	 */
 	public static function on()
 	{
-		if ( ! class_exists('__')) spl_autoload_call('__');
-
 		// We will go ahead and create the Illuminate application since there
 		// are no constructor arguments that are needed and we want to put
 		// it into the $GLOBALS array to allow for some nicer functions.
-		$application = new Application;
-
-		set_app($application);
+		set_app($application = new Application);
 
 		return $application;
 	}
