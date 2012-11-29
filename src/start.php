@@ -39,7 +39,9 @@ $app->startExceptionHandling();
 
 $app['config'] = $app->share(function($app)
 {
-	return new ConfigRepository($app['config.loader'], $app['env']);
+	$loader = $app['config.loader'];
+
+	return new ConfigRepository($loader, $app['env']);
 });
 
 /*
@@ -95,15 +97,13 @@ foreach ($app['config']['app.providers'] as $provider)
 |
 */
 
-if (file_exists($path = $app['path'].'/start/global.php'))
-{
-	require $path;
-}
+$path = $app['path'].'/start/global.php';
 
-if (file_exists($path = $app['path'].'/start/'.$app['env'].'.php'))
-{
-	require $path;
-}
+if (file_exists($path)) require $path;
+
+$path = $app['path']."/start/{$app['env']}.php";
+
+if (file_exists($path)) require $path;
 
 /*
 |--------------------------------------------------------------------------
