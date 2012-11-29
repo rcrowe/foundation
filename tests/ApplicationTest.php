@@ -167,6 +167,18 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 		$app->setLocale('foo');
 	}
 
+
+	public function testServiceProvidersAreCorrectlyRegistered()
+	{
+		$provider = m::mock('Illuminate\Support\ServiceProvider');
+		$class = get_class($provider);
+		$provider->shouldReceive('register')->once();
+		$app = new Application;
+		$app->register($provider);
+
+		$this->assertTrue(in_array($class, $app->getLoadedProviders()));
+	}
+
 }
 
 class ApplicationCustomExceptionHandlerStub extends Illuminate\Foundation\Application {

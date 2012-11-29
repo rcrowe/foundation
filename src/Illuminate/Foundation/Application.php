@@ -34,6 +34,13 @@ class Application extends Container implements HttpKernelInterface {
 	protected $serviceProviders = array();
 
 	/**
+	 * The names of the loaded service providers.
+	 *
+	 * @var array
+	 */
+	protected $loadedProviders = array();
+
+	/**
 	 * The deferred services and their providers.
 	 *
 	 * @var array
@@ -410,6 +417,16 @@ class Application extends Container implements HttpKernelInterface {
 	public function error(Closure $callback)
 	{
 		$this['exception']->error($callback);
+	}
+
+	/**
+	 * Get the service providers that have been loaded.
+	 *
+	 * @return array
+	 */
+	public function getLoadedProviders()
+	{
+		return $this->loadedProviders;
 	}
 
 	/**

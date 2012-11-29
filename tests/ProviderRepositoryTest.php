@@ -12,12 +12,12 @@ class ProviderRepositoryTest extends PHPUnit_Framework_TestCase {
 
 	public function testServicesAreRegisteredWhenManifestIsNotRecompiled()
 	{
-		$repo = $this->getMock('Illuminate\Foundation\ProviderRepository', array('loadManifest', 'shouldRecompile', 'createProvider'), array(m::mock('Illuminate\Filesystem')));
-		$repo->expects($this->once())->method('loadManifest')->will($this->returnValue(array('eager' => array('foo'), 'deferred' => array('deferred'))));
-		$repo->expects($this->once())->method('shouldRecompile')->will($this->returnValue(false));
-		$app = m::mock('Illuminate\Foundation\Application[register]');
+		$repo = m::mock('Illuminate\Foundation\ProviderRepository[createProvider,loadManifest,shouldRecompile]', array(m::mock('Illuminate\Filesystem')));
+		$repo->shouldReceive('loadManifest')->once()->andReturn(array('eager' => array('foo'), 'deferred' => array('deferred')));
+		$repo->shouldReceive('shouldRecompile')->once()->andReturn(false);
+		$app = m::mock('Illuminate\Foundation\Application[register,setDeferredServices]');
 		$provider = m::mock('Illuminate\Support\ServiceProvider');
-		$repo->expects($this->once())->method('createProvider')->with($this->equalTo($app), $this->equalTo('foo'))->will($this->returnValue($provider));
+		$repo->shouldReceive('createProvider')->once()->with($app, 'foo')->andReturn($provider);
 		$app->shouldReceive('register')->once()->with($provider);
 		$app->shouldReceive('setDeferredServices')->once()->with(array('deferred'));
 
