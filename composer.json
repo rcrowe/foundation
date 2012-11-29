@@ -33,15 +33,15 @@
         "illuminate/translation": ">=1.0.0",
         "illuminate/validation": ">=1.0.0",
         "illuminate/view": ">=1.0.0",
-        "symfony/browser-kit": "2.1.0",
-        "symfony/css-selector": "2.1.0",
-        "symfony/dom-crawler": "2.1.0",
-        "symfony/http-kernel": "2.1.0",
-        "symfony/process": "2.1.0",
-        "symfony/translation": "2.1.0"
+        "symfony/browser-kit": "2.1.*",
+        "symfony/css-selector": "2.1.*",
+        "symfony/dom-crawler": "2.1.*",
+        "symfony/http-kernel": "2.1.*",
+        "symfony/process": "2.1.*",
+        "symfony/translation": "2.1.*"
     },
     "require-dev": {
-        "mockery/mockery": "0.7.*"
+        "mockery/mockery": "0.7.8"
     },
     "autoload": {
         "psr-0": {
