@@ -11,6 +11,7 @@
 |
 */
 
+use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Config\Repository as ConfigRepository;
 
 /*
@@ -81,10 +82,9 @@ Illuminate\Support\Facade::setFacadeApplication($app);
 |
 */
 
-foreach ($app['config']['app.providers'] as $provider)
-{
-	$app->register(new $provider($app));
-}
+$services = new ProviderRepository(new Illuminate\Filesystem);
+
+$services->load($app, $app['config']['app.providers']);
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +100,17 @@ foreach ($app['config']['app.providers'] as $provider)
 $path = $app['path'].'/start/global.php';
 
 if (file_exists($path)) require $path;
+
+/*
+|--------------------------------------------------------------------------
+| Load The Environment Start Script
+|--------------------------------------------------------------------------
+|
+| The environment start script is only loaded if it exists for the app
+| environment currently active, which allows some actions to happen
+| in one environment while not in the other, keeping thigs clean.
+|
+*/
 
 $path = $app['path']."/start/{$app['env']}.php";
 

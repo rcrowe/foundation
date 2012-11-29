@@ -34,6 +34,13 @@ class Application extends Container implements HttpKernelInterface {
 	protected $serviceProviders = array();
 
 	/**
+	 * The deferred services and their providers.
+	 *
+	 * @var array
+	 */
+	protected $deferredServices = array();
+
+	/**
 	 * Create a new Illuminate application instance.
 	 *
 	 * @return void
@@ -143,7 +150,7 @@ class Application extends Container implements HttpKernelInterface {
 			}
 		}
 
-		return $this['env'] = 'default';
+		return $this['env'] = 'production';
 	}
 
 	/**
@@ -174,9 +181,9 @@ class Application extends Container implements HttpKernelInterface {
 	 * @param  array  $options
 	 * @return void
 	 */
-	public function register(ServiceProvider $provider, array $options = array())
+	public function register(ServiceProvider $provider, $options = array())
 	{
-		$provider->register($this);
+		$provider->register();
 
 		// Once we have registered the service we will iterate through the options
 		// and set each of them on the application so they will be available on
@@ -187,6 +194,47 @@ class Application extends Container implements HttpKernelInterface {
 		}
 
 		$this->serviceProviders[] = $provider;
+
+		$this->loadedProviders[get_class($provider)] = true;
+	}
+
+	/**
+	 * Resolve the given type from the container.
+	 *
+	 * (Overriding Container::make)
+	 *
+	 * @param  string  $abstract
+	 * @return mixed
+	 */
+	public function make($abstract)
+	{
+		if (isset($this->deferredServices[$abstract]))
+		{
+			$this->loadDeferredProvider($abstract);
+		}
+
+		return parent::make($abstract);
+	}
+
+	/**
+	 * Load the provider for a deferred service.
+	 *
+	 * @param  string  $service
+	 * @return void
+	 */
+	protected function loadDeferredProvider($service)
+	{
+		$provider = $this->deferredServices[$service];
+
+		// If the service provider has not already been loaded and registered we can
+		// register it with the application and remove the service from this list
+		// of deferred services, since it will already be loaded on subsequent.
+		if ( ! isset($this->loadedProviders[$provider]))
+		{
+			$this->register(new $provider($this));
+		}
+
+		unset($this->deferredServices[$service]);
 	}
 
 	/**
@@ -362,6 +410,17 @@ class Application extends Container implements HttpKernelInterface {
 	public function error(Closure $callback)
 	{
 		$this['exception']->error($callback);
+	}
+
+	/**
+	 * Set the application's deferred services.
+	 *
+	 * @param  array  $services
+	 * @return void
+	 */
+	public function setDeferredServices(array $services)
+	{
+		$this->deferredServices = $services;
 	}
 
 	/**
