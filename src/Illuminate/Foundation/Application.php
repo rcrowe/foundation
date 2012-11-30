@@ -56,12 +56,32 @@ class Application extends Container implements HttpKernelInterface {
 	{
 		$this['request'] = Request::createFromGlobals();
 
-		$this->register(new RoutingServiceProvider($this));
-
 		// The exception handler class takes care of determining which of the bound
 		// exception handler Closures should be called for a given exception and
 		// gets the response from them. We'll bind it here to allow overrides.
 		$this->register(new ExceptionServiceProvider($this));
+
+		$this->register(new RoutingServiceProvider($this));
+
+		// The alias loader is responsible for lazy loading the class aliases setup
+		// for the application. We will only register it if the "config" service
+		// is bound in the application since it contains the alias definitions.
+		if (isset($this['config']))
+		{
+			$this->registerAliasLoader();
+		}
+	}
+
+	/**
+	 * Register the aliased class loader.
+	 *
+	 * @return void
+	 */
+	protected function registerAliasLoader()
+	{
+		$loader = AliasLoader::getInstance($this['config']['app.aliases']);
+
+		$loader->register();
 	}
 
 	/**
