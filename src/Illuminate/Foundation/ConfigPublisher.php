@@ -56,18 +56,18 @@ class ConfigPublisher {
 
 		$source = $this->getSource($package, $name, $path);
 
-		$destination = $this->publishPath."/packages/{$package}.php";
+		$destination = $this->publishPath."/packages/{$package}";
 
 		// We need to create the destination directory if it doesn't exist so we will
 		// actually be able to write the published configuration file to disk else
 		// we will get a file not found error when trying to publish the config.
-		$this->makeDestinationDirectory($destination);
+		$this->makeDestination($destination);
 
-		return $this->files->copy($source, $destination);
+		return $this->files->copyDirectory($source, $destination);
 	}
 
 	/**
-	 * Get the source configuration file to publish.
+	 * Get the source configuration directory to publish.
 	 *
 	 * @param  string  $package
 	 * @param  string  $name
@@ -76,9 +76,9 @@ class ConfigPublisher {
 	 */
 	protected function getSource($package, $name, $packagePath)
 	{
-		$source = $packagePath."/{$package}/src/config/{$name}.php";
+		$source = $packagePath."/{$package}/src/config";
 
-		if ( ! $this->files->exists($source))
+		if ( ! $this->files->isDirectory($source))
 		{
 			throw new \InvalidArgumentException("Configuration not found.");
 		}
@@ -92,13 +92,11 @@ class ConfigPublisher {
 	 * @param  string  $destination
 	 * @return void
 	 */
-	protected function makeDestinationDirectory($destination)
+	protected function makeDestination($destination)
 	{
-		$directory = dirname($destination);
-
-		if ( ! $this->files->isDirectory($directory))
+		if ( ! $this->files->isDirectory($destination))
 		{
-			$this->files->makeDirectory($directory, 0777, true);
+			$this->files->makeDirectory($destination, 0777, true);
 		}
 	}
 
