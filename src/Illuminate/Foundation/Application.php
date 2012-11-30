@@ -62,14 +62,6 @@ class Application extends Container implements HttpKernelInterface {
 		$this->register(new ExceptionServiceProvider($this));
 
 		$this->register(new RoutingServiceProvider($this));
-
-		// The alias loader is responsible for lazy loading the class aliases setup
-		// for the application. We will only register it if the "config" service
-		// is bound in the application since it contains the alias definitions.
-		if (isset($this['config']))
-		{
-			$this->registerAliasLoader();
-		}
 	}
 
 	/**
@@ -77,7 +69,7 @@ class Application extends Container implements HttpKernelInterface {
 	 *
 	 * @return void
 	 */
-	protected function registerAliasLoader()
+	public function registerAliasLoader()
 	{
 		$loader = AliasLoader::getInstance($this['config']['app.aliases']);
 

@@ -60,6 +60,19 @@ date_default_timezone_set($app['config']['app.timezone']);
 
 /*
 |--------------------------------------------------------------------------
+| Register The Alias Loader
+|--------------------------------------------------------------------------
+|
+| The alias loader is responsible for lazy loading the class aliases setup
+| for the application. We will only register it if the "config" service
+| is bound in the application since it contains the alias definitions.
+|
+*/
+
+$app->registerAliasLoader();
+
+/*
+|--------------------------------------------------------------------------
 | Load The Illuminate Facades
 |--------------------------------------------------------------------------
 |
