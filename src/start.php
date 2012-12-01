@@ -11,6 +11,7 @@
 |
 */
 
+use Illuminate\Filesystem;
 use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Config\Repository as ConfigRepository;
 
@@ -38,12 +39,11 @@ $app->startExceptionHandling();
 |
 */
 
-$app['config'] = $app->share(function($app)
-{
-	$loader = $app['config.loader'];
+$env = $app['env'];
 
-	return new ConfigRepository($loader, $app['env']);
-});
+$configRepo = new ConfigRepository($app['config.loader'], $env);
+
+$app->instance('config', $configRepo);
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +56,9 @@ $app['config'] = $app->share(function($app)
 |
 */
 
-date_default_timezone_set($app['config']['app.timezone']);
+$config = $app['config']['app'];
+
+date_default_timezone_set($config['timezone']);
 
 /*
 |--------------------------------------------------------------------------
@@ -95,9 +97,9 @@ Illuminate\Support\Facade::setFacadeApplication($app);
 |
 */
 
-$services = new ProviderRepository(new Illuminate\Filesystem);
+$services = new ProviderRepository(new Filesystem);
 
-$services->load($app, $app['config']['app.providers']);
+$services->load($app, $config['providers']);
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +112,9 @@ $services->load($app, $app['config']['app.providers']);
 |
 */
 
-$path = $app['path'].'/start/global.php';
+$appPath = $app['path'];
+
+$path = $appPath.'/start/global.php';
 
 if (file_exists($path)) require $path;
 
@@ -125,7 +129,7 @@ if (file_exists($path)) require $path;
 |
 */
 
-$path = $app['path']."/start/{$app['env']}.php";
+$path = $appPath."/start/{$env}.php";
 
 if (file_exists($path)) require $path;
 
