@@ -9,6 +9,13 @@ use Illuminate\Foundation\Console\ConfigPublishCommand;
 class PublisherServiceProvider extends ServiceProvider {
 
 	/**
+	 * Indicates if loading of the provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @return void
@@ -92,6 +99,21 @@ class PublisherServiceProvider extends ServiceProvider {
 		{
 			return new ConfigPublishCommand($app['config.publisher']);
 		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function provides()
+	{
+		return array(
+			'asset.publisher',
+			'command.asset.publish',
+			'config.publisher',
+			'command.config.publish'
+		);
 	}
 
 }
