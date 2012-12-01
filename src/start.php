@@ -12,8 +12,8 @@
 */
 
 use Illuminate\Filesystem;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\ProviderRepository;
-use Illuminate\Config\Repository as ConfigRepository;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ $app->startExceptionHandling();
 
 $env = $app['env'];
 
-$configRepo = new ConfigRepository($app['config.loader'], $env);
+$configRepo = new Config($app['config.loader'], $env);
 
 $app->instance('config', $configRepo);
 
