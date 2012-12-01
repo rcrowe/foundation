@@ -67,11 +67,12 @@ class Application extends Container implements HttpKernelInterface {
 	/**
 	 * Register the aliased class loader.
 	 *
+	 * @param  array  $aliases
 	 * @return void
 	 */
-	public function registerAliasLoader()
+	public function registerAliasLoader(array $aliases)
 	{
-		$loader = AliasLoader::getInstance($this['config']['app.aliases']);
+		$loader = AliasLoader::getInstance($aliases);
 
 		$loader->register();
 	}

@@ -39,11 +39,9 @@ $app->startExceptionHandling();
 |
 */
 
-$env = $app['env'];
+$config = new Config($app['config.loader'], $env);
 
-$configRepo = new Config($app['config.loader'], $env);
-
-$app->instance('config', $configRepo);
+$app->instance('config', $config);
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +69,7 @@ date_default_timezone_set($config['timezone']);
 |
 */
 
-$app->registerAliasLoader();
+$app->registerAliasLoader($config['alises']);
 
 /*
 |--------------------------------------------------------------------------
@@ -111,8 +109,6 @@ $services->load($app, $config['providers']);
 | bindings for things like repositories, etc. We'll load it here.
 |
 */
-
-$appPath = $app['path'];
 
 $path = $appPath.'/start/global.php';
 
