@@ -69,7 +69,7 @@ date_default_timezone_set($config['timezone']);
 |
 */
 
-$app->registerAliasLoader($config['alises']);
+$app->registerAliasLoader($config['aliases']);
 
 /*
 |--------------------------------------------------------------------------
