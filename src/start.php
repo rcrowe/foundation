@@ -144,4 +144,4 @@ if (file_exists($path)) require $path;
 |
 */
 
-require $app['path'].'/routes.php';
+require $appPath.'/routes.php';
