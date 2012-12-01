@@ -2,14 +2,13 @@
 
 use Mockery as m;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Lightbulb;
 use Illuminate\Foundation\Application;
 
 class ApplicationTest extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass()
 	{
-		Lightbulb::on();
+		set_app(new Application);
 	}
 
 
