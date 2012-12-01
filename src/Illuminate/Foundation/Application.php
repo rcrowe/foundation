@@ -252,10 +252,10 @@ class Application extends Container implements HttpKernelInterface {
 		{
 			$this->register($instance = new $provider($this));
 
+			unset($this->deferredServices[$service]);
+
 			if ($this->booted) $instance->boot();
 		}
-
-		unset($this->deferredServices[$service]);
 	}
 
 	/**
