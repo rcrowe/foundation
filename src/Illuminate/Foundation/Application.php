@@ -250,7 +250,9 @@ class Application extends Container implements HttpKernelInterface {
 		// of deferred services, since it will already be loaded on subsequent.
 		if ( ! isset($this->loadedProviders[$provider]))
 		{
-			$this->register(new $provider($this));
+			$this->register($instance = new $provider($this));
+
+			if ($this->booted()) $instance->boot();
 		}
 
 		unset($this->deferredServices[$service]);
