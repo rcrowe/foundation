@@ -46,13 +46,23 @@ function csrf_token()
 }
 
 /**
+ * Get the root URL for the current request.
+ *
+ * @return string
+ */
+function root_url()
+{
+	return app()->request->root();
+}
+
+/**
  * Generate a path for the application.
  *
  * @param  string  $path
  * @param  bool    $secure
  * @return string
  */
-function path($path = null, $secure = false)
+function path($path = null, $secure = null)
 {
 	$app = app();
 
@@ -71,13 +81,28 @@ function secure_path($path)
 }
 
 /**
- * Get the root URL for the current request.
+ * Generate an asset path for the application.
  *
+ * @param  string  $path
+ * @param  bool    $secure
  * @return string
  */
-function root_url()
+function asset($path, $secure = null)
 {
-	return app()->request->root();
+	$app = app();
+
+	return $app['url']->asset($path, $secure);
+}
+
+/**
+ * Generate an asset path for the application.
+ *
+ * @param  string  $path
+ * @return string
+ */
+function secure_asset($path)
+{
+	return asset($path, true);
 }
 
 /**
@@ -143,7 +168,7 @@ function trans($id, $parameters = array(), $domain = 'messages', $locale = null)
  * @param  string  $locale
  * @return string
  */
-function transChoice($id, $number, array $parameters = array(), $domain = 'messages', $locale = null)
+function trans_choice($id, $number, array $parameters = array(), $domain = 'messages', $locale = null)
 {
 	$app = app();
 
