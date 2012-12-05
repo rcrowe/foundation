@@ -39,11 +39,9 @@ $app->startExceptionHandling();
 |
 */
 
-$env = $app['env'];
+$config = new Config($app['config.loader'], $env);
 
-$configRepo = new Config($app['config.loader'], $env);
-
-$app->instance('config', $configRepo);
+$app->instance('config', $config);
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +69,7 @@ date_default_timezone_set($config['timezone']);
 |
 */
 
-$app->registerAliasLoader();
+$app->registerAliasLoader($config['aliases']);
 
 /*
 |--------------------------------------------------------------------------
@@ -112,8 +110,6 @@ $services->load($app, $config['providers']);
 |
 */
 
-$appPath = $app['path'];
-
 $path = $appPath.'/start/global.php';
 
 if (file_exists($path)) require $path;
@@ -144,4 +140,4 @@ if (file_exists($path)) require $path;
 |
 */
 
-require $app['path'].'/routes.php';
+require $appPath.'/routes.php';
