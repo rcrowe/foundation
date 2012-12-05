@@ -82,7 +82,7 @@ $app->registerAliasLoader($config['aliases']);
 |
 */
 
-Illuminate\Support\Facade::setFacadeApplication($app);
+Illuminate\Support\Facades\Facade::setFacadeApplication($app);
 
 /*
 |--------------------------------------------------------------------------
