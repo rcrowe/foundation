@@ -167,12 +167,5 @@ function trans_choice($id, $number, array $parameters = array(), $domain = 'mess
 {
 	$app = app();
 
-	if (isset($app['translator']))
-	{
-		return $app['translator']->transChoice($id, $number, $parameters, $domain, $locale);
-	}
-	else
-	{
-		throw new RuntimeException("Application translator not set.");
-	}
+	return $app['translator']->transChoice($id, $number, $parameters, $domain, $locale);
 }
