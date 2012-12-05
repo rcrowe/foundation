@@ -150,14 +150,7 @@ function trans($id, $parameters = array(), $domain = 'messages', $locale = null)
 {
 	$app = app();
 
-	if (isset($app['translator']))
-	{
-		return $app['translator']->trans($id, $parameters, $domain, $locale);
-	}
-	else
-	{
-		throw new RuntimeException("Application translator not set.");
-	}
+	return $app['translator']->trans($id, $parameters, $domain, $locale);
 }
 
 /**
