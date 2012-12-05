@@ -17,7 +17,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase {
 		set_app($app = new Application);
 		$app['request'] = Request::create('http://www.foo.com', 'GET');
 		$this->assertEquals('http://www.foo.com/bar', path('bar'));
-		$this->assertEquals('https://www.foo.com/bar', path('bar', true));
+		$this->assertEquals('https://www.foo.com/bar', path('bar', array(), true));
 		$this->assertEquals('https://www.foo.com/bar', secure_path('bar'));
 	}
 

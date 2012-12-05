@@ -59,25 +59,27 @@ function root_url()
  * Generate a path for the application.
  *
  * @param  string  $path
+ * @param  array   $parameters
  * @param  bool    $secure
  * @return string
  */
-function path($path = null, $secure = null)
+function path($path = null, array $parameters = array(), $secure = null)
 {
 	$app = app();
 
-	return $app['url']->to($path, $secure);
+	return $app['url']->to($path, $parameters, $secure);
 }
 
 /**
  * Generate a HTTPS path for the application.
  *
  * @param  string  $path
+ * @param  array   $parameters
  * @return string
  */
-function secure_path($path)
+function secure_path($path, array $parameters = array())
 {
-	return path($path, true);
+	return path($path, $parameters, true);
 }
 
 /**
