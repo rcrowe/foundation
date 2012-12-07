@@ -1,6 +1,6 @@
 <?php namespace Illuminate\Foundation\Facades;
 
-use Illuminate\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 class Hash extends Facade {
 
